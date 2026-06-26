@@ -140,7 +140,19 @@ Task breakdown, progress, validation, dan commit dikelola oleh AI selama proses 
 
 - `7f50ec0` — chore: initial project setup
 - `e77cc32` — docs: mark Sprint 01 Task 01 complete
-- *(Sprint final commit)* — full Sprint 01 deliverables
+- `f81dd2c` — feat: Sprint 01 complete — project foundation
+
+### Foundation Audit
+
+**Result:** ✅ Pass (3 issues fixed)
+
+| Issue | Severity | Fix Applied |
+|-------|----------|-------------|
+| Missing `.env.example` | Critical | Created with `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
+| `shadcn` in `dependencies` | Warning | Moved to `devDependencies` |
+| Empty `src/app/auth/actions/` dir | Warning | Removed |
+
+**Validation after fixes:** Build ✅ | Lint ✅ | npm install ✅
 
 ### Important Findings
 
@@ -153,7 +165,10 @@ Task breakdown, progress, validation, dan commit dikelola oleh AI selama proses 
 
 ## Lessons Learned
 
-(Diisi setelah Sprint selesai.)
+- Foundation Audit caught missing `.env.example` — added to Sprint checklist
+- `shadcn` CLI was incorrectly placed in `dependencies` instead of `devDependencies`
+- Empty `actions/` dir was a scaffold artifact from parallel file+dir creation
+- Validation (build + lint) confirms all fixes are safe with zero side-effects
 
 ---
 
