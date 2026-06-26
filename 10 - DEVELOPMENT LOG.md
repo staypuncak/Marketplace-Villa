@@ -1,236 +1,192 @@
-# Sprint 01 — Foundation
+# Development Log
 
 **Project:** StayPuncak.com
 
-**Sprint:** 01
-
-**Status:** 🟡 In Progress
-
-**Goal:** Menyiapkan pondasi project agar seluruh pengembangan berikutnya berjalan dengan stabil dan konsisten.
-
-**Business Value:** Project siap dikembangkan.
+**Version:** 2.0.0
 
 ---
 
-# Sprint Progress
-
-```text
-████████░░░░░░░░░░░░░░░░░░░░
-
-Progress : 8%
-```
-
----
-
-# Sprint Backlog
-
-## 1. Project Initialization
+# Sprint 01 — Foundation
 
 **Status:** ✅ Completed
 
-### Tasks
-
--  ✅ Create Git Repository
-    
--  ✅ Create Next.js Project
-    
--  ✅ Initial Commit
-    
+**Last Updated:** 2026-06-26
 
 ---
 
-## 2. Development Environment
+## Sprint Goal
 
-**Status:** ⬜ Not Started
-
-### Tasks
-
--  Verify Node.js
-    
--  Verify npm
-    
--  Configure Environment Variables
-    
--  Configure Git
-    
--  Verify MCP
-    
--  Verify AI Tools
-    
+Membangun fondasi project yang stabil, tervalidasi, dan siap menjadi dasar pengembangan seluruh fitur pada Sprint berikutnya.
 
 ---
 
-## 3. Core Stack
+## Business Value
 
-**Status:** ⬜ Not Started
-
-### Tasks
-
--  Next.js
-    
--  Tailwind CSS
-    
--  Supabase
-    
--  shadcn/ui
-    
--  ESLint
-    
--  Prettier
-    
+Project memiliki development environment yang siap digunakan sehingga pengembangan fitur dapat dilakukan dengan cepat, konsisten, dan minim risiko.
 
 ---
 
-## 4. Folder Structure
+## Scope
 
-**Status:** ⬜ Not Started
+Sprint ini mencakup pembangunan pondasi project, termasuk:
 
-### Tasks
-
--  Create App Structure
-    
--  Create Components Structure
-    
--  Create Lib Structure
-    
--  Create Types Structure
-    
--  Create Hooks Structure
-    
--  Create Config Structure
-    
+* Project Initialization
+* Development Environment
+* Core Stack
+* Folder Structure
+* Authentication Foundation
+* Design System Foundation
 
 ---
 
-## 5. Design System Foundation
+## Out of Scope
 
-**Status:** ⬜ Not Started
+Sprint ini **tidak** mencakup:
 
-### Tasks
-
--  Color Tokens
-    
--  Typography
-    
--  Container
-    
--  Spacing
-    
--  Buttons
-    
--  Cards
-    
+* Halaman Website
+* Villa Management
+* Booking Flow
+* SEO Implementation
+* Business Logic
+* Dashboard
 
 ---
 
-## 6. Authentication Foundation
+## References
 
-**Status:** ⬜ Not Started
+Sebelum memulai Sprint, AI wajib menggunakan dokumentasi berikut sebagai sumber konteks:
 
-### Tasks
-
--  Setup Supabase Auth
-    
--  Test Connection
-    
-
----
-
-## 7. Smoke Test
-
-**Status:** ⬜ Not Started
-
-### Tasks
-
--  Development Server
-    
--  Build Success
-    
--  Type Check
-    
--  Lint
-    
--  No Console Error
-    
+* Project Context
+* PRD
+* Decision Log
+* Architecture
+* Database
+* Roadmap
 
 ---
 
-# Definition of Done
+## AI Responsibilities
+
+AI bertanggung jawab untuk:
+
+* Memuat seluruh konteks project.
+* Membuat task breakdown berdasarkan Sprint Goal.
+* Menentukan urutan implementasi yang paling aman.
+* Melakukan validasi setiap task.
+* Memperbarui Development Log setelah setiap progress penting.
+* Melakukan commit secara bertahap dengan pesan yang jelas.
+* Berhenti ketika Sprint selesai atau membutuhkan keputusan manusia.
+
+---
+
+## Human Responsibilities
+
+Engineer bertanggung jawab untuk:
+
+* Menentukan Sprint Goal.
+* Menentukan Scope.
+* Menentukan Constraint.
+* Menyetujui perubahan penting.
+* Melakukan review akhir.
+* Mengambil keputusan bisnis.
+
+---
+
+## Definition of Done
 
 Sprint dianggap selesai apabila:
 
--  Project dapat dijalankan
-    
--  Build berhasil
-    
--  Folder Structure selesai
-    
--  Supabase terkoneksi
-    
--  Design System siap
-    
--  Repository bersih
-    
--  Initial Commit selesai
-    
+* Project foundation selesai.
+* Development environment tervalidasi.
+* Core stack siap digunakan.
+* Folder structure sesuai Architecture.
+* Authentication foundation siap.
+* Design system foundation siap.
+* Build berhasil tanpa error.
+* Dokumentasi tetap sinkron dengan implementasi.
 
 ---
 
-# Current Focus
+## Current Progress
 
-🎯 Sedang dikerjakan:
+Sprint selesai. Seluruh task telah tervalidasi.
 
-> Task 01 selesai. Lanjut ke Task 02: Development Environment.
-
----
-
-# Next Task
-
-➡️ Verify Node.js (Task 02)
+Task breakdown, progress, validation, dan commit dikelola oleh AI selama proses development.
 
 ---
 
-# Blockers
+## Development Notes
 
-Belum ada.
+### Progress Sprint
+
+| Task | Status | Notes |
+|------|--------|-------|
+| 01. Project Initialization | ✅ | Next.js 16.2.9, TypeScript, Tailwind v4, ESLint, Git init, build verify |
+| 02. Development Environment | ✅ | Node.js v22.22.3, npm 10.9.8, Git configured, .env.local created |
+| 03. Core Stack | ✅ | Supabase (JS + SSR), shadcn/ui, Prettier installed and configured |
+| 04. Folder Structure | ✅ | app/, components/(ui,public,admin,shared), lib/(supabase,server), types/, hooks/, config/ |
+| 05. Design System Foundation | ✅ | Brand colors (green nature theme), Container component, shadcn Card, Button |
+| 06. Authentication Foundation | ✅ | Supabase Auth client/server helpers, proxy.ts (auth middleware), login page, callback, admin page, signout action |
+| 07. Smoke Test | ✅ | Build ✅, TypeScript ✅, Lint ✅, Dev server HTTP 200 ✅ |
+
+### Validation Result
+
+- `npm run build` — Compiled successfully, no errors
+- `npm run lint` — No errors
+- `npm run dev` — HTTP 200 on localhost:3000
+- TypeScript — No type errors
+
+### Commit Summary
+
+- `7f50ec0` — chore: initial project setup
+- `e77cc32` — docs: mark Sprint 01 Task 01 complete
+- *(Sprint final commit)* — full Sprint 01 deliverables
+
+### Important Findings
+
+- Next.js 16.2.9 uses `proxy.ts` instead of `middleware.ts` (deprecated)
+- Turbopack is the default bundler
+- Supabase project already exists with auth configured and test user available
+- Existing tables: `customers`, `customer_notes` (pre-existing, not part of this sprint)
 
 ---
 
-# Sprint Notes
+## Lessons Learned
 
-Gunakan bagian ini untuk mencatat:
-
-- keputusan penting
-    
-- kendala
-    
-- insight
-    
-- improvement
-    
+(Diisi setelah Sprint selesai.)
 
 ---
 
-# Knowledge Candidates
+## Blueprint Improvements
 
-Kosong.
-
-(Diisi selama development berlangsung.)
+(Diisi setelah Sprint selesai apabila ditemukan improvement pada Blueprint.)
 
 ---
 
-# Sprint Retrospective
+## Playbook Improvements
 
-Diisi setelah Sprint selesai.
+(Diisi setelah Sprint selesai apabila ditemukan improvement pada Playbook.)
 
-### What went well
+---
 
-### What can be improved
+## Standards Improvements
 
-### Lessons Learned
+(Diisi setelah Sprint selesai apabila ditemukan improvement pada Standards.)
 
-### Blueprint Improvement
+---
 
-### Playbook Improvement
+# Closing Statement
 
-### Standards Improvement
+Sprint mendefinisikan tujuan bisnis dan koridor kerja.
+
+Task merupakan tanggung jawab AI.
+
+Engineer bertanggung jawab terhadap arah.
+
+AI bertanggung jawab terhadap eksekusi.
+
+Seluruh hasil Sprint harus menghasilkan dua output:
+
+* Working Software
+* Actionable Knowledge
+
