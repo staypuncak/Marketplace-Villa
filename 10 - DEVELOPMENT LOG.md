@@ -17,7 +17,7 @@
 ```text
 ████████░░░░░░░░░░░░░░░░░░░░
 
-Progress : 0%
+Progress : 8%
 ```
 
 ---
@@ -26,15 +26,15 @@ Progress : 0%
 
 ## 1. Project Initialization
 
-**Status:** ⬜ Not Started
+**Status:** ✅ Completed
 
 ### Tasks
 
--  Create Git Repository
+-  ✅ Create Git Repository
     
--  Create Next.js Project
+-  ✅ Create Next.js Project
     
--  Initial Commit
+-  ✅ Initial Commit
     
 
 ---
@@ -180,13 +180,13 @@ Sprint dianggap selesai apabila:
 
 🎯 Sedang dikerjakan:
 
-> Belum dimulai
+> Task 01 selesai. Lanjut ke Task 02: Development Environment.
 
 ---
 
 # Next Task
 
-➡️ Create Git Repository
+➡️ Verify Node.js (Task 02)
 
 ---
 
