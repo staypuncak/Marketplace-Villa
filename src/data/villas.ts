@@ -11,6 +11,7 @@ export const villas: Villa[] = [
     capacity: 10,
     location: 'Cisarua, Puncak',
     image: '/images/villa-puncak-indah.jpg',
+    facilities: ['Kolam Renang', 'Taman', 'Parkir Luas', 'Dapur', 'WiFi'],
     status: 'active',
   },
   {
@@ -23,6 +24,7 @@ export const villas: Villa[] = [
     capacity: 16,
     location: 'Megamendung, Puncak',
     image: '/images/villa-bukit-respati.jpg',
+    facilities: ['Kolam Renang', 'Aula', 'Parkir Luas', 'Dapur', 'WiFi', 'Karaoke'],
     status: 'active',
   },
   {
@@ -35,6 +37,7 @@ export const villas: Villa[] = [
     capacity: 8,
     location: 'Tugu Selatan, Puncak',
     image: '/images/villa-cloud-nine.jpg',
+    facilities: ['Fireplace', 'Spa', 'Taman', 'Dapur', 'WiFi', 'AC'],
     status: 'active',
   },
   {
@@ -47,6 +50,7 @@ export const villas: Villa[] = [
     capacity: 6,
     location: 'Pacet, Puncak',
     image: '/images/villa-alam-asri.jpg',
+    facilities: ['Taman', 'Dapur', 'Parkir', 'WiFi'],
     status: 'active',
   },
   {
@@ -59,6 +63,11 @@ export const villas: Villa[] = [
     capacity: 25,
     location: 'Cipanas, Puncak',
     image: '/images/villa-mountain-view.jpg',
+    facilities: ['Kolam Renang', 'Aula Besar', 'Taman', 'Dapur', 'Parkir Luas', 'WiFi', 'AC', 'Karaoke'],
     status: 'active',
   },
 ]
+
+export function getVillaBySlug(slug: string): Villa | undefined {
+  return villas.find((villa) => villa.slug === slug)
+}

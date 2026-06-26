@@ -7,5 +7,6 @@ export type Villa = {
   capacity: number
   location: string
   image: string
+  facilities: string[]
   status: 'active' | 'inactive' | 'draft'
 }

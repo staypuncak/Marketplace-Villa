@@ -246,7 +246,79 @@ The website begins showing the core product of StayPuncak: villas.
 ## Commit
 
 ```
-9a98bf3 feat: Sprint 02 — villa catalog foundation
+4ce4f8c feat: Sprint 02 — villa catalog foundation
+```
+
+---
+
+# Sprint 03 — Villa Detail Experience
+
+**Status:** ✅ Completed
+
+**Last Updated:** 2026-06-26
+
+---
+
+## Sprint Goal
+
+Create a public villa detail experience so users can open a villa from the catalog and view complete villa information.
+
+---
+
+## Business Value
+
+Users can evaluate a villa before contacting StayPuncak.
+
+---
+
+## Scope
+
+* Dynamic villa detail route using slug
+* Helper to get villa by slug
+* VillaCard links to detail page
+* Villa name, location, price, capacity, description, facilities
+* Static data only
+* Existing design system components
+
+---
+
+## Out of Scope
+
+* Database integration
+* Admin CRUD
+* WhatsApp booking logic
+* SEO implementation
+* Payment
+* Availability calendar
+
+---
+
+## Progress Sprint
+
+| Task | Status | Notes |
+|------|--------|-------|
+| 01. Villa Type Update | ✅ | Added `facilities: string[]` to Villa type |
+| 02. Static Data Update | ✅ | Added facilities array to all 5 villas + `getVillaBySlug` helper |
+| 03. Villa Detail Route | ✅ | `src/app/villa/[slug]/page.tsx` — dynamic SSG route with `generateStaticParams` |
+| 04. VillaCard Link | ✅ | Cards now link to `/villa/[slug]` with hover shadow |
+| 05. Not-Found Handling | ✅ | 404 page for invalid slugs, verified HTTP 404 response |
+| 06. Validation | ✅ | Build ✅ Lint ✅ TypeScript ✅ — 5 SSG villa pages, 404 for missing slugs |
+
+## Routes Added
+
+| Route | Type | Status |
+|-------|------|--------|
+| `/villa/villa-puncak-indah` | SSG | ✅ |
+| `/villa/villa-bukit-respati` | SSG | ✅ |
+| `/villa/villa-cloud-nine` | SSG | ✅ |
+| `/villa/villa-alam-asri` | SSG | ✅ |
+| `/villa/villa-mountain-view` | SSG | ✅ |
+| `/villa/tidak-ada` (any invalid slug) | 404 | ✅ |
+
+## Commit
+
+```
+97f5f43 feat: Sprint 03 — villa detail experience
 ```
 
 # Closing Statement
