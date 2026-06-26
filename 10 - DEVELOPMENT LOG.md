@@ -190,6 +190,65 @@ Task breakdown, progress, validation, dan commit dikelola oleh AI selama proses 
 
 ---
 
+---
+
+# Sprint 02 — Villa Catalog Foundation
+
+**Status:** ✅ Completed
+
+**Last Updated:** 2026-06-26
+
+---
+
+## Sprint Goal
+
+Build the first public villa catalog foundation so users can see a list of villas using static placeholder data.
+
+---
+
+## Business Value
+
+The website begins showing the core product of StayPuncak: villas.
+
+---
+
+## Scope
+
+* Villa data type
+* Static placeholder villa data
+* Reusable VillaCard component
+* Villa listing on homepage
+* Uses existing design system only
+
+---
+
+## Out of Scope
+
+* Database integration
+* Admin CRUD
+* Booking logic
+* WhatsApp logic
+* SEO implementation
+* Authentication changes
+
+---
+
+## Progress Sprint
+
+| Task | Status | Notes |
+|------|--------|-------|
+| 01. Villa Type | ✅ | `src/types/villa.ts` — based on Database doc (name, slug, description, price, capacity, location, image, status) |
+| 02. Static Data | ✅ | `src/data/villas.ts` — 5 sample villas in Puncak area |
+| 03. VillaCard Component | ✅ | `src/components/public/villa-card.tsx` — uses shadcn Card, IDR price formatting |
+| 04. Homepage Catalog | ✅ | Hero section + responsive grid (1/2/3 cols) of VillaCards |
+| 05. Validation | ✅ | Build ✅ | Lint ✅ | TypeScript ✅ | Dev server renders villa names ✅ |
+
+## Commit
+
+```
+9a98bf3 feat: Sprint 02 — villa catalog foundation
+```
+
 # Closing Statement
 
 Sprint mendefinisikan tujuan bisnis dan koridor kerja.
