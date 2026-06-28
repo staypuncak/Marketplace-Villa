@@ -26,9 +26,8 @@ export async function proxy(request: NextRequest) {
     },
   )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data } = await supabase.auth.getClaims()
+  const user = data?.claims ? { id: data.claims.sub } : null
 
   const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
   const isAuthRoute = request.nextUrl.pathname.startsWith('/auth')

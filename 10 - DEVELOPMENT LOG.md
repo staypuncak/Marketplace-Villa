@@ -2,7 +2,7 @@
 
 **Project:** StayPuncak.com
 
-**Version:** 2.1.0
+**Version:** 2.1.1
 
 ---
 
@@ -470,7 +470,45 @@ b4432ae infra: switch to official StayPuncak infrastructure
 
 ---
 
-Sprint mendefinisikan tujuan bisnis dan koridor kerja.
+# Hotfix — Proxy `getUser()` → `getClaims()`
+
+**Status:** ✅ Deployed
+
+**Date:** 2026-06-28
+
+---
+
+## Problem
+
+Production deploy returned **500 Internal Server Error** on all routes, including `/`.
+
+Vercel logs: "Middleware 500" with "No outgoing external API requests".
+
+## Root Cause
+
+`src/proxy.ts` called `supabase.auth.getUser()` on **every request**. In Vercel's Edge Runtime, `getUser()` makes a network request to Supabase Auth API. When this call fails (timeout, DNS, or connectivity issue), the entire proxy crashes with a 500 — even for public pages that don't need auth.
+
+## Fix
+
+Replaced `getUser()` with `supabase.auth.getClaims()`:
+
+- `getClaims()` validates the JWT **locally** via WebCrypto API
+- **Zero network calls** — works in Edge Runtime without Supabase Auth connectivity
+- Public pages (`/`, `/villa/*`) no longer trigger auth checks that can fail
+- `/admin` remains protected
+
+## Validation
+
+| Check | Result |
+|-------|--------|
+| `npm run build` | ✅ Compiled — 12 static pages + proxy |
+| `npm run lint` | ✅ No errors |
+
+## Commit
+
+```
+<commit-hash> fix: replace getUser() with getClaims() in proxy to prevent 500 on public routes
+```
 
 Task merupakan tanggung jawab AI.
 
