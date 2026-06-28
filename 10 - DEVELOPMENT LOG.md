@@ -507,7 +507,7 @@ Replaced `getUser()` with `supabase.auth.getClaims()`:
 ## Commit
 
 ```
-<commit-hash> fix: replace getUser() with getClaims() in proxy to prevent 500 on public routes
+5f2fd9e fix: replace getUser() with getClaims() in proxy to prevent 500 on public routes
 ```
 
 Task merupakan tanggung jawab AI.
