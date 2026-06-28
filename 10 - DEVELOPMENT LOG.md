@@ -2,7 +2,7 @@
 
 **Project:** StayPuncak.com
 
-**Version:** 2.0.0
+**Version:** 2.1.0
 
 ---
 
@@ -400,12 +400,75 @@ Detail: {pageUrl}
 ## Commit
 
 ```
-18bc2fe feat: Sprint 04 — WhatsApp booking foundation
+47cdd77 feat: Sprint 04 — WhatsApp booking foundation
 ```
 
 ---
 
-# Closing Statement
+# Infrastructure Switch — Official Infrastructure Migration
+
+**Status:** ✅ Completed
+
+**Date:** 2026-06-28
+
+---
+
+## Mission
+
+Replace temporary development infrastructure with official StayPuncak infrastructure.
+
+---
+
+## Changes Made
+
+### Supabase
+
+| Item | Before | After |
+|------|--------|-------|
+| `.env.local` — URL | `https://hisyyiiorextnmplcesg.supabase.co` (Mini CRM) | `https://ypofadoecoreanwppmyt.supabase.co` (Official StayPuncak) |
+| `.env.local` — Key | `eyJ...` (legacy anon key) | `sb_publishable_...` (publishable key) |
+| `.env.example` | 2 vars (no `NEXT_PUBLIC_SITE_URL`) | 3 vars (added `NEXT_PUBLIC_SITE_URL`) |
+
+### GitHub
+
+| Item | Before | After |
+|------|--------|-------|
+| Remote | None | `https://github.com/staypuncak/Marketplace-Villa.git` |
+| Branch | Local `master` only | Remote configured (push deferred to human) |
+
+### Vercel
+
+| Item | Status |
+|------|--------|
+| `vercel.json` | Not needed — Next.js auto-detected by Vercel |
+| Deploy | Deferred — waiting for human confirmation |
+| Required env vars | Listed below |
+
+---
+
+## Required Vercel Environment Variables
+
+| Variable | Value | Source |
+|----------|-------|--------|
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://ypofadoecoreanwppmyt.supabase.co` | Official Supabase project |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `sb_publishable_mk5jybAJsyNPuuJ3x3cCFg_v9bsucLZ` | Official Supabase project |
+| `NEXT_PUBLIC_SITE_URL` | `https://staypuncak.com` (once domain is live) | `src/config/site.ts` |
+
+---
+
+## Validation Result
+
+- `npm run build` — ✅ Compiled successfully (12 static pages)
+- `npm run lint` — ✅ No errors
+- Secrets committed — ✅ None (`.env.local` remains in `.gitignore`; `.env.example` has placeholders only)
+
+## Commit
+
+```
+9bb858d infra: switch to official StayPuncak infrastructure
+```
+
+---
 
 Sprint mendefinisikan tujuan bisnis dan koridor kerja.
 
