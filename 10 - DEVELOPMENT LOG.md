@@ -510,6 +510,10 @@ Replaced `getUser()` with `supabase.auth.getClaims()`:
 5f2fd9e fix: replace getUser() with getClaims() in proxy to prevent 500 on public routes
 ```
 
+---
+
+Sprint mendefinisikan tujuan bisnis dan koridor kerja.
+
 Task merupakan tanggung jawab AI.
 
 Engineer bertanggung jawab terhadap arah.
