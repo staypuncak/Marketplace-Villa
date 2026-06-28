@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Container } from '@/components/shared/container'
 import { BookingWidget } from '@/components/public/booking-widget'
-import { villas, getVillaBySlug } from '@/data/villas'
+import { getAllVillas, getVillaBySlug } from '@/lib/supabase/queries'
 import type { Metadata } from 'next'
 
 function formatPrice(price: number) {
@@ -14,7 +14,8 @@ function formatPrice(price: number) {
   }).format(price)
 }
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const villas = await getAllVillas()
   return villas.map((villa) => ({ slug: villa.slug }))
 }
 
@@ -24,7 +25,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const villa = getVillaBySlug(slug)
+  const villa = await getVillaBySlug(slug)
 
   if (!villa) return {}
 
@@ -36,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function VillaDetailPage({ params }: Props) {
   const { slug } = await params
-  const villa = getVillaBySlug(slug)
+  const villa = await getVillaBySlug(slug)
 
   if (!villa) {
     notFound()

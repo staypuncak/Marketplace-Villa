@@ -1,8 +1,10 @@
 import { Container } from '@/components/shared/container'
 import { VillaCard } from '@/components/public/villa-card'
-import { villas } from '@/data/villas'
+import { getAllVillas } from '@/lib/supabase/queries'
 
-export default function Home() {
+export default async function Home() {
+  const villas = await getAllVillas()
+
   return (
     <>
       <section className="flex min-h-[50vh] items-center justify-center bg-gradient-to-b from-brand/5 to-background">

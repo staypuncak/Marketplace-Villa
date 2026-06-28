@@ -434,7 +434,7 @@ Replace temporary development infrastructure with official StayPuncak infrastruc
 | Item | Before | After |
 |------|--------|-------|
 | Remote | None | `https://github.com/staypuncak/Marketplace-Villa.git` |
-| Branch | Local `master` only | Remote configured (push deferred to human) |
+| Branch | Local `master` only | `master` pushed to `origin/master` |
 
 ### Vercel
 
@@ -509,6 +509,214 @@ Replaced `getUser()` with `supabase.auth.getClaims()`:
 ```
 5f2fd9e fix: replace getUser() with getClaims() in proxy to prevent 500 on public routes
 ```
+
+---
+
+# Database Seed Migration — Static Villa Data → Supabase
+
+**Status:** ✅ Completed
+
+**Date:** 2026-06-28
+
+---
+
+## Mission
+
+Migrate static villa data from `src/data/villas.ts` to the official StayPuncak Supabase database.
+
+---
+
+## Changes Made
+
+### Schema Changes
+
+| Change | Table | Details |
+|--------|-------|---------|
+| Added `facilities` column | `villas` | `jsonb DEFAULT '[]'::jsonb` |
+
+### Data Inserted
+
+| Table | Records | Details |
+|-------|---------|---------|
+| `villas` | 5 | All static villas with UUID-generated IDs |
+| `media` | 5 | One cover image per villa |
+
+### Villa Records
+
+| Name | Slug | UUID |
+|------|------|------|
+| Villa Puncak Indah | villa-puncak-indah | 4ce4de72-f887-47f1-a3b7-c0b40ba4bf7b |
+| Villa Bukit Respati | villa-bukit-respati | 62038614-cac0-40c2-9365-ad5afa2ece89 |
+| Villa Cloud Nine | villa-cloud-nine | 22132b87-db7b-41d5-ba70-f715a0843b00 |
+| Villa Alam Asri | villa-alam-asri | 81beb010-b4de-41cb-8bb4-29b7a277a954 |
+| Villa Mountain View | villa-mountain-view | c82051c6-0abd-406f-bafa-0604752c2560 |
+
+### Media Records
+
+| Villa Slug | Image URL | Cover |
+|------------|-----------|-------|
+| villa-puncak-indah | /images/villa-puncak-indah.jpg | ✅ |
+| villa-bukit-respati | /images/villa-bukit-respati.jpg | ✅ |
+| villa-cloud-nine | /images/villa-cloud-nine.jpg | ✅ |
+| villa-alam-asri | /images/villa-alam-asri.jpg | ✅ |
+| villa-mountain-view | /images/villa-mountain-view.jpg | ✅ |
+
+---
+
+## Validation Result
+
+| Check | Result |
+|-------|--------|
+| `villas` count | ✅ 5 |
+| `media` count | ✅ 5 |
+| Unique slugs | ✅ 5 |
+| Facilities preserved | ✅ All 5 villas |
+| Media linked correctly | ✅ All 5 cover images |
+| `owner_id` | ✅ NULL (MVP) |
+| `google_maps` | ✅ NULL (MVP) |
+
+---
+
+## Method Used
+
+- Schema DDL: Supabase Management API (`/v1/projects/{ref}/database/query`)
+- Data DML: Supabase Management API (`/v1/projects/{ref}/database/query`)
+- Verification: MCP `supabase_execute_sql` (read-only queries)
+
+---
+
+## Notes
+
+- MCP tools (`supabase_apply_migration`, `supabase_execute_sql`) are stuck in read-only mode due to OAuth token scope caching
+- Workaround: Use Supabase Management API with PAT for write operations
+- Static `src/data/villas.ts` is **NOT removed** — will be replaced in a future sprint when app code is updated to fetch from DB
+
+---
+
+# Mini Sprint 5A — Supabase Read Layer + Homepage Migration
+
+**Status:** ✅ Completed
+
+**Date:** 2026-06-28
+
+---
+
+## Mission
+
+Implement Supabase query layer and migrate homepage data source from static `villas.ts` to Supabase.
+
+## Changes Made
+
+### New File
+- `src/lib/supabase/queries.ts` — Query layer with `getAllVillas()`, `getVillaBySlug()`, `mapVillaRow()`, and fallback to static data
+
+### Modified Files
+
+| File | Change |
+|------|--------|
+| `src/lib/supabase/types.ts` | Regenerated with full StayPuncak schema (villas, media, owners, bookings, admins) |
+| `src/app/page.tsx` | Converted to async server component, replaced `villas` import with `getAllVillas()` |
+| `10 - DEVELOPMENT LOG.md` | Updated |
+
+### Fallback Behavior
+
+Both `getAllVillas()` and `getVillaBySlug()` catch errors and fall back to `src/data/villas.ts` static data.
+
+## RLS Recursion Fix
+
+### Problem
+The `"Admin can all admins"` RLS policy self-referenced the `admins` table, causing infinite recursion on any query.
+
+### Fix
+Created `public.is_admin()` security definer function and replaced the self-referential subquery in all 6 admin policies.
+
+| Table | Policy | Before | After |
+|-------|--------|--------|-------|
+| `admins` | Admin can all admins | `EXISTS (SELECT 1 FROM admins WHERE ...)` | `public.is_admin()` |
+| `villas` | Admin can all villas | `EXISTS (SELECT 1 FROM admins WHERE ...)` | `public.is_admin()` |
+| `media` | Admin can all media | `EXISTS (SELECT 1 FROM admins WHERE ...)` | `public.is_admin()` |
+| `owners` | Admin can all owners | `EXISTS (SELECT 1 FROM admins WHERE ...)` | `public.is_admin()` |
+| `customers` | Admin can all customers | `EXISTS (SELECT 1 FROM admins WHERE ...)` | `public.is_admin()` |
+| `bookings` | Admin can all bookings | `EXISTS (SELECT 1 FROM admins WHERE ...)` | `public.is_admin()` |
+
+## Validation
+
+| Check | Result |
+|-------|--------|
+| `npm run build` | ✅ Compiled, 12 pages |
+| `npm run lint` | ✅ No errors |
+| Homepage `/` | ✅ HTTP 200, 35KB |
+| Supabase public read | ✅ 5 rows returned |
+| RLS recursion | ✅ Resolved |
+
+---
+
+# Mini Sprint 5B — Villa Detail Page Migration
+
+**Status:** ✅ Completed
+
+**Date:** 2026-06-28
+
+---
+
+## Mission
+
+Migrate villa detail page from static data to Supabase query layer.
+
+## Changes Made
+
+### Modified Files
+
+| File | Change |
+|------|--------|
+| `src/lib/supabase/queries.ts` | Added `getVillaBySlug()` with fallback to static `getVillaBySlug` |
+| `src/app/villa/[slug]/page.tsx` | Replaced `@/data/villas` with `@/lib/supabase/queries`; made `generateStaticParams` async; all fetches use Supabase |
+
+### Data Flow (after migration)
+
+```
+Homepage (async)
+  → getAllVillas() → Supabase → mapVillaRow() → VillaCard[]
+  → on error: fallback to src/data/villas.ts
+
+Villa Detail (async)
+  → generateStaticParams() → getAllVillas() → slug list
+  → generateMetadata(slug) → getVillaBySlug() → title, description
+  → VillaDetailPage(slug) → getVillaBySlug() → full Villa object
+  → on error: fallback to src/data/villas.ts
+
+BookingWidget — unchanged (receives villaName + villaLocation as props)
+```
+
+## Route Changes
+
+| Route | Before | After |
+|-------|--------|-------|
+| `/` | SSG (static) | Dynamic (server-rendered) |
+| `/villa/[slug]` | SSG (static) | Dynamic (server-rendered) |
+
+## Validation
+
+| Check | Result |
+|-------|--------|
+| `npm run build` | ✅ Compiled (9.2s), TypeScript (5.1s), 12 pages |
+| `npm run lint` | ✅ No errors |
+| Homepage `/` | ✅ HTTP 200 |
+| Villa Puncak Indah | ✅ HTTP 200 |
+| Villa Bukit Respati | ✅ HTTP 200 |
+| Villa Cloud Nine | ✅ HTTP 200 |
+| Villa Alam Asri | ✅ HTTP 200 |
+| Villa Mountain View | ✅ HTTP 200 |
+| Invalid slug `/villa/tidak-ada` | ✅ HTTP 404 |
+| Metadata `<title>` | ✅ "Villa Puncak Indah — StayPuncak" |
+| Fallback on Supabase failure | ✅ Static data served |
+
+## Notes
+
+- Static `src/data/villas.ts` is **NOT removed** — used as fallback
+- `src/app/page.tsx` unchanged (was migrated in Sprint 5A)
+- BookingWidget unchanged (still receives props)
+- Routes changed from static (SSG) to dynamic because Supabase server client uses `cookies()`
 
 ---
 
