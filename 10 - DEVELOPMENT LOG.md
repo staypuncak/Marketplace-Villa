@@ -465,7 +465,7 @@ Replace temporary development infrastructure with official StayPuncak infrastruc
 ## Commit
 
 ```
-9bb858d infra: switch to official StayPuncak infrastructure
+b4432ae infra: switch to official StayPuncak infrastructure
 ```
 
 ---
