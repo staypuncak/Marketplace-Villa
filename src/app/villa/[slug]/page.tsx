@@ -1,8 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Container } from '@/components/shared/container'
-import { buttonVariants } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { BookingWidget } from '@/components/public/booking-widget'
 import { villas, getVillaBySlug } from '@/data/villas'
 import type { Metadata } from 'next'
 
@@ -97,16 +96,10 @@ export default async function VillaDetailPage({ params }: Props) {
             </div>
           </div>
 
-          <a
-            href={`https://wa.me/?text=${encodeURIComponent(
-              `Halo, saya ingin booking ${villa.name} (${villa.location})`,
-            )}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(buttonVariants({ variant: 'default' }), 'mt-auto w-full')}
-          >
-            Booking via WhatsApp
-          </a>
+          <BookingWidget
+            villaName={villa.name}
+            villaLocation={villa.location}
+          />
         </div>
       </div>
     </Container>

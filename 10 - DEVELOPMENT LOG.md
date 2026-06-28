@@ -318,8 +318,92 @@ Users can evaluate a villa before contacting StayPuncak.
 ## Commit
 
 ```
-97f5f43 feat: Sprint 03 — villa detail experience
+337580d feat: Sprint 03 — villa detail experience
 ```
+
+---
+
+# Sprint 04 — WhatsApp Booking Foundation
+
+**Status:** ✅ Completed
+
+**Last Updated:** 2026-06-28
+
+---
+
+## Sprint Goal
+
+Build the WhatsApp booking foundation for villa detail pages.
+
+---
+
+## Business Value
+
+Visitors can send a structured booking inquiry to StayPuncak admin via WhatsApp.
+
+---
+
+## Scope
+
+- Check-in and check-out date inputs on villa detail page
+- Booking CTA button
+- WhatsApp message containing villa name, check-in date, check-out date, and villa detail URL
+
+---
+
+## Out of Scope
+
+- No online checkout
+- No payment gateway
+- No database booking record
+- No availability checking
+- No admin CRUD
+- No SEO expansion beyond existing metadata
+
+---
+
+## Progress Sprint
+
+| Task | Status | Notes |
+|------|--------|-------|
+| 01. BookingWidget Component | ✅ | `src/components/public/booking-widget.tsx` — client component with date inputs, WhatsApp message generation, and booking CTA |
+| 02. Villa Detail Integration | ✅ | Replaced static WhatsApp link in `src/app/villa/[slug]/page.tsx` with interactive BookingWidget |
+| 03. WhatsApp Message | ✅ | Structured message includes villa name, location, check-in, check-out, and page URL |
+| 04. Validation | ✅ | Build ✅ Lint ✅ Dev server HTTP 200 on / and /villa/[slug] ✅ |
+
+## Files Changed
+
+| File | Action |
+|------|--------|
+| `src/components/public/booking-widget.tsx` | **Created** — Booking widget with date inputs and WhatsApp CTA |
+| `src/app/villa/[slug]/page.tsx` | **Modified** — Replaced static WhatsApp link with BookingWidget |
+
+## WhatsApp Message Format
+
+```
+Halo, saya ingin booking {villaName} ({villaLocation})
+
+Check-in: {checkIn}
+Check-out: {checkOut}
+Detail: {pageUrl}
+```
+
+- Date fields included only if user has selected them
+- Page URL is captured via `window.location.href` on component mount
+
+## Validation Result
+
+- `npm run build` — Compiled successfully, no errors (12 static pages)
+- `npm run lint` — No errors
+- `npm run dev` — HTTP 200 on / and /villa/villa-puncak-indah
+
+## Commit
+
+```
+18bc2fe feat: Sprint 04 — WhatsApp booking foundation
+```
+
+---
 
 # Closing Statement
 
