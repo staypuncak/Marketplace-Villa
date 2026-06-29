@@ -23,26 +23,44 @@ function mapVillaRow(row: VillaWithMedia): Villa {
   }
 }
 
-export async function getAllVillas(): Promise<Villa[]> {
+function filterVillasBySearch(villas: Villa[], search?: string): Villa[] {
+  if (!search) return villas
+  const q = search.toLowerCase()
+  return villas.filter(
+    (v) =>
+      v.name.toLowerCase().includes(q) ||
+      v.location.toLowerCase().includes(q) ||
+      v.description.toLowerCase().includes(q),
+  )
+}
+
+export async function getAllVillas(search?: string): Promise<Villa[]> {
   try {
     const supabase = await createClient()
 
-    const { data, error } = await supabase
+    let query = supabase
       .from('villas')
       .select('*, media!inner(*)')
       .eq('status', 'active')
       .eq('media.is_cover', true)
-      .order('name')
+
+    if (search) {
+      query = query.or(
+        `name.ilike.%${search}%,location.ilike.%${search}%,description.ilike.%${search}%`,
+      )
+    }
+
+    const { data, error } = await query.order('name')
 
     if (error || !data) {
       console.error('Supabase getAllVillas error:', error)
-      return fallbackVillas
+      return filterVillasBySearch(fallbackVillas, search)
     }
 
     return (data as unknown as VillaWithMedia[]).map(mapVillaRow)
   } catch (err) {
     console.error('Supabase getAllVillas exception:', err)
-    return fallbackVillas
+    return filterVillasBySearch(fallbackVillas, search)
   }
 }
 

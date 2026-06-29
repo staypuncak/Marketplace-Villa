@@ -1,9 +1,15 @@
 import { Container } from '@/components/shared/container'
 import { VillaCard } from '@/components/public/villa-card'
+import { SearchInput } from '@/components/public/search-input'
 import { getAllVillas } from '@/lib/supabase/queries'
 
-export default async function Home() {
-  const villas = await getAllVillas()
+type Props = {
+  searchParams: Promise<{ q?: string }>
+}
+
+export default async function Home({ searchParams }: Props) {
+  const { q } = await searchParams
+  const villas = await getAllVillas(q)
 
   return (
     <>
@@ -20,14 +26,26 @@ export default async function Home() {
 
       <section className="py-16">
         <Container>
-          <h2 className="mb-8 text-2xl font-semibold tracking-tight">
-            Villa Tersedia
-          </h2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {villas.map((villa) => (
-              <VillaCard key={villa.id} villa={villa} />
-            ))}
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Villa Tersedia
+            </h2>
+            <SearchInput defaultValue={q} />
           </div>
+
+          {villas.length === 0 ? (
+            <div className="py-16 text-center">
+              <p className="text-lg text-muted-foreground">
+                Tidak ada villa yang cocok dengan &ldquo;{q}&rdquo;
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {villas.map((villa) => (
+                <VillaCard key={villa.id} villa={villa} />
+              ))}
+            </div>
+          )}
         </Container>
       </section>
     </>
