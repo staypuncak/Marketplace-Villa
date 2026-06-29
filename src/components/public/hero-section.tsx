@@ -135,10 +135,11 @@ export function HeroSection() {
 
         <Container className="relative z-10 flex min-h-[85vh] flex-col justify-center pb-20 pt-28">
           <div className="max-w-2xl">
-            <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Villa Puncak,
+            <h1 className="font-serif text-4xl tracking-tight text-white sm:text-5xl lg:text-6xl">
+              Villa Puncak,{' '}
+              <span className="text-amber-400">Liburan Berkesan</span>
               <br />
-              Liburan Berkesan untuk Anda dan Keluarga Tercinta
+              untuk Anda dan Keluarga Tercinta
             </h1>
             <p className="mt-4 max-w-xl text-lg text-white/90 sm:text-xl">
               Jelajahi pilihan villa di Puncak untuk keluarga, rombongan, hingga gathering. Temukan
@@ -154,16 +155,16 @@ export function HeroSection() {
             </button>
 
             <div className="mt-10 flex flex-col items-center gap-3 sm:mt-12 sm:flex-row sm:flex-wrap sm:gap-x-6">
-              <div className="flex items-center gap-2.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-sm text-white/90 backdrop-blur-md sm:gap-3 sm:px-4 sm:py-2 sm:text-base">
+              <div className="flex items-center gap-2.5 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm text-white/90 backdrop-blur-md sm:gap-3 sm:px-5 sm:py-2.5 sm:text-lg">
                 <BadgeCheck className="size-4 shrink-0 text-amber-400 sm:size-5" />
                 Villa Terverifikasi — Guaranteed Safe
               </div>
-              <div className="flex items-center gap-2.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-sm text-white/90 backdrop-blur-md sm:gap-3 sm:px-4 sm:py-2 sm:text-base">
-                <Tag className="size-4 shrink-0 text-emerald-400 sm:size-5" />
+              <div className="flex items-center gap-2.5 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm text-white/90 backdrop-blur-md sm:gap-3 sm:px-5 sm:py-2.5 sm:text-lg">
+                <Tag className="size-4 shrink-0 text-amber-400 sm:size-5" />
                 Harga Fix — Tanpa Extra Charge
               </div>
-              <div className="flex items-center gap-2.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-sm text-white/90 backdrop-blur-md sm:gap-3 sm:px-4 sm:py-2 sm:text-base">
-                <MessageCircle className="size-4 shrink-0 text-sky-400 sm:size-5" />
+              <div className="flex items-center gap-2.5 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm text-white/90 backdrop-blur-md sm:gap-3 sm:px-5 sm:py-2.5 sm:text-lg">
+                <MessageCircle className="size-4 shrink-0 text-amber-400 sm:size-5" />
                 Booking Mudah — Langsung via WhatsApp
               </div>
             </div>
