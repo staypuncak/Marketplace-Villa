@@ -1,6 +1,6 @@
 import { Container } from '@/components/shared/container'
 import { VillaCard } from '@/components/public/villa-card'
-import Link from 'next/link'
+import { RotateCcw } from 'lucide-react'
 import { SearchInput } from '@/components/public/search-input'
 import { LocationFilter } from '@/components/public/location-filter'
 import { CapacityFilter } from '@/components/public/capacity-filter'
@@ -70,12 +70,15 @@ export default async function Home({ searchParams }: Props) {
                 location={location}
                 capacity={capacity}
               />
-              <Link
-                href="/"
-                className="flex w-full items-center justify-start rounded-lg border border-border bg-background px-3 py-2 text-sm text-muted-foreground hover:text-foreground sm:w-auto"
-              >
-                Reset Filter
-              </Link>
+              <form method="GET" action="/">
+                <button
+                  type="submit"
+                  className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-brand bg-transparent px-3 py-2 text-sm text-brand transition-colors hover:bg-brand hover:text-white sm:w-auto"
+                >
+                  <RotateCcw className="size-4" />
+                  Reset
+                </button>
+              </form>
             </div>
           </div>
 
