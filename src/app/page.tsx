@@ -72,7 +72,7 @@ export default async function Home({ searchParams }: Props) {
               />
               <Link
                 href="/"
-                className="flex w-full items-center justify-center rounded-lg border border-border bg-background px-3 py-2 text-sm text-muted-foreground hover:text-foreground sm:w-auto"
+                className="flex w-full items-center justify-start rounded-lg border border-border bg-background px-3 py-2 text-sm text-muted-foreground hover:text-foreground sm:w-auto"
               >
                 Reset Filter
               </Link>
