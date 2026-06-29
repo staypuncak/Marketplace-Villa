@@ -154,7 +154,7 @@ export function HeroSection() {
               <ArrowDown className="size-4" />
             </button>
 
-            <div className="mt-10 flex flex-col items-center gap-3 sm:mt-12 sm:flex-row sm:flex-wrap sm:gap-x-6">
+            <div className="mt-10 flex flex-col items-start gap-3 sm:mt-12 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6">
               <div className="flex items-center gap-2.5 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm text-white/90 backdrop-blur-md sm:gap-3 sm:px-5 sm:py-2.5 sm:text-lg">
                 <BadgeCheck className="size-4 shrink-0 text-amber-400 sm:size-5" />
                 Villa Terverifikasi — Guaranteed Safe
