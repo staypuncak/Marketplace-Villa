@@ -12,7 +12,7 @@ export function SearchInput({
   sort?: string
 }) {
   return (
-    <form method="GET" className="relative w-full sm:max-w-xs">
+    <form method="GET" className="relative w-full">
       <input type="hidden" name="location" value={selectedLocation ?? ''} />
       <input type="hidden" name="capacity" value={capacity ?? ''} />
       <input type="hidden" name="sort" value={sort ?? ''} />

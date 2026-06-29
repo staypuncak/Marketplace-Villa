@@ -33,38 +33,24 @@ export default async function Home({ searchParams }: Props) {
 
       <section className="py-16">
         <Container>
-          <div className="mb-8">
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-baseline gap-3">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  Villa Tersedia
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  {villas.length} Villa{villas.length > 1 ? '' : ''} Ditemukan
-                </p>
-              </div>
-              {hasFilters && (
-                <Link
-                  href="/"
-                  className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
-                >
-                  Reset Filter
-                </Link>
-              )}
+          <div className="mb-8 space-y-3">
+            <div className="flex items-baseline gap-3">
+              <h2 className="text-2xl font-semibold tracking-tight">
+                Villa Tersedia
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                {villas.length} Villa Ditemukan
+              </p>
             </div>
-            <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-              <PriceSort
-                selectedSort={sort}
-                search={q}
-                location={location}
-                capacity={capacity}
-              />
-              <CapacityFilter
-                selectedCapacity={capacity}
-                search={q}
-                location={location}
-                sort={sort}
-              />
+
+            <SearchInput
+              defaultValue={q}
+              selectedLocation={location}
+              capacity={capacity}
+              sort={sort}
+            />
+
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-row">
               <LocationFilter
                 locations={locations}
                 selectedLocation={location}
@@ -72,12 +58,24 @@ export default async function Home({ searchParams }: Props) {
                 capacity={capacity}
                 sort={sort}
               />
-              <SearchInput
-                defaultValue={q}
-                selectedLocation={location}
-                capacity={capacity}
+              <CapacityFilter
+                selectedCapacity={capacity}
+                search={q}
+                location={location}
                 sort={sort}
               />
+              <PriceSort
+                selectedSort={sort}
+                search={q}
+                location={location}
+                capacity={capacity}
+              />
+              <Link
+                href="/"
+                className="flex w-full items-center justify-center rounded-lg border border-border bg-background px-3 py-2 text-sm text-muted-foreground hover:text-foreground sm:w-auto"
+              >
+                Reset Filter
+              </Link>
             </div>
           </div>
 
