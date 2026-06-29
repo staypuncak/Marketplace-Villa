@@ -1,5 +1,6 @@
 import { Container } from '@/components/shared/container'
 import { VillaCard } from '@/components/public/villa-card'
+import Link from 'next/link'
 import { SearchInput } from '@/components/public/search-input'
 import { LocationFilter } from '@/components/public/location-filter'
 import { CapacityFilter } from '@/components/public/capacity-filter'
@@ -32,11 +33,26 @@ export default async function Home({ searchParams }: Props) {
 
       <section className="py-16">
         <Container>
-          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="text-2xl font-semibold tracking-tight">
-              Villa Tersedia
-            </h2>
-            <div className="flex flex-col gap-2 sm:flex-row">
+          <div className="mb-8">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-baseline gap-3">
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  Villa Tersedia
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {villas.length} Villa{villas.length > 1 ? '' : ''} Ditemukan
+                </p>
+              </div>
+              {hasFilters && (
+                <Link
+                  href="/"
+                  className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                >
+                  Reset Filter
+                </Link>
+              )}
+            </div>
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
               <PriceSort
                 selectedSort={sort}
                 search={q}
