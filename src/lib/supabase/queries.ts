@@ -27,6 +27,7 @@ function filterVillas(
   villas: Villa[],
   search?: string,
   location?: string,
+  capacity?: string,
 ): Villa[] {
   let result = villas
 
@@ -44,10 +45,17 @@ function filterVillas(
     result = result.filter((v) => v.location === location)
   }
 
+  if (capacity) {
+    const min = Number(capacity)
+    if (!isNaN(min) && min > 0) {
+      result = result.filter((v) => v.capacity >= min)
+    }
+  }
+
   return result
 }
 
-export async function getAllVillas(search?: string, location?: string): Promise<Villa[]> {
+export async function getAllVillas(search?: string, location?: string, capacity?: string): Promise<Villa[]> {
   try {
     const supabase = await createClient()
 
@@ -67,17 +75,24 @@ export async function getAllVillas(search?: string, location?: string): Promise<
       query = query.eq('location', location)
     }
 
+    if (capacity) {
+      const min = Number(capacity)
+      if (!isNaN(min) && min > 0) {
+        query = query.gte('capacity', min)
+      }
+    }
+
     const { data, error } = await query.order('name')
 
     if (error || !data) {
       console.error('Supabase getAllVillas error:', error)
-      return filterVillas(fallbackVillas, search, location)
+      return filterVillas(fallbackVillas, search, location, capacity)
     }
 
     return (data as unknown as VillaWithMedia[]).map(mapVillaRow)
   } catch (err) {
     console.error('Supabase getAllVillas exception:', err)
-    return filterVillas(fallbackVillas, search, location)
+    return filterVillas(fallbackVillas, search, location, capacity)
   }
 }
 

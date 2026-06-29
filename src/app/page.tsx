@@ -2,18 +2,19 @@ import { Container } from '@/components/shared/container'
 import { VillaCard } from '@/components/public/villa-card'
 import { SearchInput } from '@/components/public/search-input'
 import { LocationFilter } from '@/components/public/location-filter'
+import { CapacityFilter } from '@/components/public/capacity-filter'
 import { getAllVillas, getLocations } from '@/lib/supabase/queries'
 
 type Props = {
-  searchParams: Promise<{ q?: string; location?: string }>
+  searchParams: Promise<{ q?: string; location?: string; capacity?: string }>
 }
 
 export default async function Home({ searchParams }: Props) {
-  const { q, location } = await searchParams
+  const { q, location, capacity } = await searchParams
   const locations = await getLocations()
-  const villas = await getAllVillas(q, location)
+  const villas = await getAllVillas(q, location, capacity)
 
-  const hasFilters = q || location
+  const hasFilters = q || location || capacity
 
   return (
     <>
@@ -35,12 +36,22 @@ export default async function Home({ searchParams }: Props) {
               Villa Tersedia
             </h2>
             <div className="flex flex-col gap-2 sm:flex-row">
+              <CapacityFilter
+                selectedCapacity={capacity}
+                search={q}
+                location={location}
+              />
               <LocationFilter
                 locations={locations}
                 selectedLocation={location}
                 search={q}
+                capacity={capacity}
               />
-              <SearchInput defaultValue={q} selectedLocation={location} />
+              <SearchInput
+                defaultValue={q}
+                selectedLocation={location}
+                capacity={capacity}
+              />
             </div>
           </div>
 

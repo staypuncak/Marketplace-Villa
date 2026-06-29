@@ -4,14 +4,17 @@ export function LocationFilter({
   locations,
   selectedLocation,
   search,
+  capacity,
 }: {
   locations: string[]
   selectedLocation?: string
   search?: string
+  capacity?: string
 }) {
   return (
     <form method="GET">
       <input type="hidden" name="q" value={search ?? ''} />
+      <input type="hidden" name="capacity" value={capacity ?? ''} />
       <select
         name="location"
         defaultValue={selectedLocation ?? ''}
