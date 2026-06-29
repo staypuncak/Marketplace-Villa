@@ -1,5 +1,6 @@
 import { Container } from '@/components/shared/container'
 import { VillaCard } from '@/components/public/villa-card'
+import { HeroSection } from '@/components/public/hero-section'
 import { RotateCcw } from 'lucide-react'
 import { SearchInput } from '@/components/public/search-input'
 import { LocationFilter } from '@/components/public/location-filter'
@@ -20,18 +21,9 @@ export default async function Home({ searchParams }: Props) {
 
   return (
     <>
-      <section className="flex min-h-[50vh] items-center justify-center bg-gradient-to-b from-brand/5 to-background">
-        <Container className="text-center">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            StayPuncak
-          </h1>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Sewa villa di Puncak Bogor
-          </p>
-        </Container>
-      </section>
+      <HeroSection />
 
-      <section className="py-16">
+      <section id="villa-discovery" className="py-16">
         <Container>
           <div className="mb-8 space-y-3">
             <div className="flex items-baseline gap-3">
