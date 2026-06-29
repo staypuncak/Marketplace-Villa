@@ -39,7 +39,7 @@ export default async function Home({ searchParams }: Props) {
                 Villa Tersedia
               </h2>
               <p className="text-sm text-muted-foreground">
-                {villas.length} Villa Ditemukan
+                Menampilkan {villas.length} Villa
               </p>
             </div>
 
