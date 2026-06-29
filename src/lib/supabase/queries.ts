@@ -23,11 +23,22 @@ function mapVillaRow(row: VillaWithMedia): Villa {
   }
 }
 
+function sortVillas(villas: Villa[], sort?: string): Villa[] {
+  if (sort === 'price_asc') {
+    return [...villas].sort((a, b) => a.price - b.price)
+  }
+  if (sort === 'price_desc') {
+    return [...villas].sort((a, b) => b.price - a.price)
+  }
+  return villas
+}
+
 function filterVillas(
   villas: Villa[],
   search?: string,
   location?: string,
   capacity?: string,
+  sort?: string,
 ): Villa[] {
   let result = villas
 
@@ -52,10 +63,10 @@ function filterVillas(
     }
   }
 
-  return result
+  return sortVillas(result, sort)
 }
 
-export async function getAllVillas(search?: string, location?: string, capacity?: string): Promise<Villa[]> {
+export async function getAllVillas(search?: string, location?: string, capacity?: string, sort?: string): Promise<Villa[]> {
   try {
     const supabase = await createClient()
 
@@ -82,17 +93,25 @@ export async function getAllVillas(search?: string, location?: string, capacity?
       }
     }
 
-    const { data, error } = await query.order('name')
+    if (sort === 'price_asc') {
+      query = query.order('price', { ascending: true })
+    } else if (sort === 'price_desc') {
+      query = query.order('price', { ascending: false })
+    } else {
+      query = query.order('name')
+    }
+
+    const { data, error } = await query
 
     if (error || !data) {
       console.error('Supabase getAllVillas error:', error)
-      return filterVillas(fallbackVillas, search, location, capacity)
+      return filterVillas(fallbackVillas, search, location, capacity, sort)
     }
 
     return (data as unknown as VillaWithMedia[]).map(mapVillaRow)
   } catch (err) {
     console.error('Supabase getAllVillas exception:', err)
-    return filterVillas(fallbackVillas, search, location, capacity)
+    return filterVillas(fallbackVillas, search, location, capacity, sort)
   }
 }
 

@@ -3,18 +3,19 @@ import { VillaCard } from '@/components/public/villa-card'
 import { SearchInput } from '@/components/public/search-input'
 import { LocationFilter } from '@/components/public/location-filter'
 import { CapacityFilter } from '@/components/public/capacity-filter'
+import { PriceSort } from '@/components/public/price-sort'
 import { getAllVillas, getLocations } from '@/lib/supabase/queries'
 
 type Props = {
-  searchParams: Promise<{ q?: string; location?: string; capacity?: string }>
+  searchParams: Promise<{ q?: string; location?: string; capacity?: string; sort?: string }>
 }
 
 export default async function Home({ searchParams }: Props) {
-  const { q, location, capacity } = await searchParams
+  const { q, location, capacity, sort } = await searchParams
   const locations = await getLocations()
-  const villas = await getAllVillas(q, location, capacity)
+  const villas = await getAllVillas(q, location, capacity, sort)
 
-  const hasFilters = q || location || capacity
+  const hasFilters = q || location || capacity || sort
 
   return (
     <>
@@ -36,21 +37,30 @@ export default async function Home({ searchParams }: Props) {
               Villa Tersedia
             </h2>
             <div className="flex flex-col gap-2 sm:flex-row">
+              <PriceSort
+                selectedSort={sort}
+                search={q}
+                location={location}
+                capacity={capacity}
+              />
               <CapacityFilter
                 selectedCapacity={capacity}
                 search={q}
                 location={location}
+                sort={sort}
               />
               <LocationFilter
                 locations={locations}
                 selectedLocation={location}
                 search={q}
                 capacity={capacity}
+                sort={sort}
               />
               <SearchInput
                 defaultValue={q}
                 selectedLocation={location}
                 capacity={capacity}
+                sort={sort}
               />
             </div>
           </div>

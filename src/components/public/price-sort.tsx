@@ -1,35 +1,30 @@
 'use client'
 
-export function LocationFilter({
-  locations,
-  selectedLocation,
+export function PriceSort({
+  selectedSort,
   search,
+  location,
   capacity,
-  sort,
 }: {
-  locations: string[]
-  selectedLocation?: string
+  selectedSort?: string
   search?: string
+  location?: string
   capacity?: string
-  sort?: string
 }) {
   return (
     <form method="GET">
       <input type="hidden" name="q" value={search ?? ''} />
+      <input type="hidden" name="location" value={location ?? ''} />
       <input type="hidden" name="capacity" value={capacity ?? ''} />
-      <input type="hidden" name="sort" value={sort ?? ''} />
       <select
-        name="location"
-        defaultValue={selectedLocation ?? ''}
+        name="sort"
+        defaultValue={selectedSort ?? ''}
         onChange={(e) => e.currentTarget.form?.submit()}
         className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50 sm:w-auto"
       >
-        <option value="">Semua Lokasi</option>
-        {locations.map((loc) => (
-          <option key={loc} value={loc}>
-            {loc}
-          </option>
-        ))}
+        <option value="">Default</option>
+        <option value="price_asc">Termurah</option>
+        <option value="price_desc">Termahal</option>
       </select>
     </form>
   )

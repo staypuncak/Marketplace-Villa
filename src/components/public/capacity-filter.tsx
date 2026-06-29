@@ -15,15 +15,18 @@ export function CapacityFilter({
   selectedCapacity,
   search,
   location,
+  sort,
 }: {
   selectedCapacity?: string
   search?: string
   location?: string
+  sort?: string
 }) {
   return (
     <form method="GET">
       <input type="hidden" name="q" value={search ?? ''} />
       <input type="hidden" name="location" value={location ?? ''} />
+      <input type="hidden" name="sort" value={sort ?? ''} />
       <select
         name="capacity"
         defaultValue={selectedCapacity ?? ''}
