@@ -4,6 +4,19 @@ import { useState } from 'react'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
+function formatDateIndonesian(dateString: string): string {
+  try {
+    const date = new Date(dateString + 'T00:00:00')
+    return new Intl.DateTimeFormat('id-ID', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(date)
+  } catch {
+    return dateString
+  }
+}
+
 type BookingWidgetProps = {
   villaName: string
   villaLocation: string
@@ -12,19 +25,37 @@ type BookingWidgetProps = {
 export function BookingWidget({ villaName, villaLocation }: BookingWidgetProps) {
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
-  const [pageUrl] = useState(() =>
-    typeof window !== 'undefined' ? window.location.href : '',
+
+  const parts = [
+    `Halo Admin StayPuncak 👋`,
+    '',
+    'Saya tertarik untuk booking villa berikut:',
+    '',
+    `🏡 Villa\n${villaName}`,
+    '',
+    `📍 Lokasi\n${villaLocation}`,
+  ]
+
+  if (checkIn) {
+    parts.push('', `📅 Check-in\n${formatDateIndonesian(checkIn)}`)
+  }
+
+  if (checkOut) {
+    parts.push('', `📅 Check-out\n${formatDateIndonesian(checkOut)}`)
+  }
+
+  parts.push(
+    '',
+    'Mohon informasi mengenai:',
+    '',
+    '• Ketersediaan villa',
+    '• Total biaya',
+    '• Cara pembayaran',
+    '',
+    'Terima kasih.',
   )
 
-  const message = [
-    `Halo, saya ingin booking ${villaName} (${villaLocation})`,
-    '',
-    checkIn && `Check-in: ${checkIn}`,
-    checkOut && `Check-out: ${checkOut}`,
-    pageUrl && `Detail: ${pageUrl}`,
-  ]
-    .filter(Boolean)
-    .join('\n')
+  const message = parts.join('\n')
 
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
 
