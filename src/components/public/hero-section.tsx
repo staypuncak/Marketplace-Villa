@@ -34,17 +34,17 @@ export function HeroSection() {
           </Link>
           <button
             onClick={scrollToDiscovery}
-            className="text-sm text-white/70 hover:text-white"
+            className="text-sm text-white/70 hover:text-white sm:text-base"
           >
             Daftar Villa
           </button>
-          <a href="#" className="text-sm text-white/70 hover:text-white">
+          <a href="#" className="text-sm text-white/70 hover:text-white sm:text-base">
             Blog
           </a>
-          <a href="#" className="text-sm text-white/70 hover:text-white">
+          <a href="#" className="text-sm text-white/70 hover:text-white sm:text-base">
             Tentang
           </a>
-          <a href="#" className="text-sm text-white/70 hover:text-white">
+          <a href="#" className="text-sm text-white/70 hover:text-white sm:text-base">
             Kontak
           </a>
         </nav>
@@ -130,7 +130,7 @@ export function HeroSection() {
               theme === 'night' ? 'opacity-100' : 'opacity-0',
             )}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
         </div>
 
         <Container className="relative z-10 flex min-h-[85vh] flex-col justify-center pb-20 pt-28">
@@ -140,7 +140,7 @@ export function HeroSection() {
               <br />
               Liburan Berkesan untuk Anda dan Keluarga Tercinta
             </h1>
-            <p className="mt-4 max-w-xl text-lg text-white/80">
+            <p className="mt-4 max-w-xl text-lg text-white/90 sm:text-xl">
               Jelajahi pilihan villa di Puncak untuk keluarga, rombongan, hingga gathering. Temukan
               pengalaman liburan yang berkesan, cek ketersediaan, dan booking langsung melalui
               WhatsApp.
@@ -153,17 +153,17 @@ export function HeroSection() {
               <ArrowDown className="size-4" />
             </button>
 
-            <div className="mt-12 flex flex-wrap gap-x-8 gap-y-3">
-              <div className="flex items-center gap-2 text-sm text-white/80">
-                <BadgeCheck className="size-5 shrink-0 text-brand" />
+            <div className="mt-10 flex flex-col items-center gap-3 sm:mt-12 sm:flex-row sm:flex-wrap sm:gap-x-6">
+              <div className="flex items-center gap-2.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-sm text-white/90 backdrop-blur-md sm:gap-3 sm:px-4 sm:py-2 sm:text-base">
+                <BadgeCheck className="size-4 shrink-0 text-amber-400 sm:size-5" />
                 Villa Terverifikasi — Guaranteed Safe
               </div>
-              <div className="flex items-center gap-2 text-sm text-white/80">
-                <Tag className="size-5 shrink-0 text-brand" />
+              <div className="flex items-center gap-2.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-sm text-white/90 backdrop-blur-md sm:gap-3 sm:px-4 sm:py-2 sm:text-base">
+                <Tag className="size-4 shrink-0 text-emerald-400 sm:size-5" />
                 Harga Fix — Tanpa Extra Charge
               </div>
-              <div className="flex items-center gap-2 text-sm text-white/80">
-                <MessageCircle className="size-5 shrink-0 text-brand" />
+              <div className="flex items-center gap-2.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-sm text-white/90 backdrop-blur-md sm:gap-3 sm:px-4 sm:py-2 sm:text-base">
+                <MessageCircle className="size-4 shrink-0 text-sky-400 sm:size-5" />
                 Booking Mudah — Langsung via WhatsApp
               </div>
             </div>
