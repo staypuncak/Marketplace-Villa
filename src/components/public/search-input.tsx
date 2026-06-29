@@ -1,8 +1,15 @@
 import { Search } from 'lucide-react'
 
-export function SearchInput({ defaultValue }: { defaultValue?: string }) {
+export function SearchInput({
+  defaultValue,
+  selectedLocation,
+}: {
+  defaultValue?: string
+  selectedLocation?: string
+}) {
   return (
     <form method="GET" className="relative w-full sm:max-w-xs">
+      <input type="hidden" name="location" value={selectedLocation ?? ''} />
       <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
       <input
         type="search"

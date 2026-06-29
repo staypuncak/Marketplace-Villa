@@ -1,15 +1,19 @@
 import { Container } from '@/components/shared/container'
 import { VillaCard } from '@/components/public/villa-card'
 import { SearchInput } from '@/components/public/search-input'
-import { getAllVillas } from '@/lib/supabase/queries'
+import { LocationFilter } from '@/components/public/location-filter'
+import { getAllVillas, getLocations } from '@/lib/supabase/queries'
 
 type Props = {
-  searchParams: Promise<{ q?: string }>
+  searchParams: Promise<{ q?: string; location?: string }>
 }
 
 export default async function Home({ searchParams }: Props) {
-  const { q } = await searchParams
-  const villas = await getAllVillas(q)
+  const { q, location } = await searchParams
+  const locations = await getLocations()
+  const villas = await getAllVillas(q, location)
+
+  const hasFilters = q || location
 
   return (
     <>
@@ -30,13 +34,22 @@ export default async function Home({ searchParams }: Props) {
             <h2 className="text-2xl font-semibold tracking-tight">
               Villa Tersedia
             </h2>
-            <SearchInput defaultValue={q} />
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <LocationFilter
+                locations={locations}
+                selectedLocation={location}
+                search={q}
+              />
+              <SearchInput defaultValue={q} selectedLocation={location} />
+            </div>
           </div>
 
           {villas.length === 0 ? (
             <div className="py-16 text-center">
               <p className="text-lg text-muted-foreground">
-                Tidak ada villa yang cocok dengan &ldquo;{q}&rdquo;
+                {hasFilters
+                  ? 'Tidak ada villa yang cocok dengan filter yang dipilih'
+                  : 'Belum ada villa tersedia'}
               </p>
             </div>
           ) : (
