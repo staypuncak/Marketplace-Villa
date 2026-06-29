@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Sun, Moon, Menu, X, BadgeCheck, Tag, MessageCircle, ArrowDown } from 'lucide-react'
+import { Sun, Moon, Menu, X, BadgeCheck, Tag, MessageCircle, ArrowDown, LogIn } from 'lucide-react'
 import { Container } from '@/components/shared/container'
 import { cn } from '@/lib/utils'
 
@@ -29,7 +29,7 @@ export function HeroSection() {
         </span>
 
         <nav className="hidden items-center gap-6 sm:flex">
-          <Link href="/" className="text-sm font-medium text-white">
+          <Link href="/" className="text-sm text-white/70 hover:text-white sm:text-base">
             Beranda
           </Link>
           <button
@@ -50,19 +50,17 @@ export function HeroSection() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <a
-            href="https://wa.me/"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/auth/login"
             className="hidden items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-sm font-medium text-white hover:bg-brand/90 sm:flex"
           >
-            <MessageCircle className="size-4" />
-            WhatsApp
-          </a>
+            <LogIn className="size-4" />
+            Sign In
+          </Link>
 
           <button
             onClick={toggleTheme}
-            className="rounded-lg border border-white/30 p-2 text-white/70 hover:text-white"
+            className="rounded-lg border border-amber-400/50 p-2 text-amber-400"
             aria-label="Toggle day/night mode"
           >
             {theme === 'day' ? <Moon className="size-4" /> : <Sun className="size-4" />}
@@ -99,15 +97,13 @@ export function HeroSection() {
             <a href="#" className="text-sm text-white/70 hover:text-white">
               Kontak
             </a>
-            <a
-              href="https://wa.me/"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/auth/login"
               className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-sm font-medium text-white"
             >
-              <MessageCircle className="size-4" />
-              WhatsApp
-            </a>
+              <LogIn className="size-4" />
+              Sign In
+            </Link>
           </nav>
         </div>
       )}
