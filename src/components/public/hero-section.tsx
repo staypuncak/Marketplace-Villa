@@ -131,7 +131,7 @@ export function HeroSection() {
 
         <Container className="relative z-10 flex min-h-[85vh] flex-col justify-center pb-20 pt-28">
           <div className="max-w-2xl">
-            <h1 className="font-serif text-xl leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
+            <h1 className="font-serif text-[1.375rem] leading-tight tracking-tighter text-white sm:text-5xl lg:text-6xl">
               Liburan Berkesan di Puncak Lebih Hemat.{' '}
               <span className="text-amber-400">Tanpa Biaya Tambahan!</span>
             </h1>
