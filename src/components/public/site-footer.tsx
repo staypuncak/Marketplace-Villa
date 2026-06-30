@@ -48,7 +48,7 @@ function FacebookIcon() {
   )
 }
 
-export function Footer() {
+export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-black text-white">
       <Container className="py-12 sm:py-16">

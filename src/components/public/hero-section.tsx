@@ -1,114 +1,19 @@
 'use client'
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { Sun, Moon, Menu, X, BadgeCheck, Tag, MessageCircle, ArrowDown, LogIn } from 'lucide-react'
+import { BadgeCheck, Tag, MessageCircle, ArrowDown } from 'lucide-react'
 import { Container } from '@/components/shared/container'
 import { cn } from '@/lib/utils'
-
-type Theme = 'day' | 'night'
+import { useTheme } from '@/lib/theme-context'
 
 export function HeroSection() {
-  const [theme, setTheme] = useState<Theme>('day')
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'day' ? 'night' : 'day'))
-  }
+  const { theme } = useTheme()
 
   const scrollToDiscovery = () => {
-    setMobileMenuOpen(false)
     document.getElementById('villa-discovery')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
-    <>
-      <header className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-4 py-3 sm:px-8">
-        <span className="text-xl font-bold tracking-tight text-white">
-          StayPuncak.com
-        </span>
-
-        <nav className="hidden items-center gap-6 sm:flex">
-          <Link href="/" className="text-sm text-white/70 hover:text-white sm:text-base">
-            Beranda
-          </Link>
-          <button
-            onClick={scrollToDiscovery}
-            className="text-sm text-white/70 hover:text-white sm:text-base"
-          >
-            Daftar Villa
-          </button>
-          <a href="#" className="text-sm text-white/70 hover:text-white sm:text-base">
-            Blog
-          </a>
-          <a href="#" className="text-sm text-white/70 hover:text-white sm:text-base">
-            Tentang
-          </a>
-          <a href="#" className="text-sm text-white/70 hover:text-white sm:text-base">
-            Kontak
-          </a>
-        </nav>
-
-        <div className="flex items-center gap-3">
-          <Link
-            href="/auth/login"
-            className="hidden items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-sm font-medium text-white hover:bg-brand/90 sm:flex"
-          >
-            <LogIn className="size-4" />
-            Sign In
-          </Link>
-
-          <button
-            onClick={toggleTheme}
-            className="rounded-lg border border-amber-400/50 p-2 text-amber-400"
-            aria-label="Toggle day/night mode"
-          >
-            {theme === 'day' ? <Moon className="size-4" /> : <Sun className="size-4" />}
-          </button>
-
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="text-white sm:hidden"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
-          </button>
-        </div>
-      </header>
-
-      {mobileMenuOpen && (
-        <div className="absolute inset-x-0 top-14 z-20 mx-4 rounded-lg border border-white/10 bg-black/80 p-4 backdrop-blur-md sm:hidden">
-          <nav className="flex flex-col gap-4">
-            <Link href="/" className="text-sm font-medium text-white">
-              Beranda
-            </Link>
-            <button
-              onClick={scrollToDiscovery}
-              className="text-left text-sm text-white/70 hover:text-white"
-            >
-              Daftar Villa
-            </button>
-            <a href="#" className="text-sm text-white/70 hover:text-white">
-              Blog
-            </a>
-            <a href="#" className="text-sm text-white/70 hover:text-white">
-              Tentang
-            </a>
-            <a href="#" className="text-sm text-white/70 hover:text-white">
-              Kontak
-            </a>
-            <Link
-              href="/auth/login"
-              className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-sm font-medium text-white"
-            >
-              <LogIn className="size-4" />
-              Sign In
-            </Link>
-          </nav>
-        </div>
-      )}
-
-      <section className="relative min-h-[85vh] overflow-hidden">
+    <section className="relative min-h-[85vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="/images/Background-staypuncak-day.png"
@@ -167,6 +72,5 @@ export function HeroSection() {
           </div>
         </Container>
       </section>
-    </>
   )
 }

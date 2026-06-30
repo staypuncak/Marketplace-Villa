@@ -1,7 +1,6 @@
 import { Container } from '@/components/shared/container'
 import { VillaCard } from '@/components/public/villa-card'
 import { HeroSection } from '@/components/public/hero-section'
-import { Footer } from '@/components/public/footer'
 import { RotateCcw } from 'lucide-react'
 import { SearchInput } from '@/components/public/search-input'
 import { LocationFilter } from '@/components/public/location-filter'
@@ -93,7 +92,6 @@ export default async function Home({ searchParams }: Props) {
         </Container>
       </section>
 
-      <Footer />
     </>
   )
 }
