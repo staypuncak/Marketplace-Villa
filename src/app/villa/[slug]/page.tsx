@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Container } from '@/components/shared/container'
 import { BookingWidget } from '@/components/public/booking-widget'
+import { VillaGallery } from '@/components/public/villa-gallery'
 import { getAllVillas, getVillaBySlug } from '@/lib/supabase/queries'
 import type { Metadata } from 'next'
 
@@ -53,7 +54,16 @@ export default async function VillaDetailPage({ params }: Props) {
       </Link>
 
       <div className="grid gap-8 lg:grid-cols-5">
-        <div className="aspect-[16/9] rounded-xl bg-muted lg:col-span-3" />
+        <VillaGallery
+          images={[
+            '/images/gallery-01.svg',
+            '/images/gallery-02.svg',
+            '/images/gallery-03.svg',
+            '/images/gallery-04.svg',
+            '/images/gallery-05.svg',
+          ]}
+          villaName={villa.name}
+        />
 
         <div className="flex flex-col gap-6 lg:col-span-2">
           <div>
