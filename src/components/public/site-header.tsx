@@ -11,6 +11,7 @@ export function SiteHeader() {
   const { theme, toggleTheme } = useTheme()
   const pathname = usePathname()
   const isHome = pathname === '/'
+  const isBlog = pathname.startsWith('/blog')
 
   const scrollToDiscovery = () => {
     setMobileMenuOpen(false)
@@ -47,9 +48,12 @@ export function SiteHeader() {
               Daftar Villa
             </Link>
           )}
-          <a href="#" className="text-sm text-white/70 hover:text-white sm:text-base">
+          <Link
+            href="/blog"
+            className={`text-sm sm:text-base ${isBlog ? 'text-white' : 'text-white/70 hover:text-white'}`}
+          >
             Blog
-          </a>
+          </Link>
           <a href="#" className="text-sm text-white/70 hover:text-white sm:text-base">
             Tentang
           </a>
@@ -114,9 +118,12 @@ export function SiteHeader() {
                 Daftar Villa
               </Link>
             )}
-            <a href="#" className="text-sm text-white/70 hover:text-white">
+            <Link
+              href="/blog"
+              className={`text-sm ${isBlog ? 'font-medium text-white' : 'text-white/70 hover:text-white'}`}
+            >
               Blog
-            </a>
+            </Link>
             <a href="#" className="text-sm text-white/70 hover:text-white">
               Tentang
             </a>
