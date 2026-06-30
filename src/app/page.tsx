@@ -63,7 +63,7 @@ export default async function Home({ searchParams }: Props) {
                 location={location}
                 capacity={capacity}
               />
-              <form method="GET" action="/">
+              <form method="GET" action="/#villa-discovery">
                 <button
                   type="submit"
                   className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-brand bg-transparent px-3 py-2 text-sm text-brand transition-colors hover:bg-brand hover:text-white sm:w-auto"

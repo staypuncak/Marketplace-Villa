@@ -12,7 +12,7 @@ export function PriceSort({
   capacity?: string
 }) {
   return (
-    <form method="GET">
+    <form method="GET" action="/#villa-discovery">
       <input type="hidden" name="q" value={search ?? ''} />
       <input type="hidden" name="location" value={location ?? ''} />
       <input type="hidden" name="capacity" value={capacity ?? ''} />

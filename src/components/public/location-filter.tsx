@@ -14,7 +14,7 @@ export function LocationFilter({
   sort?: string
 }) {
   return (
-    <form method="GET">
+    <form method="GET" action="/#villa-discovery">
       <input type="hidden" name="q" value={search ?? ''} />
       <input type="hidden" name="capacity" value={capacity ?? ''} />
       <input type="hidden" name="sort" value={sort ?? ''} />
