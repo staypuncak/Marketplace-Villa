@@ -23,7 +23,7 @@ export function SiteHeader() {
         className={
           isHome
             ? 'absolute inset-x-0 top-0 z-20 flex items-center justify-between px-4 py-3 sm:px-8'
-            : 'sticky top-0 z-30 flex items-center justify-between border-b border-white/10 bg-black px-4 py-3 sm:px-8'
+            : 'sticky top-0 z-30 flex items-center justify-between border-b border-white/10 bg-black/30 backdrop-blur-lg px-4 py-3 sm:px-8'
         }
       >
         <span className="text-xl font-bold tracking-tight text-white">
