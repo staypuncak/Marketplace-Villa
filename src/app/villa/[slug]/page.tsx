@@ -53,7 +53,7 @@ export default async function VillaDetailPage({ params }: Props) {
         &larr; Kembali
       </Link>
 
-      <div className="grid gap-8 lg:grid-cols-5">
+      <div className="grid gap-8 overflow-x-hidden sm:overflow-x-visible lg:grid-cols-5">
         <VillaGallery
           images={[
             '/images/gallery-01.svg',

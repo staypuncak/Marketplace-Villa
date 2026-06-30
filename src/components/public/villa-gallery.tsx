@@ -12,7 +12,7 @@ export function VillaGallery({ images, villaName }: VillaGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0)
 
   return (
-    <div className="space-y-3 lg:col-span-3">
+    <div className="min-w-0 space-y-3 lg:col-span-3">
       <div className="aspect-[16/9] overflow-hidden rounded-xl">
         <img
           src={images[activeIndex]}
@@ -42,7 +42,7 @@ export function VillaGallery({ images, villaName }: VillaGalleryProps) {
         ))}
       </div>
 
-      <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:hidden snap-x snap-mandatory scrollbar-hide">
+      <div className="flex gap-3 overflow-x-auto pb-2 sm:hidden snap-x snap-mandatory scrollbar-hide">
         {images.map((src, i) => (
           <button
             key={i}
