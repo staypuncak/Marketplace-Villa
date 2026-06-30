@@ -67,13 +67,15 @@ export function SiteHeader() {
             Sign In
           </Link>
 
-          <button
-            onClick={toggleTheme}
-            className="rounded-lg border border-amber-400/50 p-2 text-amber-400"
-            aria-label="Toggle day/night mode"
-          >
-            {theme === 'day' ? <Moon className="size-4" /> : <Sun className="size-4" />}
-          </button>
+          {isHome && (
+            <button
+              onClick={toggleTheme}
+              className="rounded-lg border border-amber-400/50 p-2 text-amber-400"
+              aria-label="Toggle day/night mode"
+            >
+              {theme === 'day' ? <Moon className="size-4" /> : <Sun className="size-4" />}
+            </button>
+          )}
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
