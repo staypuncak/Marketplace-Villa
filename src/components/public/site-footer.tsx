@@ -50,20 +50,20 @@ function FacebookIcon() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border bg-black text-white">
+    <footer className="border-t border-emerald-800/30 bg-gradient-to-b from-emerald-950 via-emerald-900 to-[#052e16] text-white">
       <Container className="py-12 sm:py-16">
         {/* Mobile layout */}
         <div className="space-y-8 sm:hidden">
           <div>
             <img src="/images/logo-full.png" alt="StayPuncak" className="h-8 w-auto brightness-0 invert" />
-            <p className="mt-3 text-sm leading-relaxed text-white/60">
+            <p className="mt-3 text-sm leading-relaxed text-emerald-200/50">
               Villa pilihan keluarga di Puncak Bogor.
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-white/50">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-emerald-300/40">
                 Navigasi
               </h3>
               <nav className="flex flex-col gap-2.5">
@@ -72,7 +72,7 @@ export function SiteFooter() {
                     <Link
                       key={link.label}
                       href={link.href}
-                      className="text-sm text-white/60 transition-colors hover:text-white"
+                      className="text-sm text-emerald-200/50 transition-colors hover:text-white"
                     >
                       {link.label}
                     </Link>
@@ -80,7 +80,7 @@ export function SiteFooter() {
                     <button
                       key={link.label}
                       onClick={link.action}
-                      className="text-left text-sm text-white/60 transition-colors hover:text-white"
+                      className="text-left text-sm text-emerald-200/50 transition-colors hover:text-white"
                     >
                       {link.label}
                     </button>
@@ -90,19 +90,19 @@ export function SiteFooter() {
             </div>
 
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-white/50">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-emerald-300/40">
                 Kontak
               </h3>
               <ul className="flex flex-col gap-3">
-                <li className="flex items-center gap-2 text-sm text-white/60">
+                <li className="flex items-center gap-2 text-sm text-emerald-200/50">
                   <Phone className="size-4 shrink-0 text-amber-400" />
                   +62 812-3456-7890
                 </li>
-                <li className="flex items-center gap-2 text-sm text-white/60">
+                <li className="flex items-center gap-2 text-sm text-emerald-200/50">
                   <Mail className="size-4 shrink-0 text-amber-400" />
                   info@staypuncak.com
                 </li>
-                <li className="flex items-center gap-2 text-sm text-white/60">
+                <li className="flex items-center gap-2 text-sm text-emerald-200/50">
                   <MapPin className="size-4 shrink-0 text-amber-400" />
                   Puncak Bogor
                 </li>
@@ -111,12 +111,12 @@ export function SiteFooter() {
           </div>
 
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-white/50">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-emerald-300/40">
               Kenapa Memilih Kami
             </h3>
             <ul className="flex flex-col gap-3">
               {trustItems.map((item) => (
-                <li key={item.text} className="flex items-center gap-2 text-sm text-white/60">
+                <li key={item.text} className="flex items-center gap-2 text-sm text-emerald-200/50">
                   <item.icon className="size-4 shrink-0 text-amber-400" />
                   {item.text}
                 </li>
@@ -125,13 +125,13 @@ export function SiteFooter() {
           </div>
 
           <div className="flex items-center justify-center gap-5 pt-1">
-            <a href="#" aria-label="Instagram" className="flex size-10 items-center justify-center text-white/40 transition-colors hover:text-amber-400">
+            <a href="#" aria-label="Instagram" className="flex size-10 items-center justify-center text-emerald-200/30 transition-all duration-200 hover:text-amber-400 hover:scale-110">
               <InstagramIcon />
             </a>
-            <a href="#" aria-label="TikTok" className="flex size-10 items-center justify-center text-white/40 transition-colors hover:text-amber-400">
+            <a href="#" aria-label="TikTok" className="flex size-10 items-center justify-center text-emerald-200/30 transition-all duration-200 hover:text-amber-400 hover:scale-110">
               <TikTokIcon />
             </a>
-            <a href="#" aria-label="Facebook" className="flex size-10 items-center justify-center text-white/40 transition-colors hover:text-amber-400">
+            <a href="#" aria-label="Facebook" className="flex size-10 items-center justify-center text-emerald-200/30 transition-all duration-200 hover:text-amber-400 hover:scale-110">
               <FacebookIcon />
             </a>
           </div>
@@ -141,24 +141,24 @@ export function SiteFooter() {
         <div className="hidden gap-10 sm:grid sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-3">
             <img src="/images/logo-full.png" alt="StayPuncak" className="h-10 w-auto brightness-0 invert" />
-            <p className="text-sm leading-relaxed text-white/60">
+            <p className="text-sm leading-relaxed text-emerald-200/50">
               Villa pilihan keluarga di Puncak Bogor.
             </p>
             <div className="flex gap-3 pt-2">
-              <a href="#" aria-label="Instagram" className="text-white/40 transition-colors hover:text-amber-400">
+              <a href="#" aria-label="Instagram" className="text-emerald-200/30 transition-all duration-200 hover:text-amber-400 hover:scale-110">
                 <InstagramIcon />
               </a>
-              <a href="#" aria-label="TikTok" className="text-white/40 transition-colors hover:text-amber-400">
+              <a href="#" aria-label="TikTok" className="text-emerald-200/30 transition-all duration-200 hover:text-amber-400 hover:scale-110">
                 <TikTokIcon />
               </a>
-              <a href="#" aria-label="Facebook" className="text-white/40 transition-colors hover:text-amber-400">
+              <a href="#" aria-label="Facebook" className="text-emerald-200/30 transition-all duration-200 hover:text-amber-400 hover:scale-110">
                 <FacebookIcon />
               </a>
             </div>
           </div>
 
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-white/50">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-emerald-300/40">
               Navigasi
             </h3>
             <nav className="flex flex-col gap-2">
@@ -167,7 +167,7 @@ export function SiteFooter() {
                   <Link
                     key={link.label}
                     href={link.href}
-                    className="text-sm text-white/60 transition-colors hover:text-white"
+                    className="text-sm text-emerald-200/50 transition-colors hover:text-white"
                   >
                     {link.label}
                   </Link>
@@ -175,7 +175,7 @@ export function SiteFooter() {
                   <button
                     key={link.label}
                     onClick={link.action}
-                    className="text-left text-sm text-white/60 transition-colors hover:text-white"
+                    className="text-left text-sm text-emerald-200/50 transition-colors hover:text-white"
                   >
                     {link.label}
                   </button>
@@ -185,19 +185,19 @@ export function SiteFooter() {
           </div>
 
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-white/50">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-emerald-300/40">
               Kontak
             </h3>
             <ul className="flex flex-col gap-2.5">
-              <li className="flex items-center gap-2 text-sm text-white/60">
+              <li className="flex items-center gap-2 text-sm text-emerald-200/50">
                 <Phone className="size-4 shrink-0 text-amber-400" />
                 +62 812-3456-7890
               </li>
-              <li className="flex items-center gap-2 text-sm text-white/60">
+              <li className="flex items-center gap-2 text-sm text-emerald-200/50">
                 <Mail className="size-4 shrink-0 text-amber-400" />
                 info@staypuncak.com
               </li>
-              <li className="flex items-center gap-2 text-sm text-white/60">
+              <li className="flex items-center gap-2 text-sm text-emerald-200/50">
                 <MapPin className="size-4 shrink-0 text-amber-400" />
                 Puncak Bogor
               </li>
@@ -205,12 +205,12 @@ export function SiteFooter() {
           </div>
 
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-white/50">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-emerald-300/40">
               Kepercayaan
             </h3>
             <ul className="flex flex-col gap-2.5">
               {trustItems.map((item) => (
-                <li key={item.text} className="flex items-center gap-2 text-sm text-white/60">
+                <li key={item.text} className="flex items-center gap-2 text-sm text-emerald-200/50">
                   <item.icon className="size-4 shrink-0 text-amber-400" />
                   {item.text}
                 </li>
@@ -221,9 +221,9 @@ export function SiteFooter() {
       </Container>
 
       {/* Copyright */}
-      <div className="border-t border-white/10">
+      <div className="border-t border-emerald-800/20">
         <Container className="py-5">
-          <p className="text-center text-xs text-white/40">
+          <p className="text-center text-xs text-emerald-200/30">
             &copy; 2026 StayPuncak.com. All rights reserved.
           </p>
         </Container>
