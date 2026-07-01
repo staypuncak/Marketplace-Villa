@@ -28,7 +28,7 @@ export function SiteHeader() {
         }
       >
         <div className="flex items-center gap-2">
-          <img src="/images/logo-mark.png" alt="StayPuncak" className="h-7 w-auto" />
+          <img src="/images/logo-mark.png" alt="StayPuncak" className="h-7 w-auto brightness-0 invert" />
           <span className="text-xl font-bold tracking-tight text-white">
             StayPuncak.com
           </span>

@@ -55,7 +55,7 @@ export function SiteFooter() {
         {/* Mobile layout */}
         <div className="space-y-8 sm:hidden">
           <div>
-            <img src="/images/logo-full.png" alt="StayPuncak" className="h-8 w-auto" />
+            <img src="/images/logo-full.png" alt="StayPuncak" className="h-8 w-auto brightness-0 invert" />
             <p className="mt-3 text-sm leading-relaxed text-white/60">
               Villa pilihan keluarga di Puncak Bogor.
             </p>
@@ -140,7 +140,7 @@ export function SiteFooter() {
         {/* Tablet + Desktop layout (unchanged) */}
         <div className="hidden gap-10 sm:grid sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-3">
-            <img src="/images/logo-full.png" alt="StayPuncak" className="h-10 w-auto" />
+            <img src="/images/logo-full.png" alt="StayPuncak" className="h-10 w-auto brightness-0 invert" />
             <p className="text-sm leading-relaxed text-white/60">
               Villa pilihan keluarga di Puncak Bogor.
             </p>
