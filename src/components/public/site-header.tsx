@@ -103,7 +103,11 @@ export function SiteHeader() {
           }
         >
           <nav className="flex flex-col gap-4">
-            <Link href="/" className="text-sm font-medium text-white hover:text-amber-400">
+            <Link
+              href="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm font-medium text-white hover:text-amber-400"
+            >
               Beranda
             </Link>
             {isHome ? (
@@ -116,6 +120,7 @@ export function SiteHeader() {
             ) : (
               <Link
                 href="/#villa-discovery"
+                onClick={() => setMobileMenuOpen(false)}
                 className="text-sm text-white/70 hover:text-amber-400"
               >
                 Daftar Villa
@@ -123,18 +128,28 @@ export function SiteHeader() {
             )}
             <Link
               href="/blog"
+              onClick={() => setMobileMenuOpen(false)}
               className={`text-sm ${isBlog ? 'font-medium text-amber-400' : 'text-white/70 hover:text-amber-400'}`}
             >
               Blog
             </Link>
-            <a href="#" className="text-sm text-white/70 hover:text-amber-400">
+            <a
+              href="#"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm text-white/70 hover:text-amber-400"
+            >
               Tentang
             </a>
-            <a href="#" className="text-sm text-white/70 hover:text-amber-400">
+            <a
+              href="#"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm text-white/70 hover:text-amber-400"
+            >
               Kontak
             </a>
             <Link
               href="/auth/login"
+              onClick={() => setMobileMenuOpen(false)}
               className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-sm font-medium text-white"
             >
               <LogIn className="size-4" />

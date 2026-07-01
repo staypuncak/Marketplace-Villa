@@ -13,7 +13,6 @@ const navLinks = [
   { label: 'Daftar Villa', action: scrollToDiscovery },
   { label: 'Blog', href: '#' },
   { label: 'Tentang', href: '#' },
-  { label: 'Kontak', href: '#' },
 ]
 
 const trustItems = [
