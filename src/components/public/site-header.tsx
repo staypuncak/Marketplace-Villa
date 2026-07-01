@@ -27,9 +27,12 @@ export function SiteHeader() {
             : 'sticky top-0 z-30 flex items-center justify-between border-b border-white/10 bg-black/30 backdrop-blur-lg px-4 py-3 sm:px-8'
         }
       >
-        <span className="text-xl font-bold tracking-tight text-white">
-          StayPuncak.com
-        </span>
+        <div className="flex items-center gap-2">
+          <img src="/images/logo-mark.png" alt="StayPuncak" className="h-7 w-auto" />
+          <span className="text-xl font-bold tracking-tight text-white">
+            StayPuncak.com
+          </span>
+        </div>
 
         <nav className="hidden items-center gap-6 sm:flex">
           <Link href="/" className="text-sm text-white/70 hover:text-white sm:text-base">
