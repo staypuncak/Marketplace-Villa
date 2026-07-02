@@ -73,7 +73,7 @@ export function CtaSection() {
             </button>
           </div>
 
-          <div className="mt-16 grid gap-6 sm:grid-cols-4">
+          <div className="mt-16 grid grid-cols-2 gap-6 sm:grid-cols-4">
             {trustPoints.map((item) => (
               <div key={item.title} className="text-center">
                 <item.icon className="mx-auto size-6 text-amber-400" />
