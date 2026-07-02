@@ -4,6 +4,7 @@ export interface Testimonial {
   city: string
   text: string
   villaName: string
+  avatarColor: string
 }
 
 export const testimonials: Testimonial[] = [
@@ -13,6 +14,7 @@ export const testimonials: Testimonial[] = [
     city: 'Jakarta',
     text: 'Pengalaman menginap yang luar biasa! Villa bersih, nyaman, dan pemandangannya sangat indah. Anak-anak pun betah berlama-lama di sini.',
     villaName: 'Villa Pinus Indah',
+    avatarColor: 'bg-emerald-600',
   },
   {
     id: '2',
@@ -20,6 +22,7 @@ export const testimonials: Testimonial[] = [
     city: 'Bandung',
     text: 'Pelayanan ramah dan fast response. Harga sesuai dengan kualitas yang didapat. Pasti balik lagi liburan ke sini bersama keluarga besar.',
     villaName: 'Villa Bukit Permai',
+    avatarColor: 'bg-teal-600',
   },
   {
     id: '3',
@@ -27,6 +30,7 @@ export const testimonials: Testimonial[] = [
     city: 'Tangerang',
     text: 'Recommended banget buat gathering kantor! Fasilitas lengkap, view pegunungan bikin adem, dan akses mudah dari tol.',
     villaName: 'Villa Highland Resort',
+    avatarColor: 'bg-lime-700',
   },
   {
     id: '4',
@@ -34,6 +38,7 @@ export const testimonials: Testimonial[] = [
     city: 'Depok',
     text: 'Bokingnya gampang banget via WhatsApp. Langsung dapat konfirmasi cepat. Villanya exceed expectation, bersih dan wangi.',
     villaName: 'Villa Cempaka Putih',
+    avatarColor: 'bg-blue-700',
   },
   {
     id: '5',
@@ -41,5 +46,6 @@ export const testimonials: Testimonial[] = [
     city: 'Bekasi',
     text: 'Weekend terakhir di Puncak bareng teman-teman. Villa nyaman, dapur lengkap, halamannya luas buat barbekuyan. Top markotop!',
     villaName: 'Villa Gardenia Hijau',
+    avatarColor: 'bg-amber-700',
   },
 ]

@@ -45,7 +45,7 @@ export function TestimonialSection() {
             {Array.from({ length: 5 }).map((_, i) => (
               <Star key={i} className="size-4 fill-amber-400 text-amber-400" />
             ))}
-            <span className="ml-1.5 font-medium">Testimonial</span>
+            <span className="ml-1.5 font-medium">Dipercaya Banyak Tamu</span>
           </div>
 
           <h2 className="font-serif text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">
