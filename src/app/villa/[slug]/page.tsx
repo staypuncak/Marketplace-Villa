@@ -4,6 +4,7 @@ import { Container } from '@/components/shared/container'
 import { BookingWidget } from '@/components/public/booking-widget'
 import { VillaGallery } from '@/components/public/villa-gallery'
 import { VillaOverview } from '@/components/public/villa-overview'
+import { VillaSuitability } from '@/components/public/villa-suitability'
 import { getAllVillas, getVillaBySlug } from '@/lib/supabase/queries'
 import type { Metadata } from 'next'
 
@@ -76,9 +77,16 @@ export default async function VillaDetailPage({ params }: Props) {
             <p className="mt-1 text-muted-foreground">{villa.location}</p>
           </div>
 
-          <p className="leading-relaxed text-muted-foreground">
-            {villa.description}
-          </p>
+          <div>
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              Tentang Villa
+            </h2>
+            <p className="leading-relaxed text-muted-foreground">
+              {villa.description}
+            </p>
+          </div>
+
+          <VillaSuitability />
 
           <div className="flex items-baseline gap-1">
             <span className="text-3xl font-bold text-brand">
