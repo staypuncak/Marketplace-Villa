@@ -32,19 +32,19 @@ export function HeroSection() {
 
       <Container className="relative z-10 flex min-h-[85vh] flex-col justify-center pb-24 pt-28">
         <div className="max-w-2xl">
-          <h1 className="font-serif text-3xl leading-tight tracking-tighter text-white sm:text-5xl lg:text-6xl">
+          <h1 className="font-serif text-3xl leading-snug tracking-tighter text-white sm:text-5xl lg:text-6xl">
             Booking Villa Puncak
             <br />
             Lebih{' '}
             <span className="text-amber-400">Aman</span>, Lebih{' '}
             <span className="text-amber-400">Hemat</span>.
           </h1>
-          <p className="mt-4 max-w-xl text-base text-white/85 sm:text-lg">
+          <p className="mt-5 max-w-xl text-base text-white/85 sm:text-lg">
             Villa terverifikasi, harga transparan, tanpa biaya tambahan, dan didampingi admin
             resmi hingga Anda check-in dengan tenang.
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+          <div className="mt-12 flex flex-wrap gap-x-6 gap-y-2">
             <span className="flex items-center gap-1.5 text-sm text-white/75">
               <BadgeCheck className="size-4 text-amber-400" />
               Villa Terverifikasi
