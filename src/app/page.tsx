@@ -1,13 +1,9 @@
 import { Container } from '@/components/shared/container'
 import { VillaCard } from '@/components/public/villa-card'
 import { HeroSection } from '@/components/public/hero-section'
+import { SearchCard } from '@/components/public/search-card'
 import { TestimonialSection } from '@/components/public/testimonial-section'
 import { CtaSection } from '@/components/public/cta-section'
-import { RotateCcw } from 'lucide-react'
-import { SearchInput } from '@/components/public/search-input'
-import { LocationFilter } from '@/components/public/location-filter'
-import { CapacityFilter } from '@/components/public/capacity-filter'
-import { PriceSort } from '@/components/public/price-sort'
 import { getAllVillas, getLocations } from '@/lib/supabase/queries'
 
 type Props = {
@@ -25,55 +21,32 @@ export default async function Home({ searchParams }: Props) {
     <>
       <HeroSection />
 
-      <section id="villa-discovery" className="py-16">
+      <div className="relative z-20 -mt-12 sm:-mt-16">
         <Container>
-          <div className="mb-8 space-y-3">
+          <SearchCard
+            defaultValue={q}
+            selectedLocation={location}
+            capacity={capacity}
+            sort={sort}
+            locations={locations}
+          />
+        </Container>
+      </div>
+
+      <section id="villa-discovery" className="pb-16 pt-8 sm:pt-12">
+        <Container>
+          <div className="mb-8">
             <div className="flex items-baseline gap-3">
               <h2 className="text-2xl font-semibold tracking-tight">
-                Villa Tersedia
+                Villa Terverifikasi Pilihan Anda
               </h2>
               <p className="text-sm text-muted-foreground">
                 Menampilkan {villas.length} Villa
               </p>
             </div>
-
-            <SearchInput
-              defaultValue={q}
-              selectedLocation={location}
-              capacity={capacity}
-              sort={sort}
-            />
-
-            <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-row">
-              <LocationFilter
-                locations={locations}
-                selectedLocation={location}
-                search={q}
-                capacity={capacity}
-                sort={sort}
-              />
-              <CapacityFilter
-                selectedCapacity={capacity}
-                search={q}
-                location={location}
-                sort={sort}
-              />
-              <PriceSort
-                selectedSort={sort}
-                search={q}
-                location={location}
-                capacity={capacity}
-              />
-              <form method="GET" action="/#villa-discovery">
-                <button
-                  type="submit"
-                  className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-brand bg-transparent px-3 py-2 text-sm text-brand transition-colors hover:bg-brand hover:text-white sm:w-auto"
-                >
-                  <RotateCcw className="size-4" />
-                  Reset
-                </button>
-              </form>
-            </div>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Semua villa telah diverifikasi untuk kenyamanan dan keamanan booking Anda.
+            </p>
           </div>
 
           {villas.length === 0 ? (

@@ -1,6 +1,6 @@
 'use client'
 
-import { BadgeCheck, Tag, MessageCircle, ArrowDown } from 'lucide-react'
+import { BadgeCheck, Tag, CheckCircle2, Shield } from 'lucide-react'
 import { Container } from '@/components/shared/container'
 import { cn } from '@/lib/utils'
 import { useTheme } from '@/lib/theme-context'
@@ -8,69 +8,62 @@ import { useTheme } from '@/lib/theme-context'
 export function HeroSection() {
   const { theme } = useTheme()
 
-  const scrollToDiscovery = () => {
-    document.getElementById('villa-discovery')?.scrollIntoView({ behavior: 'smooth' })
-  }
-
   return (
     <section className="relative min-h-[85vh] overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src="/images/Background-staypuncak-day.png"
-            alt=""
-            className={cn(
-              'h-full w-full object-cover object-[65%_center] transition-opacity duration-700 sm:object-center',
-              theme === 'day' ? 'opacity-100' : 'opacity-0',
-            )}
-          />
-          <img
-            src="/images/Background-staypuncak-night.png"
-            alt=""
-            className={cn(
-              'absolute inset-0 h-full w-full object-cover object-[65%_center] transition-opacity duration-700 sm:object-center',
-              theme === 'night' ? 'opacity-100' : 'opacity-0',
-            )}
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
-        </div>
+      <div className="absolute inset-0">
+        <img
+          src="/images/Background-staypuncak-day.png"
+          alt=""
+          className={cn(
+            'h-full w-full object-cover object-[65%_center] transition-opacity duration-700 sm:object-center',
+            theme === 'day' ? 'opacity-100' : 'opacity-0',
+          )}
+        />
+        <img
+          src="/images/Background-staypuncak-night.png"
+          alt=""
+          className={cn(
+            'absolute inset-0 h-full w-full object-cover object-[65%_center] transition-opacity duration-700 sm:object-center',
+            theme === 'night' ? 'opacity-100' : 'opacity-0',
+          )}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent" />
+      </div>
 
-        <Container className="relative z-10 flex min-h-[85vh] flex-col justify-center pb-20 pt-28">
-          <div className="max-w-2xl">
-            <h1 className="font-serif text-3xl leading-tight tracking-tighter text-white sm:text-5xl lg:text-6xl">
-              Liburan Berkesan di Puncak,
-              <br />
-              Lebih Hemat,
-              <br />
-              <span className="text-amber-400">Tanpa Biaya Tambahan!</span>
-            </h1>
-            <p className="mt-4 max-w-xl text-base text-white/90 sm:text-xl">
-              Jelajahi beragam pilihan Villa di Puncak Bogor, untuk pengalaman liburan yang tak
-              terlupakan.
-            </p>
-            <button
-              onClick={scrollToDiscovery}
-              className="mt-8 inline-flex items-center gap-2 rounded-lg bg-brand px-6 py-3 text-base font-semibold text-white hover:bg-brand/90"
-            >
-              Jelajahi Villa
-              <ArrowDown className="size-4" />
-            </button>
+      <Container className="relative z-10 flex min-h-[85vh] flex-col justify-center pb-24 pt-28">
+        <div className="max-w-2xl">
+          <h1 className="font-serif text-3xl leading-tight tracking-tighter text-white sm:text-5xl lg:text-6xl">
+            Booking Villa Puncak
+            <br />
+            Lebih{' '}
+            <span className="text-amber-400">Aman</span>, Lebih{' '}
+            <span className="text-amber-400">Hemat</span>.
+          </h1>
+          <p className="mt-4 max-w-xl text-base text-white/85 sm:text-lg">
+            Villa terverifikasi, harga transparan, tanpa biaya tambahan, dan didampingi admin
+            resmi hingga Anda check-in dengan tenang.
+          </p>
 
-            <div className="mt-10 flex flex-col items-start gap-3 sm:mt-12 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6">
-              <div className="flex items-center gap-2.5 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm text-white/90 backdrop-blur-md sm:gap-3 sm:px-5 sm:py-2.5 sm:text-lg">
-                <BadgeCheck className="size-4 shrink-0 text-amber-400 sm:size-5" />
-                Villa Terverifikasi — Guaranteed Safe
-              </div>
-              <div className="flex items-center gap-2.5 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm text-white/90 backdrop-blur-md sm:gap-3 sm:px-5 sm:py-2.5 sm:text-lg">
-                <Tag className="size-4 shrink-0 text-amber-400 sm:size-5" />
-                Harga Fix — Tanpa Extra Charge
-              </div>
-              <div className="flex items-center gap-2.5 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm text-white/90 backdrop-blur-md sm:gap-3 sm:px-5 sm:py-2.5 sm:text-lg">
-                <MessageCircle className="size-4 shrink-0 text-amber-400 sm:size-5" />
-                Booking Mudah — Langsung via WhatsApp
-              </div>
-            </div>
+          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+            <span className="flex items-center gap-1.5 text-sm text-white/75">
+              <BadgeCheck className="size-4 text-amber-400" />
+              Villa Terverifikasi
+            </span>
+            <span className="flex items-center gap-1.5 text-sm text-white/75">
+              <Tag className="size-4 text-amber-400" />
+              Harga Transparan
+            </span>
+            <span className="flex items-center gap-1.5 text-sm text-white/75">
+              <CheckCircle2 className="size-4 text-amber-400" />
+              Tanpa Biaya Tambahan
+            </span>
+            <span className="flex items-center gap-1.5 text-sm text-white/75">
+              <Shield className="size-4 text-amber-400" />
+              Booking Aman
+            </span>
           </div>
-        </Container>
-      </section>
+        </div>
+      </Container>
+    </section>
   )
 }
