@@ -12,7 +12,7 @@ export function HeroSection() {
     <section className="relative min-h-[85vh] overflow-hidden">
       <div className="absolute inset-0">
         <img
-          src="/images/Background-staypuncak-day.png"
+          src="/images/background-hero-day-v2.png"
           alt=""
           className={cn(
             'h-full w-full object-cover object-[65%_center] transition-opacity duration-700 sm:object-center',
@@ -20,7 +20,7 @@ export function HeroSection() {
           )}
         />
         <img
-          src="/images/Background-staypuncak-night.png"
+          src="/images/background-hero-night-v2.png"
           alt=""
           className={cn(
             'absolute inset-0 h-full w-full object-cover object-[65%_center] transition-opacity duration-700 sm:object-center',
