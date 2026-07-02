@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { MessageCircle } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { Calendar, MessageCircle } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -21,6 +21,59 @@ function formatDateIndonesian(dateString: string): string {
 type BookingWidgetProps = {
   villaName: string
   villaLocation: string
+}
+
+function DateField({
+  label,
+  id,
+  value,
+  min,
+  onChange,
+}: {
+  label: string
+  id: string
+  value: string
+  min?: string
+  onChange: (value: string) => void
+}) {
+  const dateInputRef = useRef<HTMLInputElement>(null)
+
+  const displayValue = value ? formatDateIndonesian(value) : ''
+
+  const handleClick = () => {
+    dateInputRef.current?.showPicker?.()
+    dateInputRef.current?.focus()
+  }
+
+  return (
+    <div>
+      <label htmlFor={id} className="mb-1 block text-sm font-medium">
+        {label}
+      </label>
+      <div className="relative">
+        <input
+          id={id}
+          type="text"
+          readOnly
+          value={displayValue}
+          placeholder="Pilih Tanggal"
+          onClick={handleClick}
+          onFocus={handleClick}
+          className="w-full rounded-xl border border-emerald-200 bg-background px-3 py-2.5 pl-10 text-sm shadow-sm outline-none focus-visible:border-emerald-600 focus-visible:ring-3 focus-visible:ring-emerald-500/20 cursor-pointer"
+        />
+        <Calendar className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-emerald-600" />
+        <input
+          ref={dateInputRef}
+          type="date"
+          value={value}
+          min={min}
+          onChange={(e) => onChange(e.target.value)}
+          className="sr-only"
+          tabIndex={-1}
+        />
+      </div>
+    </div>
+  )
 }
 
 export function BookingWidget({ villaName, villaLocation }: BookingWidgetProps) {
@@ -66,33 +119,19 @@ export function BookingWidget({ villaName, villaLocation }: BookingWidgetProps) 
         Booking
       </h2>
       <div className="grid gap-3">
-        <div>
-          <label htmlFor="check-in" className="mb-1 block text-sm font-medium">
-            Check-in
-          </label>
-          <input
-            id="check-in"
-            type="date"
-            value={checkIn}
-            onChange={(e) => setCheckIn(e.target.value)}
-            placeholder="Pilih Tanggal"
-            className="w-full rounded-xl border border-emerald-200 bg-background px-3 py-2 text-sm accent-emerald-700 shadow-sm outline-none focus-visible:border-emerald-600 focus-visible:ring-3 focus-visible:ring-emerald-500/20"
-          />
-        </div>
-        <div>
-          <label htmlFor="check-out" className="mb-1 block text-sm font-medium">
-            Check-out
-          </label>
-          <input
-            id="check-out"
-            type="date"
-            value={checkOut}
-            onChange={(e) => setCheckOut(e.target.value)}
-            min={checkIn || undefined}
-            placeholder="Pilih Tanggal"
-            className="w-full rounded-xl border border-emerald-200 bg-background px-3 py-2 text-sm accent-emerald-700 shadow-sm outline-none focus-visible:border-emerald-600 focus-visible:ring-3 focus-visible:ring-emerald-500/20"
-          />
-        </div>
+        <DateField
+          label="Check-in"
+          id="check-in"
+          value={checkIn}
+          onChange={setCheckIn}
+        />
+        <DateField
+          label="Check-out"
+          id="check-out"
+          value={checkOut}
+          min={checkIn || undefined}
+          onChange={setCheckOut}
+        />
       </div>
       <a
         href={whatsappUrl}
