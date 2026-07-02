@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Calendar, MessageCircle } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -36,14 +36,7 @@ function DateField({
   min?: string
   onChange: (value: string) => void
 }) {
-  const dateInputRef = useRef<HTMLInputElement>(null)
-
   const displayValue = value ? formatDateIndonesian(value) : ''
-
-  const handleClick = () => {
-    dateInputRef.current?.showPicker?.()
-    dateInputRef.current?.focus()
-  }
 
   return (
     <div>
@@ -51,25 +44,17 @@ function DateField({
         {label}
       </label>
       <div className="relative">
-        <input
-          id={id}
-          type="text"
-          readOnly
-          value={displayValue}
-          placeholder="Pilih Tanggal"
-          onClick={handleClick}
-          onFocus={handleClick}
-          className="w-full rounded-xl border border-emerald-200 bg-background px-3 py-2.5 pl-10 text-sm shadow-sm outline-none focus-visible:border-emerald-600 focus-visible:ring-3 focus-visible:ring-emerald-500/20 cursor-pointer"
-        />
+        <div className="pointer-events-none flex w-full items-center rounded-xl border border-emerald-200 bg-background px-3 py-2.5 pl-10 text-sm shadow-sm">
+          {displayValue || <span className="text-muted-foreground">Pilih Tanggal</span>}
+        </div>
         <Calendar className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-emerald-600" />
         <input
-          ref={dateInputRef}
+          id={id}
           type="date"
           value={value}
           min={min}
           onChange={(e) => onChange(e.target.value)}
-          className="sr-only"
-          tabIndex={-1}
+          className="absolute inset-0 w-full cursor-pointer opacity-0"
         />
       </div>
     </div>
