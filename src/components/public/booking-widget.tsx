@@ -36,26 +36,22 @@ function DateField({
   min?: string
   onChange: (value: string) => void
 }) {
-  const displayValue = value ? formatDateIndonesian(value) : ''
-
   return (
     <div>
       <label htmlFor={id} className="mb-1 block text-sm font-medium">
         {label}
       </label>
       <div className="relative">
-        <div className="pointer-events-none flex w-full items-center rounded-xl border border-emerald-200 bg-background px-3 py-2.5 pl-10 text-sm shadow-sm">
-          {displayValue || <span className="text-muted-foreground">Pilih Tanggal</span>}
-        </div>
-        <Calendar className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-emerald-600" />
         <input
           id={id}
           type="date"
           value={value}
           min={min}
           onChange={(e) => onChange(e.target.value)}
-          className="absolute inset-0 w-full cursor-pointer opacity-0"
+          placeholder="Pilih Tanggal"
+          className="w-full rounded-xl border border-emerald-200 bg-background px-3 py-2.5 pl-10 text-sm shadow-sm outline-none focus-visible:border-emerald-600 focus-visible:ring-3 focus-visible:ring-emerald-500/20"
         />
+        <Calendar className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-emerald-600" />
       </div>
     </div>
   )
