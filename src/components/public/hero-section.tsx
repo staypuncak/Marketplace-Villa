@@ -36,7 +36,7 @@ export function HeroSection() {
 
         <Container className="relative z-10 flex min-h-[85vh] flex-col justify-center pb-20 pt-28">
           <div className="max-w-2xl">
-            <h1 className="font-serif text-2xl leading-tight tracking-tighter text-white sm:text-5xl lg:text-6xl">
+            <h1 className="font-serif text-3xl leading-tight tracking-tighter text-white sm:text-5xl lg:text-6xl">
               Liburan Berkesan di Puncak,
               <br />
               Lebih Hemat,
