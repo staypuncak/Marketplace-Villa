@@ -63,7 +63,7 @@ export function TestimonialSection() {
           ))}
         </div>
 
-        <div className="sm:hidden">
+        <div className="overflow-hidden sm:hidden">
           <div
             className="flex touch-pan-y"
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
