@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { Container } from '@/components/shared/container'
 import { BookingWidget } from '@/components/public/booking-widget'
 import { VillaGallery } from '@/components/public/villa-gallery'
+import { VillaOverview } from '@/components/public/villa-overview'
 import { getAllVillas, getVillaBySlug } from '@/lib/supabase/queries'
 import type { Metadata } from 'next'
 
@@ -66,6 +67,8 @@ export default async function VillaDetailPage({ params }: Props) {
         />
 
         <div className="flex flex-col gap-6 lg:col-span-2">
+          <VillaOverview capacity={villa.capacity} location={villa.location} />
+
           <div>
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
               {villa.name}
