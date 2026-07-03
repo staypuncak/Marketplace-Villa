@@ -1,32 +1,40 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { BadgeCheck, Tag, CheckCircle2, Shield } from 'lucide-react'
 import { Container } from '@/components/shared/container'
 import { cn } from '@/lib/utils'
-import { useTheme } from '@/lib/theme-context'
+
+const VIDEO_SOURCES = [
+  '/Videos/hero_video-bg-01.webp',
+  '/Videos/hero_video-bg-02.webp',
+  '/Videos/hero_video-bg-03.webp',
+]
 
 export function HeroSection() {
-  const { theme } = useTheme()
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % VIDEO_SOURCES.length)
+    }, 8000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <section className="relative min-h-[85vh] overflow-hidden">
       <div className="absolute inset-0">
-        <img
-          src="/images/background-hero-day-v2.png"
-          alt=""
-          className={cn(
-            'h-full w-full object-cover object-[65%_center] transition-opacity duration-700 sm:object-center',
-            theme === 'day' ? 'opacity-100' : 'opacity-0',
-          )}
-        />
-        <img
-          src="/images/background-hero-night-v2.png"
-          alt=""
-          className={cn(
-            'absolute inset-0 h-full w-full object-cover object-[65%_center] transition-opacity duration-700 sm:object-center',
-            theme === 'night' ? 'opacity-100' : 'opacity-0',
-          )}
-        />
+        {VIDEO_SOURCES.map((src, i) => (
+          <img
+            key={src}
+            src={src}
+            alt=""
+            className={cn(
+              'absolute inset-0 h-full w-full object-cover object-[65%_center] transition-opacity duration-[2000ms] ease-in-out sm:object-center',
+              i === activeIndex ? 'opacity-100' : 'opacity-0',
+            )}
+          />
+        ))}
         <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent" />
       </div>
 
