@@ -23,15 +23,15 @@ export function CtaSection() {
             Siap Untuk Liburan Berkesan Di Puncak?
           </p>
 
-          <h2 className="font-serif text-3xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
-            Waktunya Anda
+          <h2 className="font-serif text-3xl font-medium leading-tight tracking-tight text-white sm:text-5xl">
+            Tinggalkan Penat,
             <br />
-            <span className="text-amber-400">Bersantai dan Berkesan.</span>
+            <span className="text-amber-400">Ciptakan Kenangan Hangat.</span>
           </h2>
 
           <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-white/70 sm:text-base">
-            Ratusan keluarga telah mempercayakan momen liburannya bersama StayPuncak. Kini giliran
-            Anda menemukan villa yang tepat.
+            Ratusan keluarga sudah membuktikannya. Sekarang giliran Anda mewujudkan liburan
+            sempurna bersama StayPuncak.
           </p>
 
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
