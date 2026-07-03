@@ -3,12 +3,10 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Sun, Moon, Menu, X, LogIn } from 'lucide-react'
-import { useTheme } from '@/lib/theme-context'
+import { Menu, X, LogIn } from 'lucide-react'
 
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { theme, toggleTheme } = useTheme()
   const pathname = usePathname()
   const isHome = pathname === '/'
   const isBlog = pathname.startsWith('/blog')
@@ -73,16 +71,6 @@ export function SiteHeader() {
             <LogIn className="size-4" />
             Sign In
           </Link>
-
-          {isHome && (
-            <button
-              onClick={toggleTheme}
-              className="rounded-lg border border-amber-400/50 p-2 text-amber-400"
-              aria-label="Toggle day/night mode"
-            >
-              {theme === 'day' ? <Moon className="size-4" /> : <Sun className="size-4" />}
-            </button>
-          )}
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
