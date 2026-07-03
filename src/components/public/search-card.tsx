@@ -1,6 +1,6 @@
 'use client'
 
-import { Search, BadgeCheck, Tag, CheckCircle2, Shield, RotateCcw } from 'lucide-react'
+import { Search, RotateCcw } from 'lucide-react'
 import { LocationFilter } from './location-filter'
 import { CapacityFilter } from './capacity-filter'
 import { PriceSort } from './price-sort'
@@ -83,45 +83,6 @@ export function SearchCard({ defaultValue, selectedLocation, capacity, sort, loc
               Reset
             </button>
           </form>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3 border-t border-emerald-100/50 pt-4 lg:grid-cols-4">
-          <div className="flex items-start gap-2">
-            <BadgeCheck className="mt-0.5 size-4 shrink-0 text-emerald-600" />
-            <div>
-              <p className="text-xs font-medium">Villa Terverifikasi</p>
-              <p className="text-[10px] leading-relaxed text-muted-foreground">
-                Dicek langsung oleh tim kami
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start gap-2">
-            <Tag className="mt-0.5 size-4 shrink-0 text-emerald-600" />
-            <div>
-              <p className="text-xs font-medium">Harga Transparan</p>
-              <p className="text-[10px] leading-relaxed text-muted-foreground">
-                Tidak ada biaya tersembunyi
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start gap-2">
-            <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-600" />
-            <div>
-              <p className="text-xs font-medium">Tanpa Biaya Tambahan</p>
-              <p className="text-[10px] leading-relaxed text-muted-foreground">
-                Harga final, semua jelas
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start gap-2">
-            <Shield className="mt-0.5 size-4 shrink-0 text-emerald-600" />
-            <div>
-              <p className="text-xs font-medium">Booking Aman</p>
-              <p className="text-[10px] leading-relaxed text-muted-foreground">
-                Admin resmi, transaksi aman
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

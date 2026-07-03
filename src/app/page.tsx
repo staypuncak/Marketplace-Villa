@@ -38,15 +38,12 @@ export default async function Home({ searchParams }: Props) {
           <div className="mb-8">
             <div className="flex items-baseline gap-3">
               <h2 className="text-2xl font-semibold tracking-tight">
-                Villa Terverifikasi Pilihan Anda
+                Rekomendasi Villa
               </h2>
               <p className="text-sm text-muted-foreground">
                 Menampilkan {villas.length} Villa
               </p>
             </div>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Semua villa telah diverifikasi untuk kenyamanan dan keamanan booking Anda.
-            </p>
           </div>
 
           {villas.length === 0 ? (

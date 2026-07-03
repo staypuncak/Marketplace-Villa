@@ -1,30 +1,9 @@
 'use client'
 
-import { MessageCircle, BadgeCheck, Tag, Zap, MapPin } from 'lucide-react'
+import { MessageCircle } from 'lucide-react'
 import { Container } from '@/components/shared/container'
 
-const trustPoints = [
-  {
-    icon: BadgeCheck,
-    title: 'Villa Terverifikasi',
-    description: 'Semua villa dicek langsung oleh tim kami.',
-  },
-  {
-    icon: Tag,
-    title: 'Harga Transparan',
-    description: 'Tidak ada biaya tersembunyi, aman dan jelas.',
-  },
-  {
-    icon: Zap,
-    title: 'Respon Cepat',
-    description: 'Tim kami siap membantu via WhatsApp.',
-  },
-  {
-    icon: MapPin,
-    title: 'Lokasi Strategis',
-    description: 'Pilihan villa terbaik di area Puncak.',
-  },
-]
+ 
 
 export function CtaSection() {
   const scrollToDiscovery = () => {
@@ -71,16 +50,6 @@ export function CtaSection() {
             >
               Lihat Semua Villa
             </button>
-          </div>
-
-          <div className="mt-16 grid grid-cols-2 gap-6 sm:grid-cols-4">
-            {trustPoints.map((item) => (
-              <div key={item.title} className="text-center">
-                <item.icon className="mx-auto size-6 text-amber-400" />
-                <p className="mt-3 text-sm font-semibold text-white">{item.title}</p>
-                <p className="mt-1 text-xs leading-relaxed text-white/60">{item.description}</p>
-              </div>
-            ))}
           </div>
         </div>
       </Container>
