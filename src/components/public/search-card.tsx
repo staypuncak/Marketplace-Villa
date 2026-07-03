@@ -80,7 +80,7 @@ export function SearchCard({ defaultValue, selectedLocation, capacity, sort, loc
               className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-brand bg-transparent px-3 py-2 text-sm text-brand transition-colors hover:bg-brand hover:text-white sm:w-auto"
             >
               <RotateCcw className="size-4" />
-              Reset
+              Semua Villa
             </button>
           </form>
         </div>
