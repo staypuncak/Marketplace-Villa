@@ -46,8 +46,11 @@ export function HeroSection() {
       </div>
 
       <Container className="relative z-10 flex min-h-[85vh] flex-col justify-center pb-24 pt-28">
-        <div className="max-w-2xl">
-          <h1 className="font-serif text-3xl leading-snug tracking-tighter text-white sm:text-5xl lg:text-6xl">
+        <div className="-mt-4 max-w-2xl sm:mt-0">
+          <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.2em] text-amber-400 sm:mb-3 sm:text-xs">
+            Villa Terverifikasi &bull; Puncak Bogor
+          </p>
+          <h1 className="font-serif text-[2rem] leading-snug tracking-tighter text-white sm:text-5xl lg:text-6xl">
             Booking Villa Puncak
             <br />
             Lebih{' '}
@@ -59,7 +62,7 @@ export function HeroSection() {
             resmi hingga Anda check-in dengan tenang.
           </p>
 
-          <div className="mt-12 flex flex-wrap gap-x-6 gap-y-2">
+          <div className="mt-16 flex flex-wrap gap-x-6 gap-y-2 sm:mt-12">
             <span className="flex items-center gap-1.5 text-sm text-white/75">
               <BadgeCheck className="size-4 text-amber-400" />
               Villa Terverifikasi
