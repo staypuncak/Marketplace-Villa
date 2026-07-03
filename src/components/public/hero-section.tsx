@@ -5,10 +5,10 @@ import { BadgeCheck, Tag, CheckCircle2, Shield } from 'lucide-react'
 import { Container } from '@/components/shared/container'
 import { cn } from '@/lib/utils'
 
-const VIDEO_SOURCES = [
-  '/Videos/hero_video-bg-01.webp',
-  '/Videos/hero_video-bg-02.webp',
-  '/Videos/hero_video-bg-03.webp',
+const VIDEOS = [
+  { src: '/Videos/video-bg-01.mp4', poster: '/Videos/hero_video-bg-01.webp' },
+  { src: '/Videos/video-bg-02.mp4', poster: '/Videos/hero_video-bg-02.webp' },
+  { src: '/Videos/video-bg-03.mp4', poster: '/Videos/hero_video-bg-03.webp' },
 ]
 
 export function HeroSection() {
@@ -16,7 +16,7 @@ export function HeroSection() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % VIDEO_SOURCES.length)
+      setActiveIndex((prev) => (prev + 1) % VIDEOS.length)
     }, 8000)
     return () => clearInterval(interval)
   }, [])
@@ -24,11 +24,16 @@ export function HeroSection() {
   return (
     <section className="relative min-h-[85vh] overflow-hidden">
       <div className="absolute inset-0">
-        {VIDEO_SOURCES.map((src, i) => (
-          <img
-            key={src}
-            src={src}
-            alt=""
+        {VIDEOS.map((video, i) => (
+          <video
+            key={video.src}
+            src={video.src}
+            poster={video.poster}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
             className={cn(
               'absolute inset-0 h-full w-full object-cover object-[65%_center] transition-opacity duration-[2000ms] ease-in-out sm:object-center',
               i === activeIndex ? 'opacity-100' : 'opacity-0',
