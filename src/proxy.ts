@@ -29,19 +29,21 @@ export async function proxy(request: NextRequest) {
   const { data } = await supabase.auth.getClaims()
   const user = data?.claims ? { id: data.claims.sub } : null
 
-  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
-  const isAuthRoute = request.nextUrl.pathname.startsWith('/auth')
+  const pathname = request.nextUrl.pathname
+  const isDashboardRoute = pathname === '/dashboard' || pathname.startsWith('/dashboard/')
+  const isAdminRoute = pathname.startsWith('/admin')
+  const isLoginRoute = pathname === '/login'
 
-  if (isAdminRoute && !user && !isAuthRoute) {
+  if ((isDashboardRoute || isAdminRoute) && !user && !isLoginRoute) {
     const url = request.nextUrl.clone()
-    url.pathname = '/auth/login'
-    url.searchParams.set('redirect', request.nextUrl.pathname)
+    url.pathname = '/login'
+    url.searchParams.set('redirect', pathname === '/login' ? '/dashboard' : pathname)
     return NextResponse.redirect(url)
   }
 
-  if (isAuthRoute && user) {
+  if (isLoginRoute && user) {
     const url = request.nextUrl.clone()
-    url.pathname = '/admin'
+    url.pathname = '/dashboard'
     return NextResponse.redirect(url)
   }
 

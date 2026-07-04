@@ -18,11 +18,6 @@ const navItems = [
   { label: 'Settings', href: '/dashboard/settings', icon: Settings },
 ]
 
-const bottomItems = [
-  { label: 'Profile', href: '/dashboard/profile', icon: UserCircle },
-  { label: 'Logout', href: '#', icon: LogOut },
-]
-
 type SidebarProps = {
   collapsed: boolean
   open: boolean
@@ -77,7 +72,29 @@ export function Sidebar({ collapsed, open, onClose }: SidebarProps) {
         </nav>
 
         <div className="border-t border-gray-200 p-3 space-y-1">
-          {renderItems(bottomItems)}
+          <Link
+            href="/dashboard/profile"
+            onClick={onClose}
+            className={cn(
+              'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900',
+              collapsed && 'justify-center px-2',
+            )}
+          >
+            <UserCircle className="size-5 shrink-0" />
+            {!collapsed && <span>Profile</span>}
+          </Link>
+          <form action="/logout" method="POST">
+            <button
+              type="submit"
+              className={cn(
+                'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900',
+                collapsed && 'justify-center px-2',
+              )}
+            >
+              <LogOut className="size-5 shrink-0" />
+              {!collapsed && <span>Logout</span>}
+            </button>
+          </form>
         </div>
       </aside>
 
@@ -98,7 +115,23 @@ export function Sidebar({ collapsed, open, onClose }: SidebarProps) {
               {renderItems(navItems)}
             </nav>
             <div className="border-t border-gray-200 p-3 space-y-1">
-              {renderItems(bottomItems)}
+              <Link
+                href="/dashboard/profile"
+                onClick={onClose}
+                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+              >
+                <UserCircle className="size-5 shrink-0" />
+                <span>Profile</span>
+              </Link>
+              <form action="/logout" method="POST">
+                <button
+                  type="submit"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+                >
+                  <LogOut className="size-5 shrink-0" />
+                  <span>Logout</span>
+                </button>
+              </form>
             </div>
           </aside>
         </div>
