@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, ArrowRight, Check, Building, Upload, Search } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, Building, Upload, Search, Plus, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const steps = ['Informasi Dasar', 'Media', 'Fasilitas', 'Booking', 'SEO & Publish']
@@ -47,6 +47,11 @@ function StepIndicator({ step }: { step: number }) {
 export default function CreateVillaPage() {
   const [step, setStep] = useState(0)
   const [success, setSuccess] = useState(false)
+  const [guests, setGuests] = useState('')
+  const [bedrooms, setBedrooms] = useState('')
+  const [bathrooms, setBathrooms] = useState('')
+  const [selectedFacilities, setSelectedFacilities] = useState<string[]>([])
+  const [customFacilities, setCustomFacilities] = useState<string[]>([])
 
   const next = () => {
     if (step < steps.length - 1) setStep(step + 1)
@@ -100,9 +105,17 @@ export default function CreateVillaPage() {
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
         {step === 0 && <StepInformasiDasar />}
         {step === 1 && <StepMedia />}
-        {step === 2 && <StepFasilitas />}
+        {step === 2 && (
+          <StepFasilitas
+            guests={guests} setGuests={setGuests}
+            bedrooms={bedrooms} setBedrooms={setBedrooms}
+            bathrooms={bathrooms} setBathrooms={setBathrooms}
+            selectedFacilities={selectedFacilities} setSelectedFacilities={setSelectedFacilities}
+            customFacilities={customFacilities} setCustomFacilities={setCustomFacilities}
+          />
+        )}
         {step === 3 && <StepBooking />}
-        {step === 4 && <StepSeo />}
+        {step === 4 && <StepSeo guests={guests} bedrooms={bedrooms} bathrooms={bathrooms} selectedFacilities={selectedFacilities} />}
       </div>
 
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -207,39 +220,128 @@ function StepMedia() {
   )
 }
 
-function StepFasilitas() {
-  const [selected, setSelected] = useState<string[]>([])
-  const toggle = (f: string) => setSelected(selected.includes(f) ? selected.filter((s) => s !== f) : [...selected, f])
+function StepFasilitas({
+  guests, setGuests,
+  bedrooms, setBedrooms,
+  bathrooms, setBathrooms,
+  selectedFacilities, setSelectedFacilities,
+  customFacilities, setCustomFacilities,
+}: {
+  guests: string; setGuests: (v: string) => void
+  bedrooms: string; setBedrooms: (v: string) => void
+  bathrooms: string; setBathrooms: (v: string) => void
+  selectedFacilities: string[]; setSelectedFacilities: (v: string[]) => void
+  customFacilities: string[]; setCustomFacilities: (v: string[]) => void
+}) {
+  const [customInput, setCustomInput] = useState('')
+
+  const toggleFacility = (f: string) => {
+    setSelectedFacilities(
+      selectedFacilities.includes(f)
+        ? selectedFacilities.filter((s) => s !== f)
+        : [...selectedFacilities, f]
+    )
+  }
+
+  const allFacilities = [...facilityOptions, ...customFacilities]
+
+  const addCustom = () => {
+    const trimmed = customInput.trim()
+    if (!trimmed) return
+    if (allFacilities.some((f) => f.toLowerCase() === trimmed.toLowerCase())) return
+    setCustomFacilities([...customFacilities, trimmed])
+    setSelectedFacilities([...selectedFacilities, trimmed])
+    setCustomInput('')
+  }
+
+  const removeCustom = (f: string) => {
+    setCustomFacilities(customFacilities.filter((c) => c !== f))
+    setSelectedFacilities(selectedFacilities.filter((s) => s !== f))
+  }
 
   return (
     <div className="space-y-6">
-      <div>
-        <label className="text-sm font-medium text-gray-700">Fasilitas</label>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {facilityOptions.map((f) => (
-            <button
-              key={f}
-              onClick={() => toggle(f)}
-              className={cn(
-                'rounded-xl border px-4 py-2 text-sm transition-all',
-                selected.includes(f) ? 'border-emerald-300 bg-emerald-50 font-medium text-emerald-700' : 'border-gray-200 text-gray-600 hover:border-emerald-200 hover:bg-emerald-50/50',
-              )}
-            >
-              {f}
-            </button>
-          ))}
+      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+        <h3 className="text-base font-semibold text-gray-900">Fitur Utama Villa</h3>
+        <p className="mt-1 text-xs text-gray-400">Data ini akan tampil di card villa dan halaman detail.</p>
+        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+          <Field label="Kapasitas Tamu" required>
+            <input
+              type="number"
+              placeholder="0"
+              value={guests}
+              onChange={(e) => setGuests(e.target.value)}
+              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            />
+          </Field>
+          <Field label="Jumlah Kamar Tidur" required>
+            <input
+              type="number"
+              placeholder="0"
+              value={bedrooms}
+              onChange={(e) => setBedrooms(e.target.value)}
+              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            />
+          </Field>
+          <Field label="Jumlah Kamar Mandi" required>
+            <input
+              type="number"
+              placeholder="0"
+              value={bathrooms}
+              onChange={(e) => setBathrooms(e.target.value)}
+              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            />
+          </Field>
         </div>
       </div>
-      <div className="grid gap-5 sm:grid-cols-3">
-        <Field label="Jumlah Tamu">
-          <input type="number" placeholder="0" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
-        </Field>
-        <Field label="Kamar Tidur">
-          <input type="number" placeholder="0" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
-        </Field>
-        <Field label="Kamar Mandi">
-          <input type="number" placeholder="0" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
-        </Field>
+
+      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+        <h3 className="text-base font-semibold text-gray-900">Fasilitas Tambahan</h3>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {allFacilities.map((f) => {
+            const isSelected = selectedFacilities.includes(f)
+            const isCustom = customFacilities.includes(f)
+            return (
+              <div key={f} className="relative">
+                <button
+                  onClick={() => toggleFacility(f)}
+                  className={cn(
+                    'rounded-xl border px-4 py-2 text-sm transition-all',
+                    isSelected
+                      ? 'border-emerald-300 bg-emerald-50 font-medium text-emerald-700'
+                      : 'border-gray-200 text-gray-600 hover:border-emerald-200 hover:bg-emerald-50/50',
+                  )}
+                >
+                  {f}
+                </button>
+                {isCustom && (
+                  <button
+                    onClick={() => removeCustom(f)}
+                    className="absolute -right-1.5 -top-1.5 flex size-4 items-center justify-center rounded-full bg-red-400 text-white shadow-sm transition-colors hover:bg-red-500"
+                  >
+                    <X className="size-3" />
+                  </button>
+                )}
+              </div>
+            )
+          })}
+        </div>
+        <div className="mt-4 flex gap-2">
+          <input
+            type="text"
+            value={customInput}
+            onChange={(e) => setCustomInput(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addCustom() } }}
+            placeholder="Tambah fasilitas lain, contoh: Meja Billiard"
+            className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+          />
+          <button
+            onClick={addCustom}
+            className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700"
+          >
+            <Plus className="size-4" /> Tambah
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -272,7 +374,7 @@ function StepBooking() {
   )
 }
 
-function StepSeo() {
+function StepSeo({ guests, bedrooms, bathrooms, selectedFacilities }: { guests: string; bedrooms: string; bathrooms: string; selectedFacilities: string[] }) {
   return (
     <div className="space-y-5">
       <Field label="SEO Title">
@@ -307,7 +409,12 @@ function StepSeo() {
             <p className="text-sm font-semibold text-gray-900">Villa Bukit Respati</p>
             <p className="text-xs text-gray-500">Cisarua, Puncak Bogor</p>
             <p className="text-xs font-medium text-emerald-700">Rp 2.500.000 / malam</p>
-            <p className="text-xs text-gray-400">Kapasitas: 10 tamu</p>
+            <div className="mt-1 flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-gray-400">
+              <span>Kapasitas: {guests || '-'} tamu</span>
+              <span>Kamar Tidur: {bedrooms || '-'}</span>
+              <span>Kamar Mandi: {bathrooms || '-'}</span>
+              <span>Fasilitas: {selectedFacilities.length} dipilih</span>
+            </div>
           </div>
           <div className="ml-auto flex flex-col items-end gap-1">
             <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700">Draft</span>
