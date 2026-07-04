@@ -32,33 +32,33 @@ export function SiteHeader() {
           </span>
         </div>
 
-        <nav className="hidden items-center gap-6 sm:flex">
-          <Link href="/" className="text-sm text-white/70 transition-colors hover:text-amber-400 sm:text-base">
+        <nav className="hidden items-center gap-6 lg:flex">
+          <Link href="/" className="text-sm text-white/70 transition-colors hover:text-amber-400 lg:text-base">
             Beranda
           </Link>
           {isHome && (
             <button
               onClick={scrollToDiscovery}
-              className="text-sm text-white/70 transition-colors hover:text-amber-400 sm:text-base"
+              className="text-sm text-white/70 transition-colors hover:text-amber-400 lg:text-base"
             >
               Daftar Villa
             </button>
           )}
           {!isHome && (
-            <Link href="/#villa-discovery" className="text-sm text-white/70 transition-colors hover:text-amber-400 sm:text-base">
+            <Link href="/#villa-discovery" className="text-sm text-white/70 transition-colors hover:text-amber-400 lg:text-base">
               Daftar Villa
             </Link>
           )}
           <Link
             href="/blog"
-            className={`text-sm transition-colors sm:text-base ${isBlog ? 'text-amber-400' : 'text-white/70 hover:text-amber-400'}`}
+            className={`text-sm transition-colors lg:text-base ${isBlog ? 'text-amber-400' : 'text-white/70 hover:text-amber-400'}`}
           >
             Blog
           </Link>
-          <a href="#" className="text-sm text-white/70 transition-colors hover:text-amber-400 sm:text-base">
+          <a href="#" className="text-sm text-white/70 transition-colors hover:text-amber-400 lg:text-base">
             Tentang
           </a>
-          <a href="#" className="text-sm text-white/70 transition-colors hover:text-amber-400 sm:text-base">
+          <a href="#" className="text-sm text-white/70 transition-colors hover:text-amber-400 lg:text-base">
             Kontak
           </a>
         </nav>
@@ -66,7 +66,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-3">
           <Link
             href="/auth/login"
-            className="hidden items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-sm font-medium text-white hover:bg-brand/90 sm:flex"
+            className="hidden items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-sm font-medium text-white hover:bg-brand/90 lg:flex"
           >
             <LogIn className="size-4" />
             Sign In
@@ -74,7 +74,7 @@ export function SiteHeader() {
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="text-white sm:hidden"
+            className="text-white lg:hidden"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
@@ -86,8 +86,8 @@ export function SiteHeader() {
         <div
           className={
             isHome
-              ? 'absolute inset-x-0 top-14 z-20 mx-4 rounded-lg border border-emerald-800/30 bg-emerald-950/90 p-4 backdrop-blur-xl sm:hidden'
-              : 'fixed left-4 right-4 top-16 z-30 rounded-lg border border-emerald-800/30 bg-emerald-950/95 p-4 backdrop-blur-xl sm:hidden'
+              ? 'absolute inset-x-0 top-14 z-20 mx-4 rounded-lg border border-emerald-800/30 bg-emerald-950/90 p-4 backdrop-blur-xl lg:hidden'
+              : 'fixed left-4 right-4 top-16 z-30 rounded-lg border border-emerald-800/30 bg-emerald-950/95 p-4 backdrop-blur-xl lg:hidden'
           }
         >
           <nav className="flex flex-col gap-4">
