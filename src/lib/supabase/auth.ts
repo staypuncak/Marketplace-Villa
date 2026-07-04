@@ -12,33 +12,36 @@ export async function requireAdmin() {
     redirect('/login')
   }
 
-  let { data: admin } = await supabase
+  const { data: admin } = await supabase
     .from('admins')
     .select('id, name, role')
     .eq('auth_uid', user.id)
     .single()
 
-  if (!admin && user.email) {
-    const { data: emailAdmin } = await supabase
-      .from('admins')
-      .select('id, name, role')
-      .eq('email', user.email)
-      .single()
+  if (admin) {
+    return { user, admin }
+  }
 
-    if (emailAdmin) {
-      await supabase
-        .from('admins')
-        .update({ auth_uid: user.id })
-        .eq('id', emailAdmin.id)
+  if (user.email) {
+    const { data: rpcResult } = await supabase.rpc('check_admin_by_email', {
+      user_email: user.email,
+    })
 
-      admin = emailAdmin
+    if (rpcResult && Array.isArray(rpcResult) && rpcResult.length > 0) {
+      const row = rpcResult[0] as { admin_id: string; admin_name: string; admin_role: string }
+
+      await supabase.rpc('link_admin_auth', {
+        admin_id: row.admin_id,
+        auth_user_id: user.id,
+      })
+
+      return {
+        user,
+        admin: { id: row.admin_id, name: row.admin_name, role: row.admin_role },
+      }
     }
   }
 
-  if (!admin) {
-    await supabase.auth.signOut()
-    redirect('/login?error=unauthorized')
-  }
-
-  return { user, admin }
+  await supabase.auth.signOut()
+  redirect('/login?error=unauthorized')
 }

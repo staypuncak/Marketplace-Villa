@@ -32,40 +32,34 @@ function LoginForm() {
       return
     }
 
-      if (!data.user) {
+    if (!data.user) {
       setError('Login failed')
       setLoading(false)
       return
     }
 
-    let { data: admin } = await supabase
-      .from('admins')
-      .select('id')
-      .eq('auth_uid', data.user.id)
-      .single()
+    const { data: authResult, error: rpcError } = await supabase.rpc(
+      'check_admin_by_email',
+      { user_email: data.user.email },
+    )
 
-    if (!admin && data.user.email) {
-      const { data: emailAdmin } = await supabase
-        .from('admins')
-        .select('id')
-        .eq('email', data.user.email)
-        .single()
-
-      if (emailAdmin) {
-        await supabase
-          .from('admins')
-          .update({ auth_uid: data.user.id })
-          .eq('id', emailAdmin.id)
-        admin = emailAdmin
-      }
-    }
-
-    if (!admin) {
+    if (rpcError || !authResult || !Array.isArray(authResult) || authResult.length === 0) {
       await supabase.auth.signOut()
       setError('Akses ditolak. Anda tidak memiliki izin admin.')
       setLoading(false)
       return
     }
+
+    const adminRow = authResult[0] as {
+      admin_id: string
+      admin_name: string
+      admin_role: string
+    }
+
+    await supabase.rpc('link_admin_auth', {
+      admin_id: adminRow.admin_id,
+      auth_user_id: data.user.id,
+    })
 
     router.push(redirectTo)
     router.refresh()
