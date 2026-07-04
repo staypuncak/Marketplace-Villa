@@ -55,11 +55,23 @@ export default async function Home({ searchParams }: Props) {
               </p>
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {villas.map((villa) => (
                 <VillaCard key={villa.id} villa={villa} />
               ))}
             </div>
+
+            <form method="GET" action="/#villa-discovery" className="mt-10 text-center">
+              <button
+                type="submit"
+                className="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 transition-colors hover:text-amber-600"
+              >
+                Lihat Semua Villa
+                <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </button>
+            </form>
+            </>
           )}
         </Container>
       </section>

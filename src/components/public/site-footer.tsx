@@ -54,9 +54,9 @@ export function SiteFooter() {
         {/* Mobile layout */}
         <div className="space-y-8 sm:hidden">
           <div>
-            <img src="/images/logo-full.png" alt="StayPuncak" className="h-8 w-auto brightness-0 invert" />
+            <img src="/images/logo-full.png" alt="StayPuncak" className="h-10 w-auto brightness-0 invert" />
             <p className="mt-3 text-sm leading-relaxed text-emerald-200/50">
-              Villa pilihan keluarga di Puncak Bogor.
+              StayPuncak adalah Pengelola Villa Resmi di Puncak Bogor, yang menawarkan akomodasi berkualitas, harga terjangkau, fasilitas modern, dan jaminan keamanan booking online.
             </p>
           </div>
 
@@ -139,9 +139,9 @@ export function SiteFooter() {
         {/* Tablet + Desktop layout (unchanged) */}
         <div className="hidden gap-10 sm:grid sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-3">
-            <img src="/images/logo-full.png" alt="StayPuncak" className="h-10 w-auto brightness-0 invert" />
+            <img src="/images/logo-full.png" alt="StayPuncak" className="h-12 w-auto brightness-0 invert" />
             <p className="text-sm leading-relaxed text-emerald-200/50">
-              Villa pilihan keluarga di Puncak Bogor.
+              StayPuncak adalah Pengelola Villa Resmi di Puncak Bogor, yang menawarkan akomodasi berkualitas, harga terjangkau, fasilitas modern, dan jaminan keamanan booking online.
             </p>
             <div className="flex gap-3 pt-2">
               <a href="#" aria-label="Instagram" className="text-emerald-200/30 transition-all duration-200 hover:text-amber-400 hover:scale-110">
