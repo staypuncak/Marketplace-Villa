@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import {
   Plus, Search, MapPin, Bed, Bath, Users,
   Eye, Pencil, MoreHorizontal, ChevronDown,
@@ -176,10 +177,10 @@ export default function VillaPage() {
             Kelola seluruh villa yang tampil di website StayPuncak.
           </p>
         </div>
-        <button className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700">
+        <Link href="/dashboard/villa/create" className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700">
           <Plus className="size-4" />
           Tambah Villa
-        </button>
+        </Link>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
