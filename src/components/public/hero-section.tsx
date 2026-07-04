@@ -48,7 +48,7 @@ export function HeroSection() {
       <Container className="relative z-10 flex min-h-[85vh] flex-col justify-center pb-24 pt-28">
         <div className="-mt-4 max-w-2xl sm:mt-0">
           <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.2em] text-amber-400 sm:mb-3 sm:text-xs">
-            Villa Terverifikasi &bull; Puncak Bogor
+            Liburan Nyaman @ Puncak Bogor
           </p>
           <h1 className="font-serif text-[2rem] leading-[1.45] sm:leading-snug tracking-tighter text-white sm:text-5xl lg:text-6xl">
             Booking Villa Puncak
