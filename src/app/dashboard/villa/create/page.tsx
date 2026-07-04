@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, ArrowRight, Check, Building, Upload, Search, Plus, X } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, Building, Search, Plus, X, Image } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const steps = ['Informasi Dasar', 'Media', 'Fasilitas', 'Booking', 'SEO & Publish']
@@ -52,6 +52,9 @@ export default function CreateVillaPage() {
   const [bathrooms, setBathrooms] = useState('')
   const [selectedFacilities, setSelectedFacilities] = useState<string[]>([])
   const [customFacilities, setCustomFacilities] = useState<string[]>([])
+  const [thumbnailSelected, setThumbnailSelected] = useState(false)
+  const [heroSelected, setHeroSelected] = useState(false)
+  const [galleryCount, setGalleryCount] = useState(0)
 
   const next = () => {
     if (step < steps.length - 1) setStep(step + 1)
@@ -104,7 +107,13 @@ export default function CreateVillaPage() {
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
         {step === 0 && <StepInformasiDasar />}
-        {step === 1 && <StepMedia />}
+        {step === 1 && (
+          <StepMedia
+            thumbnailSelected={thumbnailSelected} setThumbnailSelected={setThumbnailSelected}
+            heroSelected={heroSelected} setHeroSelected={setHeroSelected}
+            galleryCount={galleryCount} setGalleryCount={setGalleryCount}
+          />
+        )}
         {step === 2 && (
           <StepFasilitas
             guests={guests} setGuests={setGuests}
@@ -115,7 +124,7 @@ export default function CreateVillaPage() {
           />
         )}
         {step === 3 && <StepBooking />}
-        {step === 4 && <StepSeo guests={guests} bedrooms={bedrooms} bathrooms={bathrooms} selectedFacilities={selectedFacilities} />}
+        {step === 4 && <StepSeo guests={guests} bedrooms={bedrooms} bathrooms={bathrooms} selectedFacilities={selectedFacilities} thumbnailSelected={thumbnailSelected} heroSelected={heroSelected} galleryCount={galleryCount} />}
       </div>
 
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -192,30 +201,87 @@ function StepInformasiDasar() {
   )
 }
 
-function UploadZone({ label, count, max }: { label: string; count: number; max?: string }) {
+function MediaCard({
+  label, badge, helper, ratio, selected, galleryCount: _galleryCount,
+}: {
+  label: string
+  badge?: string
+  helper: string
+  ratio?: string
+  selected?: boolean
+  galleryCount?: number
+}) {
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-gray-700">{label}</span>
-        <span className="text-xs text-gray-400">{count} {max ? `/ ${max}` : ''}</span>
+    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div className="flex items-start justify-between">
+        <div>
+          <div className="flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-gray-900">{label}</h3>
+            {badge && (
+              <span className="rounded-md bg-red-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-red-600">{badge}</span>
+            )}
+          </div>
+          <p className="mt-1 text-xs text-gray-400">{helper}</p>
+        </div>
+        {typeof _galleryCount === 'number' && (
+          <span className="text-xs font-medium text-gray-400">{_galleryCount} / 20 foto</span>
+        )}
       </div>
-      <div className="flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 py-8 transition-colors hover:border-emerald-300 hover:bg-emerald-50/50">
+      {ratio && <p className="mt-2 text-[11px] font-medium text-gray-400">Rasio: {ratio}</p>}
+      <div className="mt-3 flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 py-7 transition-colors hover:border-emerald-300 hover:bg-emerald-50/50">
         <div className="text-center">
-          <Upload className="mx-auto size-6 text-gray-300" />
-          <p className="mt-2 text-sm text-gray-500">Klik atau tarik file ke sini</p>
+          {selected ? (
+            <div className="flex items-center justify-center gap-1 text-emerald-600">
+              <Check className="size-5" />
+              <span className="text-sm font-medium">Sudah dipilih</span>
+            </div>
+          ) : (
+            <>
+              <Image className="mx-auto size-8 text-gray-300" />
+              <p className="mt-2 text-sm text-gray-500">Klik untuk upload atau drag foto ke sini</p>
+              <p className="mt-0.5 text-xs text-gray-300">JPG, PNG, WEBP</p>
+            </>
+          )}
         </div>
       </div>
     </div>
   )
 }
 
-function StepMedia() {
+function StepMedia({
+  thumbnailSelected, setThumbnailSelected,
+  heroSelected, setHeroSelected,
+  galleryCount, setGalleryCount,
+}: {
+  thumbnailSelected: boolean; setThumbnailSelected: (v: boolean) => void
+  heroSelected: boolean; setHeroSelected: (v: boolean) => void
+  galleryCount: number; setGalleryCount: (v: number) => void
+}) {
   return (
     <div className="space-y-6">
-      <p className="text-sm text-gray-400">Upload gambar akan diaktifkan pada sprint berikutnya.</p>
-      <UploadZone label="Thumbnail" count={0} max="1" />
-      <UploadZone label="Hero Image" count={0} max="1" />
-      <UploadZone label="Gallery" count={0} max="Maximum 20 photos" />
+      <div className="space-y-4">
+        <MediaCard
+          label="Thumbnail Villa"
+          badge="Wajib"
+          helper="Gambar utama yang tampil di card villa dan daftar rekomendasi."
+          ratio="4:3 atau 1:1"
+          selected={thumbnailSelected}
+        />
+        <MediaCard
+          label="Hero Detail Villa"
+          badge="Wajib"
+          helper="Gambar besar yang tampil di halaman detail villa."
+          ratio="16:9"
+          selected={heroSelected}
+        />
+        <MediaCard
+          label="Galeri Foto Villa"
+          helper="Tambahkan beberapa foto untuk memperlihatkan suasana villa, kamar, kolam, dapur, dan area sekitar."
+          ratio="Minimal 5 foto — Maksimal 20 foto"
+          galleryCount={galleryCount}
+        />
+      </div>
+      <p className="text-center text-xs text-gray-400">Upload gambar akan dihubungkan ke Supabase Storage pada sprint berikutnya.</p>
     </div>
   )
 }
@@ -374,7 +440,7 @@ function StepBooking() {
   )
 }
 
-function StepSeo({ guests, bedrooms, bathrooms, selectedFacilities }: { guests: string; bedrooms: string; bathrooms: string; selectedFacilities: string[] }) {
+function StepSeo({ guests, bedrooms, bathrooms, selectedFacilities, thumbnailSelected, heroSelected, galleryCount }: { guests: string; bedrooms: string; bathrooms: string; selectedFacilities: string[]; thumbnailSelected: boolean; heroSelected: boolean; galleryCount: number }) {
   return (
     <div className="space-y-5">
       <Field label="SEO Title">
@@ -414,6 +480,9 @@ function StepSeo({ guests, bedrooms, bathrooms, selectedFacilities }: { guests: 
               <span>Kamar Tidur: {bedrooms || '-'}</span>
               <span>Kamar Mandi: {bathrooms || '-'}</span>
               <span>Fasilitas: {selectedFacilities.length} dipilih</span>
+              <span>Thumbnail: {thumbnailSelected ? 'Sudah dipilih' : 'Belum diupload'}</span>
+              <span>Hero: {heroSelected ? 'Sudah dipilih' : 'Belum diupload'}</span>
+              <span>Galeri: {galleryCount} foto</span>
             </div>
           </div>
           <div className="ml-auto flex flex-col items-end gap-1">
