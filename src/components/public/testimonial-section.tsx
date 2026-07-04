@@ -2,7 +2,6 @@
 
 import { useState, useRef, useCallback } from 'react'
 import { Container } from '@/components/shared/container'
-import { Star } from 'lucide-react'
 import { TestimonialCard } from './testimonial-card'
 import { testimonials } from '@/data/testimonials'
 
@@ -41,11 +40,8 @@ export function TestimonialSection() {
     <section className="bg-[#F6F8F6] py-16 sm:py-24">
       <Container>
         <div className="mx-auto mb-12 max-w-2xl text-center sm:mb-16">
-          <div className="mb-4 inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-4 py-1.5 text-sm text-amber-700">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className="size-4 fill-amber-400 text-amber-400" />
-            ))}
-            <span className="ml-1.5 font-medium">Dipercaya Banyak Tamu</span>
+          <div className="mb-4 inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-4 py-1.5 text-sm text-amber-700">
+            <span className="font-medium">Dipercaya Banyak Tamu</span>
           </div>
 
           <h2 className="font-serif text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">
