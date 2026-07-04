@@ -105,15 +105,15 @@ export default function CreateVillaPage() {
         {step === 4 && <StepSeo />}
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           {step > 0 && (
-            <button onClick={prev} className="flex items-center gap-1.5 rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50">
+            <button onClick={prev} className="flex w-full items-center gap-1.5 rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 sm:w-auto">
               <ArrowLeft className="size-4" /> Kembali
             </button>
           )}
         </div>
-        <button onClick={next} className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700">
+        <button onClick={next} className="flex w-full items-center gap-1.5 rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 sm:w-auto">
           {step < steps.length - 1 ? 'Lanjut' : 'Simpan Villa'} <ArrowRight className="size-4" />
         </button>
       </div>
@@ -140,9 +140,10 @@ function StepInformasiDasar() {
       </Field>
       <Field label="Slug">
         <input type="text" placeholder="villa-bukit-respati" className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-500" readOnly />
+        <p className="mt-1 text-xs text-gray-400">URL otomatis dibuat dari nama villa dan bisa disesuaikan.</p>
       </Field>
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Lokasi">
+        <Field label="Lokasi" required>
           <input type="text" placeholder="Cisarua, Puncak Bogor" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
         </Field>
         <Field label="Harga per Malam" required>
@@ -198,6 +199,7 @@ function UploadZone({ label, count, max }: { label: string; count: number; max?:
 function StepMedia() {
   return (
     <div className="space-y-6">
+      <p className="text-sm text-gray-400">Upload gambar akan diaktifkan pada sprint berikutnya.</p>
       <UploadZone label="Thumbnail" count={0} max="1" />
       <UploadZone label="Hero Image" count={0} max="1" />
       <UploadZone label="Gallery" count={0} max="Maximum 20 photos" />
@@ -305,8 +307,12 @@ function StepSeo() {
             <p className="text-sm font-semibold text-gray-900">Villa Bukit Respati</p>
             <p className="text-xs text-gray-500">Cisarua, Puncak Bogor</p>
             <p className="text-xs font-medium text-emerald-700">Rp 2.500.000 / malam</p>
+            <p className="text-xs text-gray-400">Kapasitas: 10 tamu</p>
           </div>
-          <span className="ml-auto rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700">Draft</span>
+          <div className="ml-auto flex flex-col items-end gap-1">
+            <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700">Draft</span>
+            <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700">Featured</span>
+          </div>
         </div>
       </div>
     </div>
