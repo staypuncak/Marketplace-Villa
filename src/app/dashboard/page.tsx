@@ -1,42 +1,69 @@
-import { Building, CalendarCheck, MessageSquare, Star } from 'lucide-react'
-import type { Metadata } from 'next'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Dashboard',
-}
+import {
+  Building, CalendarCheck, Clock, UserCheck,
+  PlusCircle, NotebookPen, Globe, FileText,
+} from 'lucide-react'
+import { useDashboard } from '@/lib/dashboard-context'
 
-const stats = [
-  { label: 'Total Villa', value: '5', icon: Building, change: '+2 this month' },
-  { label: 'Active Booking', value: '12', icon: CalendarCheck, change: '+3 today' },
-  { label: 'Testimonials', value: '24', icon: MessageSquare, change: '5 new' },
-  { label: 'Rating', value: '4.9', icon: Star, change: 'From 128 reviews' },
-]
-
-const activities = [
-  { action: 'Booking baru untuk Villa Kirana', time: '2 menit lalu' },
-  { action: 'Testimonial baru dari Ibu Sarah', time: '1 jam lalu' },
-  { action: 'Pembayaran dikonfirmasi: Villa Savana', time: '3 jam lalu' },
-  { action: 'Villa Highland diupdate', time: '1 hari lalu' },
+const kpiCards = [
+  { label: 'Villa Aktif', value: '5', icon: Building, change: '+2 this month' },
+  { label: 'Booking Baru', value: '12', icon: CalendarCheck, change: '+3 today' },
+  { label: 'Menunggu Konfirmasi', value: '3', icon: Clock, change: 'Perlu dicek' },
+  { label: 'Check-in Hari Ini', value: '2', icon: UserCheck, change: 'Villa Kirana & Highland' },
 ]
 
 const quickActions = [
-  { label: 'Tambah Villa Baru', icon: Building },
-  { label: 'Kelola Booking', icon: CalendarCheck },
-  { label: 'Atur Testimonial', icon: MessageSquare },
-  { label: 'Update Blog', icon: Star },
+  { label: 'Tambah Villa', desc: 'Tambah villa baru ke website', icon: PlusCircle, href: '/dashboard/villa' },
+  { label: 'Kelola Booking', desc: 'Lihat booking terbaru', icon: CalendarCheck, href: '/dashboard/booking' },
+  { label: 'Website', desc: 'Edit Hero, CTA, Footer', icon: Globe, href: '/dashboard/pengaturan' },
+  { label: 'Artikel', desc: 'Kelola Blog StayPuncak', icon: FileText, href: '/dashboard/blog' },
+]
+
+const activities = [
+  { action: 'Booking baru untuk Villa Kirana', time: '2 menit lalu', type: 'booking' },
+  { action: 'Testimonial baru dari Ibu Sarah', time: '1 jam lalu', type: 'general' },
+  { action: 'Pembayaran dikonfirmasi: Villa Savana', time: '3 jam lalu', type: 'confirm' },
+  { action: 'Villa Highland diupdate', time: '1 hari lalu', type: 'update' },
+  { action: 'Artikel baru: Tips Liburan Puncak', time: '2 hari lalu', type: 'article' },
+]
+
+const activityColors: Record<string, string> = {
+  booking: 'bg-emerald-400',
+  confirm: 'bg-amber-400',
+  update: 'bg-blue-400',
+  article: 'bg-purple-400',
+  general: 'bg-gray-300',
+}
+
+const websiteStatus = [
+  { label: 'Hero Aktif', active: true },
+  { label: 'WhatsApp Aktif', active: true },
+  { label: 'Semua Villa Online', active: true },
+  { label: 'SEO Homepage Lengkap', active: true },
 ]
 
 export default function DashboardPage() {
+  const { adminName } = useDashboard()
+  const firstName = adminName.split(' ')[0] || 'Admin'
+
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-semibold text-gray-900">Good Morning,</h2>
-        <p className="mt-1 text-gray-500">Welcome back to your StayPuncak dashboard.</p>
+        <h2 className="text-2xl font-semibold text-gray-900">
+          Selamat Datang Kembali, {firstName} 👋
+        </h2>
+        <p className="mt-1.5 text-gray-500">
+          Semoga hari ini membawa banyak booking baru.
+        </p>
+        <p className="mt-0.5 text-sm text-gray-400">
+          Kelola seluruh operasional StayPuncak dari satu tempat.
+        </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-gray-200 bg-white p-5">
+        {kpiCards.map((stat) => (
+          <div key={stat.label} className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-gray-500">{stat.label}</span>
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
@@ -50,33 +77,57 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="rounded-xl border border-gray-200 bg-white p-5 lg:col-span-2">
-          <h3 className="text-base font-semibold text-gray-900">Recent Activity</h3>
-          <div className="mt-4 space-y-4">
+        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm lg:col-span-2">
+          <h3 className="text-base font-semibold text-gray-900">Aktivitas Terbaru</h3>
+          <div className="mt-4 space-y-1">
             {activities.map((item, i) => (
-              <div key={i} className="flex items-start gap-3 border-b border-gray-100 pb-4 last:border-0 last:pb-0">
-                <div className="mt-0.5 h-2 w-2 rounded-full bg-emerald-400" />
+              <div
+                key={i}
+                className="flex items-start gap-3 border-b border-gray-100 px-2 py-3 last:border-0"
+              >
+                <div
+                  className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${activityColors[item.type] || 'bg-gray-300'}`}
+                />
                 <div className="min-w-0 flex-1">
                   <p className="text-sm text-gray-700">{item.action}</p>
-                  <p className="text-xs text-gray-400">{item.time}</p>
+                  <p className="mt-0.5 text-xs text-gray-400">{item.time}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
-          <h3 className="text-base font-semibold text-gray-900">Quick Actions</h3>
-          <div className="mt-4 space-y-3">
-            {quickActions.map((action) => (
-              <button
-                key={action.label}
-                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900"
-              >
-                <action.icon className="size-4 text-emerald-600" />
-                {action.label}
-              </button>
-            ))}
+        <div className="space-y-6">
+          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <h3 className="text-base font-semibold text-gray-900">Aksi Cepat</h3>
+            <div className="mt-4 grid grid-cols-1 gap-3">
+              {quickActions.map((action) => (
+                <button
+                  key={action.label}
+                  className="flex items-start gap-3 rounded-lg border border-gray-100 bg-gray-50/50 px-4 py-3 text-left transition-all hover:border-emerald-200 hover:bg-emerald-50/50 hover:shadow-sm"
+                >
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
+                    <action.icon className="size-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-gray-900">{action.label}</p>
+                    <p className="text-xs text-gray-400">{action.desc}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <h3 className="text-base font-semibold text-gray-900">Status Website</h3>
+            <div className="mt-4 space-y-3">
+              {websiteStatus.map((item) => (
+                <div key={item.label} className="flex items-center gap-3">
+                  <span className={`h-2 w-2 shrink-0 rounded-full ${item.active ? 'bg-emerald-400' : 'bg-red-400'}`} />
+                  <span className="text-sm text-gray-600">{item.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

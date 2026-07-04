@@ -32,27 +32,26 @@ export function Sidebar({ collapsed, open, onClose }: SidebarProps) {
     return pathname.startsWith(href)
   }
 
-  const renderItems = (items: typeof navItems) =>
-    items.map((item) => {
-      const active = isActive(item.href)
-      return (
-        <Link
-          key={item.href}
-          href={item.href}
-          onClick={onClose}
-          className={cn(
-            'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-            active
-              ? 'bg-emerald-50 text-emerald-700'
-              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
-            collapsed && 'justify-center px-2',
-          )}
-        >
-          <item.icon className="size-5 shrink-0" />
-          {!collapsed && <span>{item.label}</span>}
-        </Link>
-      )
-    })
+  const navLink = (href: string, Icon: React.ElementType, label: string, mobile = false) => {
+    const active = isActive(href)
+    return (
+      <Link
+        key={href}
+        href={href}
+        onClick={onClose}
+        className={cn(
+          'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200',
+          active
+            ? 'bg-emerald-50 font-semibold text-emerald-700'
+            : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800',
+          !mobile && collapsed && 'justify-center px-2',
+        )}
+      >
+        <Icon className={cn('size-5 shrink-0', active && 'text-emerald-600')} />
+        {(!collapsed || mobile) && <span>{label}</span>}
+      </Link>
+    )
+  }
 
   return (
     <>
@@ -67,16 +66,16 @@ export function Sidebar({ collapsed, open, onClose }: SidebarProps) {
           {!collapsed && <span className="text-lg font-bold tracking-tight text-gray-900">StayPuncak</span>}
         </div>
 
-        <nav className="flex-1 overflow-y-auto p-3 space-y-1">
-          {renderItems(navItems)}
+        <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
+          {navItems.map((item) => navLink(item.href, item.icon, item.label))}
         </nav>
 
-        <div className="border-t border-gray-200 p-3 space-y-1">
+        <div className="border-t border-gray-200 p-3 space-y-0.5">
           <Link
             href="/dashboard/profile"
             onClick={onClose}
             className={cn(
-              'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900',
+              'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-500 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800',
               collapsed && 'justify-center px-2',
             )}
           >
@@ -87,7 +86,7 @@ export function Sidebar({ collapsed, open, onClose }: SidebarProps) {
             <button
               type="submit"
               className={cn(
-                'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900',
+                'flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-500 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800',
                 collapsed && 'justify-center px-2',
               )}
             >
@@ -111,14 +110,14 @@ export function Sidebar({ collapsed, open, onClose }: SidebarProps) {
                 <X className="size-5" />
               </button>
             </div>
-            <nav className="overflow-y-auto p-3 space-y-1">
-              {renderItems(navItems)}
+            <nav className="overflow-y-auto p-3 space-y-0.5">
+              {navItems.map((item) => navLink(item.href, item.icon, item.label, true))}
             </nav>
-            <div className="border-t border-gray-200 p-3 space-y-1">
+            <div className="border-t border-gray-200 p-3 space-y-0.5">
               <Link
                 href="/dashboard/profile"
                 onClick={onClose}
-                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-500 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800"
               >
                 <UserCircle className="size-5 shrink-0" />
                 <span>Profile</span>
@@ -126,7 +125,7 @@ export function Sidebar({ collapsed, open, onClose }: SidebarProps) {
               <form action="/logout" method="POST">
                 <button
                   type="submit"
-                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-500 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800"
                 >
                   <LogOut className="size-5 shrink-0" />
                   <span>Logout</span>
