@@ -32,19 +32,35 @@ function LoginForm() {
       return
     }
 
-    if (!data.user) {
+      if (!data.user) {
       setError('Login failed')
       setLoading(false)
       return
     }
 
-    const { data: admin, error: adminError } = await supabase
+    let { data: admin } = await supabase
       .from('admins')
       .select('id')
       .eq('auth_uid', data.user.id)
       .single()
 
-    if (adminError || !admin) {
+    if (!admin && data.user.email) {
+      const { data: emailAdmin } = await supabase
+        .from('admins')
+        .select('id')
+        .eq('email', data.user.email)
+        .single()
+
+      if (emailAdmin) {
+        await supabase
+          .from('admins')
+          .update({ auth_uid: data.user.id })
+          .eq('id', emailAdmin.id)
+        admin = emailAdmin
+      }
+    }
+
+    if (!admin) {
       await supabase.auth.signOut()
       setError('Akses ditolak. Anda tidak memiliki izin admin.')
       setLoading(false)

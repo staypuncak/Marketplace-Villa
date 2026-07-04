@@ -12,11 +12,28 @@ export async function requireAdmin() {
     redirect('/login')
   }
 
-  const { data: admin } = await supabase
+  let { data: admin } = await supabase
     .from('admins')
     .select('id, name, role')
     .eq('auth_uid', user.id)
     .single()
+
+  if (!admin && user.email) {
+    const { data: emailAdmin } = await supabase
+      .from('admins')
+      .select('id, name, role')
+      .eq('email', user.email)
+      .single()
+
+    if (emailAdmin) {
+      await supabase
+        .from('admins')
+        .update({ auth_uid: user.id })
+        .eq('id', emailAdmin.id)
+
+      admin = emailAdmin
+    }
+  }
 
   if (!admin) {
     await supabase.auth.signOut()
