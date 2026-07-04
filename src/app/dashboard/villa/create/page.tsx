@@ -1,0 +1,314 @@
+'use client'
+
+import { useState } from 'react'
+import Link from 'next/link'
+import { ArrowLeft, ArrowRight, Check, Building, Upload, Search } from 'lucide-react'
+import { cn } from '@/lib/utils'
+
+const steps = ['Informasi Dasar', 'Media', 'Fasilitas', 'Booking', 'SEO & Publish']
+
+const facilityOptions = [
+  'Private Pool', 'WiFi', 'BBQ', 'Karaoke', 'Kitchen',
+  'Mountain View', 'Smart TV', 'Hot Water', 'Parking',
+  'Playground', 'Campfire', 'Meeting Room',
+]
+
+const categoryOptions = ['Private Villa', 'Family Villa', 'Luxury Villa', 'Villa dengan Private Pool']
+
+function StepIndicator({ step }: { step: number }) {
+  return (
+    <div className="mb-10">
+      <div className="flex items-center justify-between">
+        {steps.map((label, i) => (
+          <div key={label} className="flex items-center">
+            <div className="flex flex-col items-center">
+              <div
+                className={cn(
+                  'flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all duration-300 sm:h-10 sm:w-10 sm:text-sm',
+                  i < step ? 'bg-emerald-600 text-white' : i === step ? 'border-2 border-emerald-600 bg-emerald-50 text-emerald-700' : 'border-2 border-gray-200 bg-white text-gray-400',
+                )}
+              >
+                {i < step ? <Check className="size-4 sm:size-5" /> : i + 1}
+              </div>
+              <span className={cn('mt-1.5 hidden text-xs font-medium sm:block', i === step ? 'text-emerald-700' : 'text-gray-400')}>
+                {label}
+              </span>
+            </div>
+            {i < steps.length - 1 && (
+              <div className={cn('mx-2 h-0.5 w-8 transition-colors sm:mx-3 sm:w-16', i < step ? 'bg-emerald-600' : 'bg-gray-200')} />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default function CreateVillaPage() {
+  const [step, setStep] = useState(0)
+  const [success, setSuccess] = useState(false)
+
+  const next = () => {
+    if (step < steps.length - 1) setStep(step + 1)
+    else setSuccess(true)
+  }
+  const prev = () => setStep(step - 1)
+
+  if (success) {
+    return (
+      <div className="mx-auto max-w-lg space-y-8">
+        <Link href="/dashboard/villa" className="inline-flex items-center gap-1.5 text-sm text-gray-500 transition-colors hover:text-gray-800">
+          <ArrowLeft className="size-4" /> Kembali ke Daftar Villa
+        </Link>
+        <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-2xl">
+            🎉
+          </div>
+          <h2 className="mt-4 text-xl font-semibold text-gray-900">Villa berhasil dibuat</h2>
+          <p className="mt-1 text-sm text-gray-500">Villa Anda sekarang sudah masuk daftar.</p>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <button className="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700">
+              Lihat Villa
+            </button>
+            <button onClick={() => { setStep(0); setSuccess(false) }} className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50">
+              Tambah Villa Lagi
+            </button>
+            <Link href="/dashboard/villa" className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-500 shadow-sm transition-all hover:bg-gray-50">
+              Kembali ke Daftar Villa
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mx-auto max-w-2xl space-y-6">
+      <Link href="/dashboard/villa" className="inline-flex items-center gap-1.5 text-sm text-gray-500 transition-colors hover:text-gray-800">
+        <ArrowLeft className="size-4" /> Kembali ke Daftar Villa
+      </Link>
+
+      <div>
+        <h2 className="text-2xl font-semibold text-gray-900">Tambah Villa Baru</h2>
+        <p className="mt-1 text-sm text-gray-500">
+          Lengkapi informasi villa secara bertahap agar mudah dikelola dan siap dipublikasikan.
+        </p>
+      </div>
+
+      <StepIndicator step={step} />
+
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+        {step === 0 && <StepInformasiDasar />}
+        {step === 1 && <StepMedia />}
+        {step === 2 && <StepFasilitas />}
+        {step === 3 && <StepBooking />}
+        {step === 4 && <StepSeo />}
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div>
+          {step > 0 && (
+            <button onClick={prev} className="flex items-center gap-1.5 rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50">
+              <ArrowLeft className="size-4" /> Kembali
+            </button>
+          )}
+        </div>
+        <button onClick={next} className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700">
+          {step < steps.length - 1 ? 'Lanjut' : 'Simpan Villa'} <ArrowRight className="size-4" />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function Field({ label, children, required }: { label: string; children: React.ReactNode; required?: boolean }) {
+  return (
+    <div className="space-y-1.5">
+      <label className="text-sm font-medium text-gray-700">
+        {label} {required && <span className="text-red-400">*</span>}
+      </label>
+      {children}
+    </div>
+  )
+}
+
+function StepInformasiDasar() {
+  return (
+    <div className="space-y-5">
+      <Field label="Nama Villa" required>
+        <input type="text" placeholder="contoh: Villa Bukit Respati" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+      </Field>
+      <Field label="Slug">
+        <input type="text" placeholder="villa-bukit-respati" className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-500" readOnly />
+      </Field>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Lokasi">
+          <input type="text" placeholder="Cisarua, Puncak Bogor" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+        </Field>
+        <Field label="Harga per Malam" required>
+          <div className="relative">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-gray-400">Rp</span>
+            <input type="number" placeholder="2.500.000" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 pl-10 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+          </div>
+        </Field>
+      </div>
+      <Field label="Kategori">
+        <div className="flex flex-wrap gap-2">
+          {categoryOptions.map((cat) => (
+            <button key={cat} className="rounded-xl border border-gray-200 px-4 py-2 text-sm text-gray-600 transition-all hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700">
+              {cat}
+            </button>
+          ))}
+        </div>
+      </Field>
+      <div className="flex items-center gap-6">
+        <label className="flex items-center gap-2">
+          <input type="checkbox" className="size-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
+          <span className="text-sm text-gray-700">Featured</span>
+        </label>
+        <label className="flex items-center gap-2">
+          <input type="checkbox" className="size-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
+          <span className="text-sm text-gray-700">Aktif</span>
+        </label>
+      </div>
+      <Field label="Deskripsi Singkat">
+        <textarea rows={3} placeholder="Deskripsi villa untuk homepage..." className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+      </Field>
+    </div>
+  )
+}
+
+function UploadZone({ label, count, max }: { label: string; count: number; max?: string }) {
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium text-gray-700">{label}</span>
+        <span className="text-xs text-gray-400">{count} {max ? `/ ${max}` : ''}</span>
+      </div>
+      <div className="flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 py-8 transition-colors hover:border-emerald-300 hover:bg-emerald-50/50">
+        <div className="text-center">
+          <Upload className="mx-auto size-6 text-gray-300" />
+          <p className="mt-2 text-sm text-gray-500">Klik atau tarik file ke sini</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function StepMedia() {
+  return (
+    <div className="space-y-6">
+      <UploadZone label="Thumbnail" count={0} max="1" />
+      <UploadZone label="Hero Image" count={0} max="1" />
+      <UploadZone label="Gallery" count={0} max="Maximum 20 photos" />
+    </div>
+  )
+}
+
+function StepFasilitas() {
+  const [selected, setSelected] = useState<string[]>([])
+  const toggle = (f: string) => setSelected(selected.includes(f) ? selected.filter((s) => s !== f) : [...selected, f])
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <label className="text-sm font-medium text-gray-700">Fasilitas</label>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {facilityOptions.map((f) => (
+            <button
+              key={f}
+              onClick={() => toggle(f)}
+              className={cn(
+                'rounded-xl border px-4 py-2 text-sm transition-all',
+                selected.includes(f) ? 'border-emerald-300 bg-emerald-50 font-medium text-emerald-700' : 'border-gray-200 text-gray-600 hover:border-emerald-200 hover:bg-emerald-50/50',
+              )}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="grid gap-5 sm:grid-cols-3">
+        <Field label="Jumlah Tamu">
+          <input type="number" placeholder="0" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+        </Field>
+        <Field label="Kamar Tidur">
+          <input type="number" placeholder="0" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+        </Field>
+        <Field label="Kamar Mandi">
+          <input type="number" placeholder="0" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+        </Field>
+      </div>
+    </div>
+  )
+}
+
+function StepBooking() {
+  return (
+    <div className="space-y-5">
+      <Field label="Nomor WhatsApp Booking">
+        <input type="text" placeholder="+62 812-3456-7890" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+      </Field>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Check-in Time">
+          <input type="time" defaultValue="14:00" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+        </Field>
+        <Field label="Check-out Time">
+          <input type="time" defaultValue="12:00" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+        </Field>
+      </div>
+      <Field label="Minimum Stay (malam)">
+        <input type="number" placeholder="1" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+      </Field>
+      <Field label="Catatan Booking">
+        <textarea rows={3} placeholder="Informasi tambahan untuk tamu..." className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+      </Field>
+      <Field label="Featured Order / Homepage Priority">
+        <input type="number" placeholder="1" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+      </Field>
+    </div>
+  )
+}
+
+function StepSeo() {
+  return (
+    <div className="space-y-5">
+      <Field label="SEO Title">
+        <input type="text" placeholder="Villa Bukit Respati — StayPuncak" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+      </Field>
+      <Field label="Meta Description">
+        <textarea rows={2} placeholder="Nikmati liburan keluarga di Villa Bukit Respati..." className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+      </Field>
+      <Field label="Preview URL">
+        <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-500">
+          <Search className="size-4" />
+          staypuncak.com/villa/<span className="text-gray-400">villa-bukit-respati</span>
+        </div>
+      </Field>
+      <Field label="Publikasi">
+        <div className="flex gap-3">
+          <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm transition-colors hover:border-emerald-300">
+            <input type="radio" name="publish" className="text-emerald-600" /> Draft
+          </label>
+          <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm transition-colors hover:border-emerald-300">
+            <input type="radio" name="publish" className="text-emerald-600" /> Publish
+          </label>
+        </div>
+      </Field>
+      <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+        <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Ringkasan</p>
+        <div className="mt-3 flex items-center gap-4">
+          <div className="flex h-14 w-20 items-center justify-center rounded-lg bg-gray-200 text-gray-400">
+            <Building className="size-6" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-gray-900">Villa Bukit Respati</p>
+            <p className="text-xs text-gray-500">Cisarua, Puncak Bogor</p>
+            <p className="text-xs font-medium text-emerald-700">Rp 2.500.000 / malam</p>
+          </div>
+          <span className="ml-auto rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700">Draft</span>
+        </div>
+      </div>
+    </div>
+  )
+}
