@@ -62,13 +62,16 @@ export default async function Home({ searchParams }: Props) {
               ))}
             </div>
 
-            <form method="GET" action="/#villa-discovery" className="mt-10 text-center">
+            <form method="GET" action="/#villa-discovery" className="mt-14 mb-4 text-center">
+              <p className="mb-2 text-sm font-semibold text-gray-400">
+                Belum menemukan villa yang tepat?
+              </p>
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 transition-colors hover:text-amber-600"
+                className="group inline-flex items-center gap-2 text-lg font-semibold text-emerald-600 transition-colors hover:text-amber-600"
               >
                 Lihat Semua Villa
-                <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                <svg className="size-5 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
               </button>
             </form>
             </>
