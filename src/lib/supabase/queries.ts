@@ -260,3 +260,52 @@ export async function getVillaBySlug(slug: string): Promise<Villa | undefined> {
     return fallbackGetVillaBySlug(slug)
   }
 }
+
+const avatarColors = [
+  'bg-emerald-600', 'bg-teal-600', 'bg-lime-700', 'bg-blue-700', 'bg-amber-700',
+  'bg-rose-600', 'bg-violet-600', 'bg-cyan-600', 'bg-orange-600', 'bg-pink-600',
+]
+
+export async function getPublishedTestimonials() {
+  try {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase
+      .from('testimonials')
+      .select('*')
+      .eq('status', 'published')
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: false })
+
+    if (error || !data || data.length === 0) {
+      const { testimonials } = await import('@/data/testimonials')
+      return testimonials.map((t, i) => ({
+        id: t.id,
+        name: t.name,
+        city: t.city,
+        text: t.text,
+        villaName: t.villaName,
+        avatarColor: avatarColors[i % avatarColors.length],
+      }))
+    }
+
+    return data.map((row, i) => ({
+      id: row.id,
+      name: row.guest_name,
+      city: row.guest_city || '',
+      text: row.content,
+      villaName: row.villa_name || '',
+      avatarColor: avatarColors[i % avatarColors.length],
+    }))
+  } catch {
+    const { testimonials } = await import('@/data/testimonials')
+    return testimonials.map((t, i) => ({
+      id: t.id,
+      name: t.name,
+      city: t.city,
+      text: t.text,
+      villaName: t.villaName,
+      avatarColor: avatarColors[i % avatarColors.length],
+    }))
+  }
+}

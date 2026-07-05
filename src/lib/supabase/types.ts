@@ -353,6 +353,56 @@ export type Database = {
         }
         Relationships: []
       }
+      testimonials: {
+        Row: {
+          content: string
+          created_at: string | null
+          guest_city: string | null
+          guest_name: string
+          id: string
+          rating: number | null
+          sort_order: number | null
+          status: string | null
+          updated_at: string | null
+          villa_id: string | null
+          villa_name: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          guest_city?: string | null
+          guest_name: string
+          id?: string
+          rating?: number | null
+          sort_order?: number | null
+          status?: string | null
+          updated_at?: string | null
+          villa_id?: string | null
+          villa_name?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          guest_city?: string | null
+          guest_name?: string
+          id?: string
+          rating?: number | null
+          sort_order?: number | null
+          status?: string | null
+          updated_at?: string | null
+          villa_id?: string | null
+          villa_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "testimonials_villa_id_fkey"
+            columns: ["villa_id"]
+            isOneToOne: false
+            referencedRelation: "villas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
