@@ -5,7 +5,7 @@ import { BookingWidget } from '@/components/public/booking-widget'
 import { VillaGallery } from '@/components/public/villa-gallery'
 import { VillaOverview } from '@/components/public/villa-overview'
 import { VillaSuitability } from '@/components/public/villa-suitability'
-import { getAllVillas, getVillaBySlug } from '@/lib/supabase/queries'
+import { getAllVillasStatic, getVillaBySlug } from '@/lib/supabase/queries'
 import type { Metadata } from 'next'
 
 function formatPrice(price: number) {
@@ -18,8 +18,8 @@ function formatPrice(price: number) {
 }
 
 export async function generateStaticParams() {
-  const villas = await getAllVillas()
-  return villas.map((villa) => ({ slug: villa.slug }))
+  const slugs = await getAllVillasStatic()
+  return slugs.map((s) => ({ slug: s.slug }))
 }
 
 type Props = {

@@ -1,4 +1,5 @@
 import { createClient } from './server'
+import { createStaticClient } from './static'
 import type { Villa } from '@/types/villa'
 import type { Tables } from './types'
 import { villas as fallbackVillas, getVillaBySlug as fallbackGetVillaBySlug } from '@/data/villas'
@@ -112,6 +113,27 @@ export async function getAllVillas(search?: string, location?: string, capacity?
   } catch (err) {
     console.error('Supabase getAllVillas exception:', err)
     return filterVillas(fallbackVillas, search, location, capacity, sort)
+  }
+}
+
+export async function getAllVillasStatic(): Promise<Pick<Villa, 'slug'>[]> {
+  try {
+    const supabase = createStaticClient()
+
+    const { data, error } = await supabase
+      .from('villas')
+      .select('slug')
+      .eq('status', 'active')
+
+    if (error || !data) {
+      console.error('Supabase getAllVillasStatic error:', error)
+      return fallbackVillas.map((v) => ({ slug: v.slug }))
+    }
+
+    return data.map((row) => ({ slug: row.slug }))
+  } catch (err) {
+    console.error('Supabase getAllVillasStatic exception:', err)
+    return fallbackVillas.map((v) => ({ slug: v.slug }))
   }
 }
 
