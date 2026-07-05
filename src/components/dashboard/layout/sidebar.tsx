@@ -6,10 +6,12 @@ import { cn } from '@/lib/utils'
 import {
   LayoutDashboard, Building, CalendarCheck, Users,
   MessageSquare, Newspaper, Globe, Settings, UserCircle, LogOut, X,
+  BarChart3,
 } from 'lucide-react'
 
 const navItems = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
   { label: 'Villa', href: '/dashboard/villa', icon: Building },
   { label: 'Booking', href: '/dashboard/booking', icon: CalendarCheck },
   { label: 'Customer', href: '/dashboard/customer', icon: Users },
