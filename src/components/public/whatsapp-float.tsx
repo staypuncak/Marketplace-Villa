@@ -4,10 +4,12 @@ import { useEffect, useState } from 'react'
 import { MessageCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const WHATSAPP_URL =
-  'https://wa.me/?text=Halo%20StayPuncak%2C%20saya%20ingin%20tanya%20tentang%20villa.'
+type ContactSettings = {
+  whatsappNumber: string
+  whatsappMessage: string
+}
 
-export function WhatsAppFloat() {
+export function WhatsAppFloat({ settings }: { settings: ContactSettings }) {
   const [atFooter, setAtFooter] = useState(false)
 
   useEffect(() => {
@@ -22,9 +24,13 @@ export function WhatsAppFloat() {
     return () => observer.disconnect()
   }, [])
 
+  const target = settings.whatsappNumber || ''
+  const message = settings.whatsappMessage || 'Halo StayPuncak, saya ingin tanya tentang villa.'
+  const whatsappUrl = `https://wa.me/${target}?text=${encodeURIComponent(message)}`
+
   return (
     <a
-      href={WHATSAPP_URL}
+      href={whatsappUrl}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat Admin via WhatsApp"

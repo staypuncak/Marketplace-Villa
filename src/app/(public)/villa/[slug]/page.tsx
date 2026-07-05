@@ -5,7 +5,7 @@ import { BookingWidget } from '@/components/public/booking-widget'
 import { VillaGallery } from '@/components/public/villa-gallery'
 import { VillaOverview } from '@/components/public/villa-overview'
 import { VillaSuitability } from '@/components/public/villa-suitability'
-import { getAllVillasStatic, getVillaBySlug } from '@/lib/supabase/queries'
+import { getAllVillasStatic, getVillaBySlug, getWebsiteSettings } from '@/lib/supabase/queries'
 import type { Metadata } from 'next'
 
 function formatPrice(price: number) {
@@ -41,6 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function VillaDetailPage({ params }: Props) {
   const { slug } = await params
   const villa = await getVillaBySlug(slug)
+  const settings = await getWebsiteSettings()
 
   if (!villa) {
     notFound()
@@ -116,6 +117,7 @@ export default async function VillaDetailPage({ params }: Props) {
             villaId={villa.id}
             villaName={villa.name}
             villaLocation={villa.location}
+            adminWhatsappNumber={settings.contact.whatsappNumber}
           />
         </div>
       </div>

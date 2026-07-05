@@ -1,9 +1,67 @@
+import { cache } from 'react'
 import { createClient } from './server'
 import { createStaticClient } from './static'
 import { storagePathToPublicUrl } from '@/lib/storage/media-paths'
 import type { Villa } from '@/types/villa'
 import type { Tables } from './types'
 import { villas as fallbackVillas, getVillaBySlug as fallbackGetVillaBySlug } from '@/data/villas'
+
+export type WebsiteSettings = {
+  hero: { eyebrow: string; headline: string; subheadline: string }
+  contact: { whatsappNumber: string; whatsappMessage: string }
+  finalCta: { eyebrow: string; headline: string; subheadline: string; primaryButton: string; secondaryButton: string }
+  footer: { description: string; instagram: string; tiktok: string; facebook: string }
+  seo: { siteTitle: string; metaDescription: string; ogImage: string }
+}
+
+const fallbackSettings: WebsiteSettings = {
+  hero: { eyebrow: 'Liburan Nyaman @ Puncak Bogor', headline: 'Booking Villa Puncak Lebih Aman, Lebih Hemat.', subheadline: 'Villa terverifikasi, harga transparan, tanpa biaya tambahan, dan didampingi admin resmi hingga Anda check-in dengan tenang.' },
+  contact: { whatsappNumber: '', whatsappMessage: 'Halo StayPuncak, saya ingin tanya tentang villa.' },
+  finalCta: { eyebrow: 'Siap Untuk Liburan Berkesan Di Puncak?', headline: 'Tinggalkan Penat, Ciptakan Kenangan Hangat.', subheadline: 'Ratusan keluarga sudah membuktikannya. Sekarang giliran Anda mewujudkan liburan sempurna bersama StayPuncak.', primaryButton: 'WhatsApp Kami', secondaryButton: 'Lihat Semua Villa' },
+  footer: { description: 'StayPuncak adalah Pengelola Villa Resmi di Puncak Bogor, yang menawarkan akomodasi berkualitas, harga terjangkau, fasilitas modern, dan jaminan keamanan booking online.', instagram: '', tiktok: '', facebook: '' },
+  seo: { siteTitle: 'StayPuncak — Villa Premium di Puncak', metaDescription: 'Temukan villa premium terbaik di Puncak, Bogor. Booking villa untuk liburan keluarga, pasangan, atau acara spesial.', ogImage: '' },
+}
+
+export const getWebsiteSettings = cache(async (): Promise<WebsiteSettings> => {
+  try {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase
+      .from('website_settings')
+      .select('key, value')
+
+    if (error || !data) {
+      console.error('Supabase getWebsiteSettings error:', error)
+      return fallbackSettings
+    }
+
+    const merged = { ...fallbackSettings }
+
+    for (const row of data) {
+      const val = row.value as Record<string, string>
+      if (row.key === 'hero' && val) {
+        merged.hero = { ...merged.hero, ...val }
+      }
+      if (row.key === 'contact' && val) {
+        merged.contact = { ...merged.contact, whatsappNumber: val.whatsapp_number || val.whatsappNumber || '', whatsappMessage: val.whatsapp_message || val.whatsappMessage || '' }
+      }
+      if (row.key === 'final_cta' && val) {
+        merged.finalCta = { ...merged.finalCta, eyebrow: val.eyebrow || merged.finalCta.eyebrow, headline: val.headline || merged.finalCta.headline, subheadline: val.subheadline || merged.finalCta.subheadline, primaryButton: val.primary_button || val.primaryButton || merged.finalCta.primaryButton, secondaryButton: val.secondary_button || val.secondaryButton || merged.finalCta.secondaryButton }
+      }
+      if (row.key === 'footer' && val) {
+        merged.footer = { ...merged.footer, description: val.description || merged.footer.description, instagram: val.instagram || merged.footer.instagram, tiktok: val.tiktok || merged.footer.tiktok, facebook: val.facebook || merged.footer.facebook }
+      }
+      if (row.key === 'seo' && val) {
+        merged.seo = { ...merged.seo, siteTitle: val.site_title || val.siteTitle || merged.seo.siteTitle, metaDescription: val.meta_description || val.metaDescription || merged.seo.metaDescription, ogImage: val.og_image || val.ogImage || merged.seo.ogImage }
+      }
+    }
+
+    return merged
+  } catch (err) {
+    console.error('Supabase getWebsiteSettings exception:', err)
+    return fallbackSettings
+  }
+})
 
 type VillaRow = Tables<'villas'>
 type MediaRow = Tables<'media'>

@@ -23,6 +23,7 @@ type BookingWidgetProps = {
   villaId: string
   villaName: string
   villaLocation: string
+  adminWhatsappNumber?: string
 }
 
 function DateField({
@@ -98,7 +99,7 @@ function TextField({
   )
 }
 
-export function BookingWidget({ villaId, villaName, villaLocation }: BookingWidgetProps) {
+export function BookingWidget({ villaId, villaName, villaLocation, adminWhatsappNumber }: BookingWidgetProps) {
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
   const [guestName, setGuestName] = useState('')
@@ -144,8 +145,9 @@ export function BookingWidget({ villaId, villaName, villaLocation }: BookingWidg
 
   const message = parts.join('\n')
 
-  const waTarget = guestPhone || ''
-  const whatsappUrl = `https://wa.me/${waTarget}?text=${encodeURIComponent(message)}`
+  // Target admin's WhatsApp, not the guest's
+  const adminTarget = adminWhatsappNumber || ''
+  const whatsappUrl = `https://wa.me/${adminTarget}?text=${encodeURIComponent(message)}`
 
   const handleBook = useCallback(async () => {
     setSaving(true)
@@ -227,7 +229,7 @@ export function BookingWidget({ villaId, villaName, villaLocation }: BookingWidg
 
     window.open(whatsappUrl, '_blank', 'noopener')
     setSaving(false)
-  }, [villaId, villaName, checkIn, checkOut, guestName, guestPhone, message, whatsappUrl])
+  }, [villaId, villaName, checkIn, checkOut, guestName, guestPhone, message, adminWhatsappNumber])
 
   return (
     <div className="space-y-4">

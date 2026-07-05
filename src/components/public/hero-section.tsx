@@ -11,7 +11,21 @@ const VIDEOS = [
   { src: '/Videos/video-bg-03.mp4', poster: '/Videos/hero_video-bg-03.webp' },
 ]
 
-export function HeroSection() {
+type HeroSettings = {
+  eyebrow: string
+  headline: string
+  subheadline: string
+}
+
+function parseHeadline(headline: string): { before: string; highlight: string; after: string } {
+  const parts = headline.split(/(.*?)(Lebih \w+,? Lebih \w+\.?)/)
+  if (parts.length >= 4) {
+    return { before: parts[1] || '', highlight: parts[2] || '', after: parts[3] || '' }
+  }
+  return { before: headline, highlight: '', after: '' }
+}
+
+export function HeroSection({ settings }: { settings: HeroSettings }) {
   const [activeIndex, setActiveIndex] = useState(0)
 
   useEffect(() => {
@@ -20,6 +34,8 @@ export function HeroSection() {
     }, 8000)
     return () => clearInterval(interval)
   }, [])
+
+  const { before, highlight, after } = parseHeadline(settings.headline)
 
   return (
     <section className="relative min-h-[85vh] overflow-hidden">
@@ -48,18 +64,20 @@ export function HeroSection() {
       <Container className="relative z-10 flex min-h-[85vh] flex-col justify-center pb-24 pt-28">
         <div className="-mt-4 max-w-2xl sm:mt-0">
           <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.2em] text-amber-400 sm:mb-3 sm:text-xs">
-            Liburan Nyaman @ Puncak Bogor
+            {settings.eyebrow}
           </p>
           <h1 className="font-serif text-[2rem] leading-[1.45] sm:leading-snug tracking-tighter text-white sm:text-5xl lg:text-6xl">
-            Booking Villa Puncak
-            <br />
-            Lebih{' '}
-            <span className="text-amber-400">Aman</span>, Lebih{' '}
-            <span className="text-amber-400">Hemat</span>.
+            {before}
+            {highlight && (
+              <>
+                <br />
+                <span className="text-amber-400">{highlight}</span>
+              </>
+            )}
+            {after}
           </h1>
           <p className="mt-5 max-w-xl text-base text-white/85 sm:text-lg">
-            Villa terverifikasi, harga transparan, tanpa biaya tambahan, dan didampingi admin
-            resmi hingga Anda check-in dengan tenang.
+            {settings.subheadline}
           </p>
 
           <div className="mt-[84px] flex flex-wrap gap-x-6 gap-y-2 sm:mt-12">

@@ -4,7 +4,7 @@ import { HeroSection } from '@/components/public/hero-section'
 import { SearchCard } from '@/components/public/search-card'
 import { TestimonialSection } from '@/components/public/testimonial-section'
 import { CtaSection } from '@/components/public/cta-section'
-import { getAllVillas, getLocations } from '@/lib/supabase/queries'
+import { getAllVillas, getLocations, getWebsiteSettings } from '@/lib/supabase/queries'
 
 type Props = {
   searchParams: Promise<{ q?: string; location?: string; capacity?: string; sort?: string }>
@@ -14,12 +14,13 @@ export default async function Home({ searchParams }: Props) {
   const { q, location, capacity, sort } = await searchParams
   const locations = await getLocations()
   const villas = await getAllVillas(q, location, capacity, sort)
+  const settings = await getWebsiteSettings()
 
   const hasFilters = q || location || capacity || sort
 
   return (
     <>
-      <HeroSection />
+      <HeroSection settings={settings.hero} />
 
       <div className="relative z-20 -mt-12 sm:-mt-16">
         <Container>
@@ -81,7 +82,7 @@ export default async function Home({ searchParams }: Props) {
 
       <TestimonialSection />
 
-      <CtaSection />
+      <CtaSection settings={settings.finalCta} whatsappNumber={settings.contact.whatsappNumber} whatsappMessage={settings.contact.whatsappMessage} />
     </>
   )
 }
