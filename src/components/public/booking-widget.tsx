@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Calendar, MessageCircle } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { createClient } from '@/lib/supabase/client'
 
 function formatDateIndonesian(dateString: string): string {
   try {
@@ -19,6 +20,7 @@ function formatDateIndonesian(dateString: string): string {
 }
 
 type BookingWidgetProps = {
+  villaId: string
   villaName: string
   villaLocation: string
 }
@@ -61,9 +63,10 @@ function DateField({
   )
 }
 
-export function BookingWidget({ villaName, villaLocation }: BookingWidgetProps) {
+export function BookingWidget({ villaId, villaName, villaLocation }: BookingWidgetProps) {
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
+  const [saving, setSaving] = useState(false)
 
   const parts = [
     `Halo Admin StayPuncak 👋`,
@@ -98,6 +101,34 @@ export function BookingWidget({ villaName, villaLocation }: BookingWidgetProps) 
 
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
 
+  const handleBook = useCallback(async () => {
+    setSaving(true)
+    const supabase = createClient()
+    const nights = checkIn && checkOut
+      ? Math.max(1, Math.round((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 3600 * 24)))
+      : null
+
+    try {
+      await supabase
+        .from('bookings')
+        .insert({
+          villa_id: villaId,
+          villa_name: villaName,
+          check_in: checkIn,
+          check_out: checkOut,
+          nights,
+          whatsapp_message: message,
+          source: 'website',
+          status: 'new',
+        })
+    } catch (err) {
+      console.error('Failed to save booking lead:', err)
+    }
+
+    window.open(whatsappUrl, '_blank', 'noopener')
+    setSaving(false)
+  }, [villaId, villaName, checkIn, checkOut, message, whatsappUrl])
+
   return (
     <div className="space-y-4">
       <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
@@ -118,15 +149,14 @@ export function BookingWidget({ villaName, villaLocation }: BookingWidgetProps) 
           onChange={setCheckOut}
         />
       </div>
-      <a
-        href={whatsappUrl}
-        target="_blank"
-        rel="noopener noreferrer"
+      <button
+        onClick={handleBook}
+        disabled={saving}
         className={cn(buttonVariants({ variant: 'default' }), 'flex w-full items-center justify-center gap-2 py-3 text-base min-h-12')}
       >
         <MessageCircle className="size-5" />
-        Booking via WhatsApp
-      </a>
+        {saving ? 'Memproses...' : 'Booking via WhatsApp'}
+      </button>
     </div>
   )
 }

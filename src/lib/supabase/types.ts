@@ -47,34 +47,58 @@ export type Database = {
           check_in: string
           check_out: string
           created_at: string
-          customer_id: string
+          customer_id: string | null
+          guest_count: number | null
+          guest_email: string | null
+          guest_name: string | null
+          guest_phone: string | null
           id: string
+          nights: number | null
           notes: string | null
+          source: string | null
           status: Database["public"]["Enums"]["booking_status"]
           updated_at: string
           villa_id: string
+          villa_name: string | null
+          whatsapp_message: string | null
         }
         Insert: {
-          check_in: string
-          check_out: string
+          check_in?: string
+          check_out?: string
           created_at?: string
-          customer_id: string
+          customer_id?: string | null
+          guest_count?: number | null
+          guest_email?: string | null
+          guest_name?: string | null
+          guest_phone?: string | null
           id?: string
+          nights?: number | null
           notes?: string | null
+          source?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
           updated_at?: string
           villa_id: string
+          villa_name?: string | null
+          whatsapp_message?: string | null
         }
         Update: {
           check_in?: string
           check_out?: string
           created_at?: string
-          customer_id?: string
+          customer_id?: string | null
+          guest_count?: number | null
+          guest_email?: string | null
+          guest_name?: string | null
+          guest_phone?: string | null
           id?: string
+          nights?: number | null
           notes?: string | null
+          source?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
           updated_at?: string
           villa_id?: string
+          villa_name?: string | null
+          whatsapp_message?: string | null
         }
         Relationships: [
           {
@@ -301,7 +325,7 @@ export type Database = {
     }
     Enums: {
       admin_role: "superadmin" | "admin"
-      booking_status: "pending" | "confirmed" | "cancelled" | "completed"
+      booking_status: "pending" | "confirmed" | "cancelled" | "completed" | "new" | "pending_confirmation" | "checked_in"
       owner_status: "active" | "inactive"
       villa_status: "active" | "inactive" | "draft" | "archived"
     }
@@ -432,7 +456,7 @@ export const Constants = {
   public: {
     Enums: {
       admin_role: ["superadmin", "admin"],
-      booking_status: ["pending", "confirmed", "cancelled", "completed"],
+      booking_status: ["pending", "confirmed", "cancelled", "completed", "new", "pending_confirmation", "checked_in"],
       owner_status: ["active", "inactive"],
       villa_status: ["active", "inactive", "draft", "archived"],
     },

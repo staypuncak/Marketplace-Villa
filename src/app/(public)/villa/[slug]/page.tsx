@@ -113,6 +113,7 @@ export default async function VillaDetailPage({ params }: Props) {
           </div>
 
           <BookingWidget
+            villaId={villa.id}
             villaName={villa.name}
             villaLocation={villa.location}
           />

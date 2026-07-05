@@ -1,25 +1,30 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Search, Plus, ChevronDown, Phone, ExternalLink, Pencil,
   CalendarDays, Users, MapPin, Building,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { createClient } from '@/lib/supabase/client'
+import type { Tables } from '@/lib/supabase/types'
+
+type BookingRow = Tables<'bookings'>
 
 type BookingStatus = 'baru' | 'menunggu' | 'confirmed' | 'checkin' | 'completed' | 'cancelled'
 
 type BookingItem = {
   id: string
   guestName: string
-  guestPhone: string
+  guestPhone: string | null
   villaName: string
   villaLocation: string
   checkIn: string
   checkOut: string
-  totalGuest: number
+  totalGuest: number | null
   status: BookingStatus
   createdAt: string
+  rawCreatedAt: string
 }
 
 const statusConfig: Record<BookingStatus, { label: string; class: string }> = {
@@ -31,44 +36,15 @@ const statusConfig: Record<BookingStatus, { label: string; class: string }> = {
   cancelled: { label: 'Dibatalkan', class: 'bg-red-100 text-red-600' },
 }
 
-const dummyBookings: BookingItem[] = [
-  {
-    id: '1', guestName: 'Budi Santoso', guestPhone: '6281234567890',
-    villaName: 'Villa Kirana', villaLocation: 'Cisarua, Puncak Bogor',
-    checkIn: '2026-07-10', checkOut: '2026-07-12', totalGuest: 8,
-    status: 'baru', createdAt: '2 jam yang lalu',
-  },
-  {
-    id: '2', guestName: 'Sari Dewi', guestPhone: '6289876543210',
-    villaName: 'Villa Highland', villaLocation: 'Cipanas, Puncak Bogor',
-    checkIn: '2026-07-15', checkOut: '2026-07-18', totalGuest: 12,
-    status: 'menunggu', createdAt: '5 jam yang lalu',
-  },
-  {
-    id: '3', guestName: 'Ahmad Rizki', guestPhone: '628555123456',
-    villaName: 'Villa Savana', villaLocation: 'Megamendung, Puncak Bogor',
-    checkIn: '2026-07-08', checkOut: '2026-07-09', totalGuest: 4,
-    status: 'confirmed', createdAt: '1 hari yang lalu',
-  },
-  {
-    id: '4', guestName: 'Dian Permata', guestPhone: '628777888999',
-    villaName: 'Villa Kirana', villaLocation: 'Cisarua, Puncak Bogor',
-    checkIn: '2026-07-05', checkOut: '2026-07-07', totalGuest: 6,
-    status: 'checkin', createdAt: '2 hari yang lalu',
-  },
-  {
-    id: '5', guestName: 'Rudi Hartono', guestPhone: '628111222333',
-    villaName: 'Villa Azura', villaLocation: 'Cisarua, Puncak Bogor',
-    checkIn: '2026-07-01', checkOut: '2026-07-03', totalGuest: 10,
-    status: 'completed', createdAt: '5 hari yang lalu',
-  },
-  {
-    id: '6', guestName: 'Mega Putri', guestPhone: '628444555666',
-    villaName: 'Villa Highland', villaLocation: 'Cipanas, Puncak Bogor',
-    checkIn: '2026-07-02', checkOut: '2026-07-04', totalGuest: 16,
-    status: 'cancelled', createdAt: '3 hari yang lalu',
-  },
-]
+const dbStatusToLocal: Record<string, BookingStatus> = {
+  new: 'baru',
+  pending_confirmation: 'menunggu',
+  confirmed: 'confirmed',
+  checked_in: 'checkin',
+  completed: 'completed',
+  cancelled: 'cancelled',
+  pending: 'baru',
+}
 
 const statusOptions = ['Semua', 'Booking Baru', 'Menunggu Konfirmasi', 'Dikonfirmasi', 'Check-in', 'Selesai', 'Dibatalkan']
 const dateOptions = ['Semua Waktu', 'Hari Ini', 'Minggu Ini', 'Bulan Ini']
@@ -83,7 +59,22 @@ const statusFilterMap: Record<string, BookingStatus | undefined> = {
   'Dibatalkan': 'cancelled',
 }
 
+function timeAgo(dateStr: string): string {
+  const now = Date.now()
+  const then = new Date(dateStr).getTime()
+  const diffMs = now - then
+  const diffMin = Math.floor(diffMs / 60000)
+  if (diffMin < 1) return 'baru saja'
+  if (diffMin < 60) return `${diffMin} menit yang lalu`
+  const diffHour = Math.floor(diffMin / 60)
+  if (diffHour < 24) return `${diffHour} jam yang lalu`
+  const diffDay = Math.floor(diffHour / 24)
+  if (diffDay < 7) return `${diffDay} hari yang lalu`
+  return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+}
+
 function formatDate(dateStr: string) {
+  if (!dateStr) return '—'
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('id-ID', {
     day: 'numeric', month: 'short', year: 'numeric',
   })
@@ -92,7 +83,7 @@ function formatDate(dateStr: string) {
 function BookingCard({ booking }: { booking: BookingItem }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const status = statusConfig[booking.status]
-  const waUrl = `https://wa.me/${booking.guestPhone}`
+  const waUrl = booking.guestPhone ? `https://wa.me/${booking.guestPhone}` : null
 
   return (
     <div className="group rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
@@ -104,7 +95,7 @@ function BookingCard({ booking }: { booking: BookingItem }) {
                 {booking.guestName}
               </h3>
               <span className="shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-500">
-                #{booking.id}
+                #{booking.id.slice(0, 8)}
               </span>
             </div>
             <p className="mt-0.5 text-xs text-gray-400">{booking.createdAt}</p>
@@ -118,10 +109,6 @@ function BookingCard({ booking }: { booking: BookingItem }) {
           <Building className="size-4 shrink-0 text-gray-400" />
           <span className="truncate">{booking.villaName}</span>
         </div>
-        <p className="mt-0.5 flex items-center gap-2 text-xs text-gray-400">
-          <MapPin className="size-3.5 shrink-0" />
-          {booking.villaLocation}
-        </p>
 
         <div className="mt-4 grid grid-cols-2 gap-3 rounded-lg bg-gray-50 p-3 text-sm">
           <div>
@@ -136,28 +123,37 @@ function BookingCard({ booking }: { booking: BookingItem }) {
             <p className="text-[11px] text-gray-400">Tamu</p>
             <p className="mt-0.5 flex items-center gap-1 font-medium text-gray-800">
               <Users className="size-3.5" />
-              {booking.totalGuest} orang
+              {booking.totalGuest ?? '—'} orang
             </p>
           </div>
           <div>
             <p className="text-[11px] text-gray-400">Total Hari</p>
             <p className="mt-0.5 flex items-center gap-1 font-medium text-gray-800">
               <CalendarDays className="size-3.5" />
-              {Math.ceil((new Date(booking.checkOut).getTime() - new Date(booking.checkIn).getTime()) / (1000 * 3600 * 24))} malam
+              {booking.checkIn && booking.checkOut
+                ? Math.ceil((new Date(booking.checkOut).getTime() - new Date(booking.checkIn).getTime()) / (1000 * 3600 * 24)) + ' malam'
+                : '—'}
             </p>
           </div>
         </div>
 
         <div className="mt-4 flex items-center gap-2 border-t border-gray-100 pt-3">
-          <a
-            href={waUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-emerald-600 transition-colors hover:bg-emerald-50"
-          >
-            <Phone className="size-4" />
-            <span className="hidden sm:inline">WhatsApp</span>
-          </a>
+          {waUrl ? (
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-emerald-600 transition-colors hover:bg-emerald-50"
+            >
+              <Phone className="size-4" />
+              <span className="hidden sm:inline">WhatsApp</span>
+            </a>
+          ) : (
+            <div className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-400">
+              <Phone className="size-4" />
+              <span className="hidden sm:inline">No WA</span>
+            </div>
+          )}
           <button className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100">
             <ExternalLink className="size-4" />
             <span className="hidden sm:inline">Preview</span>
@@ -190,7 +186,25 @@ function BookingCard({ booking }: { booking: BookingItem }) {
   )
 }
 
+function mapBooking(row: BookingRow): BookingItem {
+  return {
+    id: row.id,
+    guestName: row.guest_name || 'Calon Tamu',
+    guestPhone: row.guest_phone,
+    villaName: row.villa_name || 'Villa',
+    villaLocation: '',
+    checkIn: row.check_in || '',
+    checkOut: row.check_out || '',
+    totalGuest: row.guest_count,
+    status: dbStatusToLocal[row.status] || 'baru',
+    createdAt: timeAgo(row.created_at),
+    rawCreatedAt: row.created_at,
+  }
+}
+
 export default function BookingPage() {
+  const [bookings, setBookings] = useState<BookingItem[]>([])
+  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('Semua')
   const [dateFilter, setDateFilter] = useState('Semua Waktu')
@@ -198,19 +212,48 @@ export default function BookingPage() {
   const [statusOpen, setStatusOpen] = useState(false)
   const [dateOpen, setDateOpen] = useState(false)
   const [villaOpen, setVillaOpen] = useState(false)
+  const supabase = createClient()
 
-  const kpis = [
-    { label: 'Booking Baru', value: 3, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { label: 'Menunggu Konfirmasi', value: 5, color: 'text-amber-600', bg: 'bg-amber-50' },
-    { label: 'Check-in Hari Ini', value: 2, color: 'text-purple-600', bg: 'bg-purple-50' },
-    { label: 'Check-out Hari Ini', value: 1, color: 'text-gray-600', bg: 'bg-gray-50' },
-  ]
+  useEffect(() => {
+    let cancelled = false
 
-  const filtered = dummyBookings.filter((b) => {
+    const fetchBookings = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('bookings')
+          .select('*')
+          .order('created_at', { ascending: false })
+
+        if (cancelled) return
+        if (error) throw error
+
+        setBookings((data ?? []).map(mapBooking))
+      } catch (err) {
+        if (!cancelled) console.error('Failed to fetch bookings:', err)
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+
+    fetchBookings()
+    return () => { cancelled = true }
+  }, [supabase])
+
+  const uniqueVillas = [...new Set(bookings.map((b) => b.villaName))]
+
+  const filtered = bookings.filter((b) => {
     const statusMatch = !statusFilterMap[statusFilter] || b.status === statusFilterMap[statusFilter]
     const searchMatch = !search || b.guestName.toLowerCase().includes(search.toLowerCase()) || b.villaName.toLowerCase().includes(search.toLowerCase())
-    return statusMatch && searchMatch
+    const villaMatch = villaFilter === 'Semua Villa' || b.villaName === villaFilter
+    return statusMatch && searchMatch && villaMatch
   })
+
+  const kpis = [
+    { label: 'Booking Baru', value: bookings.filter((b) => b.status === 'baru').length, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Menunggu Konfirmasi', value: bookings.filter((b) => b.status === 'menunggu').length, color: 'text-amber-600', bg: 'bg-amber-50' },
+    { label: 'Check-in Hari Ini', value: bookings.filter((b) => b.status === 'checkin').length, color: 'text-purple-600', bg: 'bg-purple-50' },
+    { label: 'Check-out Hari Ini', value: 0, color: 'text-gray-600', bg: 'bg-gray-50' },
+  ]
 
   return (
     <div className="space-y-6">
@@ -266,7 +309,7 @@ export default function BookingPage() {
         />
         <DropdownFilter
           label={villaFilter}
-          options={['Semua Villa', 'Villa Kirana', 'Villa Savana', 'Villa Highland', 'Villa Azura']}
+          options={['Semua Villa', ...uniqueVillas]}
           open={villaOpen}
           onToggle={() => { setVillaOpen(!villaOpen); setStatusOpen(false); setDateOpen(false) }}
           onSelect={(v) => { setVillaFilter(v); setVillaOpen(false) }}
@@ -274,7 +317,11 @@ export default function BookingPage() {
         />
       </div>
 
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="flex items-center justify-center py-20">
+          <div className="size-8 animate-spin rounded-full border-4 border-gray-200 border-t-emerald-600" />
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 py-20">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-gray-300">
             <CalendarDays className="size-8" />
