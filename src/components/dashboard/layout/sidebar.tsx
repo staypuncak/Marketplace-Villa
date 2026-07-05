@@ -15,7 +15,7 @@ const navItems = [
   { label: 'Customer', href: '/dashboard/customer', icon: Users },
   { label: 'Testimonial', href: '/dashboard/testimonial', icon: MessageSquare },
   { label: 'Blog', href: '/dashboard/blog', icon: Newspaper },
-  { label: 'Pengaturan Website', href: '/dashboard/pengaturan', icon: Globe },
+  { label: 'Pengaturan Website', href: '/dashboard/website', icon: Globe },
   { label: 'Settings', href: '/dashboard/settings', icon: Settings },
 ]
 
