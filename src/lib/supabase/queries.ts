@@ -68,12 +68,15 @@ type MediaRow = Tables<'media'>
 
 type VillaWithMedia = VillaRow & { media: MediaRow[] }
 
+const photo = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?w=1200&q=80`
+
 const FALLBACK_GALLERY = [
-  '/images/gallery-01.svg',
-  '/images/gallery-02.svg',
-  '/images/gallery-03.svg',
-  '/images/gallery-04.svg',
-  '/images/gallery-05.svg',
+  photo('1618773921431-3c0b0c6d9f2c'),
+  photo('1600210492486-724fe5c67fb0'),
+  photo('1616137466830-6cc50c2b8df5'),
+  photo('1598928501494-5369b2ab1e1b'),
+  photo('1600573472550-7cebed81323f'),
 ]
 
 function mapVillaRow(row: VillaWithMedia): Villa {
@@ -307,5 +310,83 @@ export async function getPublishedTestimonials() {
       villaName: t.villaName,
       avatarColor: avatarColors[i % avatarColors.length],
     }))
+  }
+}
+
+export type BlogPostItem = {
+  id: string
+  title: string
+  slug: string
+  excerpt: string
+  category: string
+  date: string
+  featured_image_url: string | null
+}
+
+export async function getPublishedPosts(): Promise<BlogPostItem[]> {
+  try {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('id, title, slug, excerpt, category, published_at, is_featured, featured_image_url, created_at')
+      .eq('status', 'published')
+      .order('is_featured', { ascending: false })
+      .order('published_at', { ascending: false })
+      .order('created_at', { ascending: false })
+
+    if (error || !data || data.length === 0) {
+      const { blogArticles } = await import('@/data/blog')
+      return blogArticles
+    }
+
+    return data.map((row) => ({
+      id: row.id,
+      title: row.title,
+      slug: row.slug,
+      excerpt: row.excerpt || '',
+      category: row.category || '',
+      date: row.published_at || row.created_at || '',
+      featured_image_url: row.featured_image_url,
+    }))
+  } catch {
+    const { blogArticles } = await import('@/data/blog')
+    return blogArticles
+  }
+}
+
+export async function getPostBySlug(slug: string): Promise<BlogPostItem & { content: string } | undefined> {
+  try {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('slug', slug)
+      .eq('status', 'published')
+      .single()
+
+    if (error || !data) {
+      const { blogArticles } = await import('@/data/blog')
+      const fallback = blogArticles.find((a) => a.slug === slug)
+      if (fallback) return { ...fallback, content: fallback.content }
+      return undefined
+    }
+
+    return {
+      id: data.id,
+      title: data.title,
+      slug: data.slug,
+      excerpt: data.excerpt || '',
+      category: data.category || '',
+      date: data.published_at || data.created_at || '',
+      featured_image_url: data.featured_image_url,
+      content: data.content,
+    }
+  } catch {
+    const { blogArticles } = await import('@/data/blog')
+    const fallback = blogArticles.find((a) => a.slug === slug)
+    if (fallback) return { ...fallback, content: fallback.content }
+    return undefined
   }
 }

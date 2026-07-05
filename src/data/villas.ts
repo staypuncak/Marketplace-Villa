@@ -1,6 +1,50 @@
 import type { Villa } from '@/types/villa'
 
-const fallbackImages = Array.from({ length: 5 }, (_, i) => `/images/gallery-0${i + 1}.svg`)
+const photo = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?w=1200&q=80`
+
+const hero = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?w=1600&q=80`
+
+const villaPuncakIndahGallery = [
+  photo('1618773921431-3c0b0c6d9f2c'),
+  photo('1600573472550-7cebed81323f'),
+  photo('1600210492486-724fe5c67fb0'),
+  photo('1582719508461-2e7eb0f4c6f4'),
+  photo('1598928501494-5369b2ab1e1b'),
+]
+
+const villaBukitRespatiGallery = [
+  photo('1586023499903-d8b5b8a7ac37'),
+  photo('1598928501494-5369b2ab1e1b'),
+  photo('1616137466830-6cc50c2b8df5'),
+  photo('1600047509807-ba8f99d2cdde'),
+  photo('1600566753190-17f0baa2a6c3'),
+]
+
+const villaCloudNineGallery = [
+  photo('1560448204-603b448c3e1c'),
+  photo('1600566753190-17f0baa2a6c3'),
+  photo('1600210492486-724fe5c67fb0'),
+  photo('1618773921431-3c0b0c6d9f2c'),
+  photo('1598928501494-5369b2ab1e1b'),
+]
+
+const villaAlamAsriGallery = [
+  photo('1582719508461-2e7eb0f4c6f4'),
+  photo('1560448204-603b448c3e1c'),
+  photo('1616137466830-6cc50c2b8df5'),
+  photo('1600047509807-ba8f99d2cdde'),
+  photo('1600573472550-7cebed81323f'),
+]
+
+const villaMountainViewGallery = [
+  photo('1586023499903-d8b5b8a7ac37'),
+  photo('1598928501494-5369b2ab1e1b'),
+  photo('1600573472550-7cebed81323f'),
+  photo('1582719508461-2e7eb0f4c6f4'),
+  photo('1600566753190-17f0baa2a6c3'),
+]
 
 export const villas: Villa[] = [
   {
@@ -12,9 +56,9 @@ export const villas: Villa[] = [
     price: 2500000,
     capacity: 10,
     location: 'Cisarua, Puncak',
-    thumbnailImage: '/images/gallery-01.svg',
-    heroImage: '/images/gallery-01.svg',
-    galleryImages: fallbackImages,
+    thumbnailImage: hero('1564013799919-ab600027ffc6'),
+    heroImage: hero('1564013799919-ab600027ffc6'),
+    galleryImages: villaPuncakIndahGallery,
     facilities: ['Kolam Renang', 'Taman', 'Parkir Luas', 'Dapur', 'WiFi'],
     status: 'active',
   },
@@ -27,9 +71,9 @@ export const villas: Villa[] = [
     price: 3500000,
     capacity: 16,
     location: 'Megamendung, Puncak',
-    thumbnailImage: '/images/gallery-02.svg',
-    heroImage: '/images/gallery-02.svg',
-    galleryImages: fallbackImages,
+    thumbnailImage: hero('1600596542815-ffad4c1539a9'),
+    heroImage: hero('1600596542815-ffad4c1539a9'),
+    galleryImages: villaBukitRespatiGallery,
     facilities: ['Kolam Renang', 'Aula', 'Parkir Luas', 'Dapur', 'WiFi', 'Karaoke'],
     status: 'active',
   },
@@ -42,9 +86,9 @@ export const villas: Villa[] = [
     price: 5000000,
     capacity: 8,
     location: 'Tugu Selatan, Puncak',
-    thumbnailImage: '/images/gallery-03.svg',
-    heroImage: '/images/gallery-03.svg',
-    galleryImages: fallbackImages,
+    thumbnailImage: hero('1600585154340-be6161a56a0c'),
+    heroImage: hero('1600585154340-be6161a56a0c'),
+    galleryImages: villaCloudNineGallery,
     facilities: ['Fireplace', 'Spa', 'Taman', 'Dapur', 'WiFi', 'AC'],
     status: 'active',
   },
@@ -57,9 +101,9 @@ export const villas: Villa[] = [
     price: 1500000,
     capacity: 6,
     location: 'Pacet, Puncak',
-    thumbnailImage: '/images/gallery-04.svg',
-    heroImage: '/images/gallery-04.svg',
-    galleryImages: fallbackImages,
+    thumbnailImage: hero('1600607687939-ce8a6c25118c'),
+    heroImage: hero('1600607687939-ce8a6c25118c'),
+    galleryImages: villaAlamAsriGallery,
     facilities: ['Taman', 'Dapur', 'Parkir', 'WiFi'],
     status: 'active',
   },
@@ -72,9 +116,9 @@ export const villas: Villa[] = [
     price: 7500000,
     capacity: 25,
     location: 'Cipanas, Puncak',
-    thumbnailImage: '/images/gallery-05.svg',
-    heroImage: '/images/gallery-05.svg',
-    galleryImages: fallbackImages,
+    thumbnailImage: hero('1600607687644-aac4c3eac7f4'),
+    heroImage: hero('1600607687644-aac4c3eac7f4'),
+    galleryImages: villaMountainViewGallery,
     facilities: ['Kolam Renang', 'Aula Besar', 'Taman', 'Dapur', 'Parkir Luas', 'WiFi', 'AC', 'Karaoke'],
     status: 'active',
   },
