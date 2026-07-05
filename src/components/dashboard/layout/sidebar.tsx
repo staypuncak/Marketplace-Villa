@@ -4,14 +4,15 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import {
-  LayoutDashboard, Building, CalendarCheck, MessageSquare,
-  Newspaper, Globe, Settings, UserCircle, LogOut, X,
+  LayoutDashboard, Building, CalendarCheck, Users,
+  MessageSquare, Newspaper, Globe, Settings, UserCircle, LogOut, X,
 } from 'lucide-react'
 
 const navItems = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Villa', href: '/dashboard/villa', icon: Building },
   { label: 'Booking', href: '/dashboard/booking', icon: CalendarCheck },
+  { label: 'Customer', href: '/dashboard/customer', icon: Users },
   { label: 'Testimonial', href: '/dashboard/testimonial', icon: MessageSquare },
   { label: 'Blog', href: '/dashboard/blog', icon: Newspaper },
   { label: 'Pengaturan Website', href: '/dashboard/pengaturan', icon: Globe },

@@ -7,6 +7,8 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
@@ -63,8 +65,8 @@ export type Database = {
           whatsapp_message: string | null
         }
         Insert: {
-          check_in?: string
-          check_out?: string
+          check_in: string
+          check_out: string
           created_at?: string
           customer_id?: string | null
           guest_count?: number | null
@@ -121,28 +123,51 @@ export type Database = {
         Row: {
           created_at: string
           email: string | null
+          favorite_villa_id: string | null
           id: string
+          last_booking_at: string | null
           name: string
+          notes: string | null
           phone: string | null
+          status: string
+          total_bookings: number
           updated_at: string
         }
         Insert: {
           created_at?: string
           email?: string | null
+          favorite_villa_id?: string | null
           id?: string
+          last_booking_at?: string | null
           name: string
+          notes?: string | null
           phone?: string | null
+          status?: string
+          total_bookings?: number
           updated_at?: string
         }
         Update: {
           created_at?: string
           email?: string | null
+          favorite_villa_id?: string | null
           id?: string
+          last_booking_at?: string | null
           name?: string
+          notes?: string | null
           phone?: string | null
+          status?: string
+          total_bookings?: number
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "customers_favorite_villa_id_fkey"
+            columns: ["favorite_villa_id"]
+            isOneToOne: false
+            referencedRelation: "villas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       media: {
         Row: {
@@ -325,7 +350,14 @@ export type Database = {
     }
     Enums: {
       admin_role: "superadmin" | "admin"
-      booking_status: "pending" | "confirmed" | "cancelled" | "completed" | "new" | "pending_confirmation" | "checked_in"
+      booking_status:
+        | "pending"
+        | "confirmed"
+        | "cancelled"
+        | "completed"
+        | "new"
+        | "pending_confirmation"
+        | "checked_in"
       owner_status: "active" | "inactive"
       villa_status: "active" | "inactive" | "draft" | "archived"
     }
@@ -456,7 +488,15 @@ export const Constants = {
   public: {
     Enums: {
       admin_role: ["superadmin", "admin"],
-      booking_status: ["pending", "confirmed", "cancelled", "completed", "new", "pending_confirmation", "checked_in"],
+      booking_status: [
+        "pending",
+        "confirmed",
+        "cancelled",
+        "completed",
+        "new",
+        "pending_confirmation",
+        "checked_in",
+      ],
       owner_status: ["active", "inactive"],
       villa_status: ["active", "inactive", "draft", "archived"],
     },

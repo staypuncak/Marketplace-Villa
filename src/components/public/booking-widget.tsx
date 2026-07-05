@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { Calendar, MessageCircle } from 'lucide-react'
+import { Calendar, MessageCircle, User, Phone } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
@@ -63,20 +63,65 @@ function DateField({
   )
 }
 
+function TextField({
+  label,
+  id,
+  value,
+  onChange,
+  icon: Icon,
+  placeholder,
+}: {
+  label: string
+  id: string
+  value: string
+  onChange: (value: string) => void
+  icon: React.ElementType
+  placeholder: string
+}) {
+  return (
+    <div>
+      <label htmlFor={id} className="mb-1 block text-sm font-medium">
+        {label}
+      </label>
+      <div className="relative">
+        <Icon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-emerald-600" />
+        <input
+          id={id}
+          type={id === 'guest-phone' ? 'tel' : 'text'}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className="w-full rounded-xl border border-emerald-200 bg-background px-3 py-2.5 pl-10 text-sm shadow-sm outline-none focus-visible:border-emerald-600 focus-visible:ring-3 focus-visible:ring-emerald-500/20 placeholder:text-muted-foreground"
+        />
+      </div>
+    </div>
+  )
+}
+
 export function BookingWidget({ villaId, villaName, villaLocation }: BookingWidgetProps) {
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
+  const [guestName, setGuestName] = useState('')
+  const [guestPhone, setGuestPhone] = useState('')
   const [saving, setSaving] = useState(false)
 
   const parts = [
     `Halo Admin StayPuncak 👋`,
     '',
-    'Saya tertarik untuk booking villa berikut:',
-    '',
-    `🏡 Villa\n${villaName}`,
-    '',
-    `📍 Lokasi\n${villaLocation}`,
   ]
+
+  if (guestName) {
+    parts.push(`Nama: ${guestName}`)
+  }
+  if (guestPhone) {
+    parts.push(`No. WA: ${guestPhone}`)
+  }
+  parts.push('')
+  parts.push('Saya tertarik untuk booking villa berikut:')
+  parts.push('')
+  parts.push(`🏡 Villa\n${villaName}`)
+  parts.push('')
+  parts.push(`📍 Lokasi\n${villaLocation}`)
 
   if (checkIn) {
     parts.push('', `📅 Check-in\n${formatDateIndonesian(checkIn)}`)
@@ -99,7 +144,8 @@ export function BookingWidget({ villaId, villaName, villaLocation }: BookingWidg
 
   const message = parts.join('\n')
 
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
+  const waTarget = guestPhone || ''
+  const whatsappUrl = `https://wa.me/${waTarget}?text=${encodeURIComponent(message)}`
 
   const handleBook = useCallback(async () => {
     setSaving(true)
@@ -107,9 +153,10 @@ export function BookingWidget({ villaId, villaName, villaLocation }: BookingWidg
     const nights = checkIn && checkOut
       ? Math.max(1, Math.round((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 3600 * 24)))
       : null
+    const now = new Date().toISOString()
 
     try {
-      await supabase
+      const { data: bookingData, error: bookingError } = await supabase
         .from('bookings')
         .insert({
           villa_id: villaId,
@@ -117,17 +164,62 @@ export function BookingWidget({ villaId, villaName, villaLocation }: BookingWidg
           check_in: checkIn,
           check_out: checkOut,
           nights,
+          guest_name: guestName || null,
+          guest_phone: guestPhone || null,
           whatsapp_message: message,
           source: 'website',
           status: 'new',
         })
+        .select('id')
+        .single()
+
+      if (!bookingError && bookingData && guestPhone) {
+        const { data: existing } = await supabase
+          .from('customers')
+          .select('id, name, total_bookings')
+          .eq('phone', guestPhone)
+          .maybeSingle()
+
+        if (existing) {
+          await supabase
+            .from('customers')
+            .update({
+              name: guestName || existing.name,
+              favorite_villa_id: villaId,
+              last_booking_at: now,
+              total_bookings: (existing.total_bookings || 0) + 1,
+              updated_at: now,
+            })
+            .eq('id', existing.id)
+        } else {
+          const { data: newCustomer } = await supabase
+            .from('customers')
+            .insert({
+              name: guestName || 'Calon Tamu',
+              phone: guestPhone,
+              favorite_villa_id: villaId,
+              last_booking_at: now,
+              total_bookings: 1,
+              status: 'active',
+            })
+            .select('id')
+            .single()
+
+          if (newCustomer && bookingData) {
+            await supabase
+              .from('bookings')
+              .update({ customer_id: newCustomer.id })
+              .eq('id', bookingData.id)
+          }
+        }
+      }
     } catch (err) {
       console.error('Failed to save booking lead:', err)
     }
 
     window.open(whatsappUrl, '_blank', 'noopener')
     setSaving(false)
-  }, [villaId, villaName, checkIn, checkOut, message, whatsappUrl])
+  }, [villaId, villaName, checkIn, checkOut, guestName, guestPhone, message, whatsappUrl])
 
   return (
     <div className="space-y-4">
@@ -135,6 +227,22 @@ export function BookingWidget({ villaId, villaName, villaLocation }: BookingWidg
         Booking
       </h2>
       <div className="grid gap-3">
+        <TextField
+          label="Nama"
+          id="guest-name"
+          value={guestName}
+          onChange={setGuestName}
+          icon={User}
+          placeholder="Masukkan nama"
+        />
+        <TextField
+          label="No. WhatsApp"
+          id="guest-phone"
+          value={guestPhone}
+          onChange={setGuestPhone}
+          icon={Phone}
+          placeholder="62812xxxxxxxx"
+        />
         <DateField
           label="Check-in"
           id="check-in"

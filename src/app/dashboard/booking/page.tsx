@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import {
   Search, Plus, ChevronDown, Phone, ExternalLink, Pencil,
   CalendarDays, Users, MapPin, Building,
@@ -154,14 +155,20 @@ function BookingCard({ booking }: { booking: BookingItem }) {
               <span className="hidden sm:inline">No WA</span>
             </div>
           )}
-          <button className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100">
+          <Link
+            href={`/dashboard/booking/${booking.id}`}
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100"
+          >
             <ExternalLink className="size-4" />
-            <span className="hidden sm:inline">Preview</span>
-          </button>
-          <button className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100">
+            <span className="hidden sm:inline">Detail</span>
+          </Link>
+          <Link
+            href={`/dashboard/booking/${booking.id}`}
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100"
+          >
             <Pencil className="size-4" />
             <span className="hidden sm:inline">Edit</span>
-          </button>
+          </Link>
           <div className="relative">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
