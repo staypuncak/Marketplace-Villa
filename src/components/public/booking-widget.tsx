@@ -180,7 +180,13 @@ export function BookingWidget({ villaId, villaName, villaLocation }: BookingWidg
           .eq('phone', guestPhone)
           .maybeSingle()
 
+        let customerId: string | null = null
+
         if (existing) {
+          customerId = existing.id
+          // Same phone, possibly different name: update to latest name.
+          // This keeps customer data fresh when the same person uses
+          // different names across bookings (e.g. "Budi" then "Budi Santoso").
           await supabase
             .from('customers')
             .update({
@@ -205,12 +211,14 @@ export function BookingWidget({ villaId, villaName, villaLocation }: BookingWidg
             .select('id')
             .single()
 
-          if (newCustomer && bookingData) {
-            await supabase
-              .from('bookings')
-              .update({ customer_id: newCustomer.id })
-              .eq('id', bookingData.id)
-          }
+          if (newCustomer) customerId = newCustomer.id
+        }
+
+        if (customerId && bookingData) {
+          await supabase
+            .from('bookings')
+            .update({ customer_id: customerId })
+            .eq('id', bookingData.id)
         }
       }
     } catch (err) {
