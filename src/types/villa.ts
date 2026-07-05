@@ -8,5 +8,5 @@ export type Villa = {
   location: string
   image: string
   facilities: string[]
-  status: 'active' | 'inactive' | 'draft'
+  status: 'active' | 'inactive' | 'draft' | 'archived'
 }

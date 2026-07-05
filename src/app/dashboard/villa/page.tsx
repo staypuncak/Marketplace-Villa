@@ -1,65 +1,47 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import {
   Plus, Search, MapPin, Bed, Bath, Users,
-  Eye, Pencil, MoreHorizontal, ChevronDown,
+  Eye, Pencil, ChevronDown, Archive, X, CheckCircle2,
 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
+import type { Tables } from '@/lib/supabase/types'
 
-type VillaStatus = 'aktif' | 'nonaktif'
+type VillaRow = Tables<'villas'>
+type MediaRow = Tables<'media'>
 
-type VillaItem = {
-  id: string
-  name: string
-  location: string
-  price: number
-  capacity: number
-  bedrooms: number
-  bathrooms: number
-  status: VillaStatus
-  featured: boolean
+type VillaItem = VillaRow & {
   thumbnail: string
-  slug: string
 }
-
-const dummyVillas: VillaItem[] = [
-  {
-    id: '1', name: 'Villa Kirana', location: 'Cisarua, Puncak Bogor', price: 2500000,
-    capacity: 12, bedrooms: 4, bathrooms: 3, status: 'aktif', featured: true,
-    thumbnail: '/images/placeholder.svg', slug: 'villa-kirana',
-  },
-  {
-    id: '2', name: 'Villa Savana', location: 'Megamendung, Puncak Bogor', price: 1800000,
-    capacity: 8, bedrooms: 3, bathrooms: 2, status: 'aktif', featured: false,
-    thumbnail: '/images/placeholder.svg', slug: 'villa-savana',
-  },
-  {
-    id: '3', name: 'Villa Highland', location: 'Cipanas, Puncak Bogor', price: 3200000,
-    capacity: 16, bedrooms: 5, bathrooms: 4, status: 'aktif', featured: true,
-    thumbnail: '/images/placeholder.svg', slug: 'villa-highland',
-  },
-  {
-    id: '4', name: 'Villa Marbella', location: 'Puncak, Bogor', price: 1500000,
-    capacity: 6, bedrooms: 2, bathrooms: 2, status: 'nonaktif', featured: false,
-    thumbnail: '/images/placeholder.svg', slug: 'villa-marbella',
-  },
-  {
-    id: '5', name: 'Villa Azura', location: 'Cisarua, Puncak Bogor', price: 2100000,
-    capacity: 10, bedrooms: 4, bathrooms: 3, status: 'aktif', featured: false,
-    thumbnail: '/images/placeholder.svg', slug: 'villa-azura',
-  },
-]
-
-const statusOptions = ['Semua', 'Aktif', 'Nonaktif']
-const sortOptions = ['Terbaru', 'Harga', 'Nama']
 
 function formatPrice(price: number) {
   return `Rp ${price.toLocaleString('id-ID')}`
 }
 
-function VillaCard({ villa }: { villa: VillaItem }) {
+function getStatusBadge(status: string) {
+  switch (status) {
+    case 'active':
+      return { label: 'Aktif', class: 'bg-emerald-100 text-emerald-700' }
+    case 'draft':
+      return { label: 'Draft', class: 'bg-gray-100 text-gray-500' }
+    case 'archived':
+      return { label: 'Arsip', class: 'bg-amber-100 text-amber-700' }
+    default:
+      return { label: 'Nonaktif', class: 'bg-gray-100 text-gray-500' }
+  }
+}
+
+function VillaCard({
+  villa,
+  onArchive,
+}: {
+  villa: VillaItem
+  onArchive: (v: VillaItem) => void
+}) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const badge = getStatusBadge(villa.status)
 
   return (
     <div className="group rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
@@ -71,19 +53,15 @@ function VillaCard({ villa }: { villa: VillaItem }) {
             <path d="m21 15-5-5L5 21" />
           </svg>
         </div>
-        {villa.featured && (
+        {villa.is_featured && (
           <span className="absolute left-3 top-3 rounded-full bg-amber-400 px-2.5 py-0.5 text-[11px] font-semibold text-amber-900">
             Featured
           </span>
         )}
         <span
-          className={`absolute right-3 top-3 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
-            villa.status === 'aktif'
-              ? 'bg-emerald-100 text-emerald-700'
-              : 'bg-gray-100 text-gray-500'
-          }`}
+          className={`absolute right-3 top-3 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${badge.class}`}
         >
-          {villa.status === 'aktif' ? 'Aktif' : 'Nonaktif'}
+          {badge.label}
         </span>
       </div>
 
@@ -91,7 +69,7 @@ function VillaCard({ villa }: { villa: VillaItem }) {
         <h3 className="text-base font-semibold text-gray-900">{villa.name}</h3>
         <p className="mt-0.5 flex items-center gap-1 text-sm text-gray-500">
           <MapPin className="size-3.5 shrink-0" />
-          {villa.location}
+          {villa.location ?? '—'}
         </p>
 
         <p className="mt-2 text-lg font-bold text-emerald-700">{formatPrice(villa.price)}</p>
@@ -100,11 +78,11 @@ function VillaCard({ villa }: { villa: VillaItem }) {
         <div className="mt-3 flex items-center gap-4 text-xs text-gray-500">
           <span className="flex items-center gap-1">
             <Bed className="size-3.5" />
-            {villa.bedrooms}
+            {villa.bedrooms ?? '—'}
           </span>
           <span className="flex items-center gap-1">
             <Bath className="size-3.5" />
-            {villa.bathrooms}
+            {villa.bathrooms ?? '—'}
           </span>
           <span className="flex items-center gap-1">
             <Users className="size-3.5" />
@@ -113,30 +91,37 @@ function VillaCard({ villa }: { villa: VillaItem }) {
         </div>
 
         <div className="mt-4 flex items-center gap-2 border-t border-gray-100 pt-3">
-          <button className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100">
+          <Link
+            href={`/villa/${villa.slug}`}
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100"
+          >
             <Eye className="size-4" />
             Preview
-          </button>
-          <button className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100">
+          </Link>
+          <Link
+            href={`/dashboard/villa/${villa.id}/edit`}
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100"
+          >
             <Pencil className="size-4" />
             Edit
-          </button>
+          </Link>
           <div className="relative">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
             >
-              <MoreHorizontal className="size-4" />
+              <ChevronDown className="size-4" />
             </button>
             {menuOpen && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
-                <div className="absolute bottom-full right-0 z-20 mb-1 w-36 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
-                  <button className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-gray-600 hover:bg-gray-50">
-                    Duplicate
-                  </button>
-                  <button className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50">
-                    Nonaktifkan
+                <div className="absolute bottom-full right-0 z-20 mb-1 w-40 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+                  <button
+                    onClick={() => { setMenuOpen(false); onArchive(villa) }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                  >
+                    <Archive className="size-4" />
+                    {villa.status === 'archived' ? 'Aktifkan Kembali' : 'Arsipkan'}
                   </button>
                 </div>
               </>
@@ -148,17 +133,160 @@ function VillaCard({ villa }: { villa: VillaItem }) {
   )
 }
 
+function ConfirmDialog({
+  villa,
+  onConfirm,
+  onCancel,
+  loading,
+}: {
+  villa: VillaItem
+  onConfirm: () => void
+  onCancel: () => void
+  loading: boolean
+}) {
+  const isArchived = villa.status === 'archived'
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+        <div className="flex items-start justify-between">
+          <div className="flex size-12 items-center justify-center rounded-full bg-red-100">
+            <Archive className="size-6 text-red-600" />
+          </div>
+          <button onClick={onCancel} className="text-gray-400 hover:text-gray-600">
+            <X className="size-5" />
+          </button>
+        </div>
+        <h3 className="mt-4 text-lg font-semibold text-gray-900">
+          {isArchived ? 'Aktifkan villa ini?' : 'Arsipkan villa ini?'}
+        </h3>
+        <p className="mt-2 text-sm text-gray-500">
+          {isArchived
+            ? 'Villa akan tampil kembali di website publik.'
+            : 'Villa tidak akan tampil di website publik, tetapi datanya tetap tersimpan.'}
+        </p>
+        <p className="mt-1 text-sm font-medium text-gray-700">{villa.name}</p>
+        <div className="mt-6 flex gap-3">
+          <button
+            onClick={onCancel}
+            disabled={loading}
+            className="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50"
+          >
+            Batal
+          </button>
+          <button
+            onClick={onConfirm}
+            disabled={loading}
+            className="flex-1 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-red-700 disabled:opacity-50"
+          >
+            {loading ? 'Memproses...' : isArchived ? 'Aktifkan' : 'Arsipkan'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function Toast({ message, onClose }: { message: string; onClose: () => void }) {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 3000)
+    return () => clearTimeout(timer)
+  }, [onClose])
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white shadow-lg">
+      <CheckCircle2 className="size-5 shrink-0" />
+      {message}
+    </div>
+  )
+}
+
+const statusOptions = ['Semua', 'Aktif', 'Draft', 'Arsip']
+const sortOptions = ['Terbaru', 'Harga', 'Nama']
+
 export default function VillaPage() {
+  const [villas, setVillas] = useState<VillaItem[]>([])
+  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('Semua')
   const [sort, setSort] = useState('Terbaru')
   const [statusOpen, setStatusOpen] = useState(false)
   const [sortOpen, setSortOpen] = useState(false)
+  const [archiveTarget, setArchiveTarget] = useState<VillaItem | null>(null)
+  const [archiving, setArchiving] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
 
-  const filtered = dummyVillas
+  const supabase = createClient()
+
+  useEffect(() => {
+    let cancelled = false
+
+    supabase
+      .from('villas')
+      .select('*, media(*)')
+      .order('created_at', { ascending: false })
+      .then(({ data, error }) => {
+        if (cancelled) return
+        if (error) throw error
+
+        const items: VillaItem[] = (data ?? []).map((row) => {
+          const mediaArr = (row as { media: MediaRow[] }).media ?? []
+          const cover = mediaArr.find((m) => m.is_cover)
+          return {
+            ...row,
+            thumbnail: cover?.image_url ?? '',
+          }
+        })
+
+        setVillas(items)
+      })
+      .catch((err) => {
+        if (!cancelled) console.error('Failed to fetch villas:', err)
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+
+    return () => { cancelled = true }
+  }, [supabase])
+
+  async function handleArchive() {
+    if (!archiveTarget) return
+    setArchiving(true)
+    try {
+      const newStatus = archiveTarget.status === 'archived' ? 'active' : 'archived'
+      const { error } = await supabase
+        .from('villas')
+        .update({ status: newStatus })
+        .eq('id', archiveTarget.id)
+
+      if (error) throw error
+
+      setVillas((prev) =>
+        prev.map((v) =>
+          v.id === archiveTarget.id ? { ...v, status: newStatus } : v,
+        ),
+      )
+
+      setToast(
+        newStatus === 'archived'
+          ? 'Villa berhasil diarsipkan'
+          : 'Villa berhasil diaktifkan kembali',
+      )
+      setArchiveTarget(null)
+    } catch (err) {
+      console.error('Archive error:', err)
+      setToast('Gagal mengarsipkan villa')
+    } finally {
+      setArchiving(false)
+    }
+  }
+
+  const filtered = villas
     .filter((v) => {
-      if (statusFilter === 'Aktif') return v.status === 'aktif'
-      if (statusFilter === 'Nonaktif') return v.status === 'nonaktif'
+      if (statusFilter === 'Aktif') return v.status === 'active'
+      if (statusFilter === 'Draft') return v.status === 'draft'
+      if (statusFilter === 'Arsip') return v.status === 'archived'
       return true
     })
     .filter((v) => v.name.toLowerCase().includes(search.toLowerCase()))
@@ -252,7 +380,11 @@ export default function VillaPage() {
         </div>
       </div>
 
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="flex items-center justify-center py-20">
+          <div className="size-8 animate-spin rounded-full border-4 border-gray-200 border-t-emerald-600" />
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 py-20">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-gray-300">
             <svg className="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="m21 15-5-5L5 21" /></svg>
@@ -263,10 +395,25 @@ export default function VillaPage() {
       ) : (
         <div className="grid gap-5 sm:grid-cols-2">
           {filtered.map((villa) => (
-            <VillaCard key={villa.id} villa={villa} />
+            <VillaCard
+              key={villa.id}
+              villa={villa}
+              onArchive={setArchiveTarget}
+            />
           ))}
         </div>
       )}
+
+      {archiveTarget && (
+        <ConfirmDialog
+          villa={archiveTarget}
+          onConfirm={handleArchive}
+          onCancel={() => setArchiveTarget(null)}
+          loading={archiving}
+        />
+      )}
+
+      {toast && <Toast message={toast} onClose={() => setToast(null)} />}
     </div>
   )
 }

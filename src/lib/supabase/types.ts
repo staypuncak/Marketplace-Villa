@@ -303,7 +303,7 @@ export type Database = {
       admin_role: "superadmin" | "admin"
       booking_status: "pending" | "confirmed" | "cancelled" | "completed"
       owner_status: "active" | "inactive"
-      villa_status: "active" | "inactive" | "draft"
+      villa_status: "active" | "inactive" | "draft" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -434,7 +434,7 @@ export const Constants = {
       admin_role: ["superadmin", "admin"],
       booking_status: ["pending", "confirmed", "cancelled", "completed"],
       owner_status: ["active", "inactive"],
-      villa_status: ["active", "inactive", "draft"],
+      villa_status: ["active", "inactive", "draft", "archived"],
     },
   },
 } as const
