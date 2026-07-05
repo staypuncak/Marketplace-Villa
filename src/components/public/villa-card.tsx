@@ -50,7 +50,11 @@ export function VillaCard({ villa }: VillaCardProps) {
     <Link href={`/villa/${villa.slug}`} className="group block h-full focus-visible:outline-none">
       <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-emerald-100/50 bg-white shadow-sm transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-lg">
         <div className="relative aspect-[16/9] overflow-hidden bg-gradient-to-br from-emerald-100 to-emerald-200">
-          <div className="h-full w-full bg-gradient-to-br from-emerald-100/80 to-emerald-200 transition-transform duration-300 ease-out group-hover:scale-105" />
+          <img
+            src={villa.thumbnailImage}
+            alt={villa.name}
+            className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+          />
 
           <div className="absolute left-3 top-3 z-10 rounded-full bg-emerald-950/70 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
             {badge}

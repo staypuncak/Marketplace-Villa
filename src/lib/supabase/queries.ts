@@ -1,5 +1,6 @@
 import { createClient } from './server'
 import { createStaticClient } from './static'
+import { storagePathToPublicUrl } from '@/lib/storage/media-paths'
 import type { Villa } from '@/types/villa'
 import type { Tables } from './types'
 import { villas as fallbackVillas, getVillaBySlug as fallbackGetVillaBySlug } from '@/data/villas'
@@ -9,7 +10,23 @@ type MediaRow = Tables<'media'>
 
 type VillaWithMedia = VillaRow & { media: MediaRow[] }
 
+const FALLBACK_GALLERY = [
+  '/images/gallery-01.svg',
+  '/images/gallery-02.svg',
+  '/images/gallery-03.svg',
+  '/images/gallery-04.svg',
+  '/images/gallery-05.svg',
+]
+
 function mapVillaRow(row: VillaWithMedia): Villa {
+  const media = row.media ?? []
+
+  const cover = media.find((m) => m.is_cover)
+  const hero = media.find((m) => !m.is_cover && m.sort_order === 1)
+  const gallery = media
+    .filter((m) => !m.is_cover && m.sort_order >= 2)
+    .sort((a, b) => a.sort_order - b.sort_order)
+
   return {
     id: row.id,
     name: row.name,
@@ -18,7 +35,11 @@ function mapVillaRow(row: VillaWithMedia): Villa {
     price: Number(row.price),
     capacity: row.capacity,
     location: row.location ?? '',
-    image: row.media[0]?.image_url ?? '/images/placeholder.jpg',
+    thumbnailImage: cover ? storagePathToPublicUrl(cover.image_url) : FALLBACK_GALLERY[0],
+    heroImage: hero ? storagePathToPublicUrl(hero.image_url) : (cover ? storagePathToPublicUrl(cover.image_url) : FALLBACK_GALLERY[0]),
+    galleryImages: gallery.length > 0
+      ? gallery.map((m) => storagePathToPublicUrl(m.image_url))
+      : FALLBACK_GALLERY,
     facilities: (row.facilities as string[]) ?? [],
     status: row.status,
   }
@@ -73,9 +94,8 @@ export async function getAllVillas(search?: string, location?: string, capacity?
 
     let query = supabase
       .from('villas')
-      .select('*, media!inner(*)')
+      .select('*, media(*)')
       .eq('status', 'active')
-      .eq('media.is_cover', true)
 
     if (search) {
       query = query.or(
@@ -166,10 +186,9 @@ export async function getVillaBySlug(slug: string): Promise<Villa | undefined> {
 
     const { data, error } = await supabase
       .from('villas')
-      .select('*, media!inner(*)')
+      .select('*, media(*)')
       .eq('slug', slug)
       .eq('status', 'active')
-      .eq('media.is_cover', true)
       .single()
 
     if (error || !data) {

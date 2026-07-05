@@ -57,13 +57,7 @@ export default async function VillaDetailPage({ params }: Props) {
 
       <div className="grid gap-8 overflow-x-hidden sm:overflow-x-visible lg:grid-cols-5">
         <VillaGallery
-          images={[
-            '/images/gallery-01.svg',
-            '/images/gallery-02.svg',
-            '/images/gallery-03.svg',
-            '/images/gallery-04.svg',
-            '/images/gallery-05.svg',
-          ]}
+          images={villa.galleryImages}
           villaName={villa.name}
         />
 

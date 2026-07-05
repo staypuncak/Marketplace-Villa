@@ -6,7 +6,9 @@ export type Villa = {
   price: number
   capacity: number
   location: string
-  image: string
+  thumbnailImage: string
+  heroImage: string
+  galleryImages: string[]
   facilities: string[]
   status: 'active' | 'inactive' | 'draft' | 'archived'
 }

@@ -1,5 +1,7 @@
 import type { Villa } from '@/types/villa'
 
+const fallbackImages = Array.from({ length: 5 }, (_, i) => `/images/gallery-0${i + 1}.svg`)
+
 export const villas: Villa[] = [
   {
     id: '1',
@@ -10,7 +12,9 @@ export const villas: Villa[] = [
     price: 2500000,
     capacity: 10,
     location: 'Cisarua, Puncak',
-    image: '/images/villa-puncak-indah.jpg',
+    thumbnailImage: '/images/gallery-01.svg',
+    heroImage: '/images/gallery-01.svg',
+    galleryImages: fallbackImages,
     facilities: ['Kolam Renang', 'Taman', 'Parkir Luas', 'Dapur', 'WiFi'],
     status: 'active',
   },
@@ -23,7 +27,9 @@ export const villas: Villa[] = [
     price: 3500000,
     capacity: 16,
     location: 'Megamendung, Puncak',
-    image: '/images/villa-bukit-respati.jpg',
+    thumbnailImage: '/images/gallery-02.svg',
+    heroImage: '/images/gallery-02.svg',
+    galleryImages: fallbackImages,
     facilities: ['Kolam Renang', 'Aula', 'Parkir Luas', 'Dapur', 'WiFi', 'Karaoke'],
     status: 'active',
   },
@@ -36,7 +42,9 @@ export const villas: Villa[] = [
     price: 5000000,
     capacity: 8,
     location: 'Tugu Selatan, Puncak',
-    image: '/images/villa-cloud-nine.jpg',
+    thumbnailImage: '/images/gallery-03.svg',
+    heroImage: '/images/gallery-03.svg',
+    galleryImages: fallbackImages,
     facilities: ['Fireplace', 'Spa', 'Taman', 'Dapur', 'WiFi', 'AC'],
     status: 'active',
   },
@@ -49,7 +57,9 @@ export const villas: Villa[] = [
     price: 1500000,
     capacity: 6,
     location: 'Pacet, Puncak',
-    image: '/images/villa-alam-asri.jpg',
+    thumbnailImage: '/images/gallery-04.svg',
+    heroImage: '/images/gallery-04.svg',
+    galleryImages: fallbackImages,
     facilities: ['Taman', 'Dapur', 'Parkir', 'WiFi'],
     status: 'active',
   },
@@ -62,7 +72,9 @@ export const villas: Villa[] = [
     price: 7500000,
     capacity: 25,
     location: 'Cipanas, Puncak',
-    image: '/images/villa-mountain-view.jpg',
+    thumbnailImage: '/images/gallery-05.svg',
+    heroImage: '/images/gallery-05.svg',
+    galleryImages: fallbackImages,
     facilities: ['Kolam Renang', 'Aula Besar', 'Taman', 'Dapur', 'Parkir Luas', 'WiFi', 'AC', 'Karaoke'],
     status: 'active',
   },

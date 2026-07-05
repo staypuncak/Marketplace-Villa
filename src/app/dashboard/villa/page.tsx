@@ -221,11 +221,13 @@ export default function VillaPage() {
   useEffect(() => {
     let cancelled = false
 
-    supabase
-      .from('villas')
-      .select('*, media(*)')
-      .order('created_at', { ascending: false })
-      .then(({ data, error }) => {
+    const fetchVillas = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('villas')
+          .select('*, media(*)')
+          .order('created_at', { ascending: false })
+
         if (cancelled) return
         if (error) throw error
 
@@ -239,13 +241,14 @@ export default function VillaPage() {
         })
 
         setVillas(items)
-      })
-      .catch((err) => {
+      } catch (err) {
         if (!cancelled) console.error('Failed to fetch villas:', err)
-      })
-      .finally(() => {
+      } finally {
         if (!cancelled) setLoading(false)
-      })
+      }
+    }
+
+    fetchVillas()
 
     return () => { cancelled = true }
   }, [supabase])
