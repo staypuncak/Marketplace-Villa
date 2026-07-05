@@ -1,8 +1,9 @@
 'use client'
 
+import Link from 'next/link'
 import {
   Building, CalendarCheck, Clock, UserCheck,
-  PlusCircle, NotebookPen, Globe, FileText,
+  Users, BarChart3,
 } from 'lucide-react'
 import { useDashboard } from '@/lib/dashboard-context'
 
@@ -14,10 +15,10 @@ const kpiCards = [
 ]
 
 const quickActions = [
-  { label: 'Tambah Villa', desc: 'Tambah villa baru ke website', icon: PlusCircle, href: '/dashboard/villa' },
+  { label: 'Kelola Villa', desc: 'Atur villa dan fasilitas', icon: Building, href: '/dashboard/villa' },
   { label: 'Kelola Booking', desc: 'Lihat booking terbaru', icon: CalendarCheck, href: '/dashboard/booking' },
-  { label: 'Website', desc: 'Edit Hero, CTA, Footer', icon: Globe, href: '/dashboard/pengaturan' },
-  { label: 'Artikel', desc: 'Kelola Blog StayPuncak', icon: FileText, href: '/dashboard/blog' },
+  { label: 'Kelola Customer', desc: 'Data dan riwayat customer', icon: Users, href: '/dashboard/customer' },
+  { label: 'Analytics', desc: 'Pantau performa bisnis', icon: BarChart3, href: '/dashboard/analytics' },
 ]
 
 const activities = [
@@ -48,7 +49,7 @@ export default function DashboardPage() {
   const firstName = adminName.split(' ')[0] || 'Admin'
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 select-none">
       <div>
         <h2 className="text-2xl font-semibold text-gray-900">
           Selamat Datang Kembali, {firstName} 👋
@@ -61,16 +62,19 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
         {kpiCards.map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
+          <div
+            key={stat.label}
+            className="rounded-xl border border-gray-200 bg-white p-4 sm:p-5 shadow-sm transition-all hover:shadow-md active:scale-[0.98] active:shadow-sm cursor-default min-h-[104px]"
+          >
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-500">{stat.label}</span>
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-                <stat.icon className="size-5" />
+              <span className="text-xs sm:text-sm font-medium text-gray-500">{stat.label}</span>
+              <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                <stat.icon className="size-4 sm:size-5" />
               </div>
             </div>
-            <p className="mt-3 text-2xl font-semibold text-gray-900">{stat.value}</p>
+            <p className="mt-2 sm:mt-3 text-xl sm:text-2xl font-semibold text-gray-900">{stat.value}</p>
             <p className="mt-1 text-xs text-gray-400">{stat.change}</p>
           </div>
         ))}
@@ -83,7 +87,7 @@ export default function DashboardPage() {
             {activities.map((item, i) => (
               <div
                 key={i}
-                className="flex items-start gap-3 border-b border-gray-100 px-2 py-3 last:border-0"
+                className="flex items-start gap-3 border-b border-gray-100 px-2 py-3 last:border-0 active:bg-gray-50/50 rounded-lg transition-colors"
               >
                 <div
                   className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${activityColors[item.type] || 'bg-gray-300'}`}
@@ -102,18 +106,19 @@ export default function DashboardPage() {
             <h3 className="text-base font-semibold text-gray-900">Aksi Cepat</h3>
             <div className="mt-4 grid grid-cols-1 gap-3">
               {quickActions.map((action) => (
-                <button
+                <Link
                   key={action.label}
-                  className="flex items-start gap-3 rounded-lg border border-gray-100 bg-gray-50/50 px-4 py-3 text-left transition-all hover:border-emerald-200 hover:bg-emerald-50/50 hover:shadow-sm"
+                  href={action.href}
+                  className="flex items-start gap-3 rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-3.5 text-left transition-all hover:border-emerald-200 hover:bg-emerald-50/50 hover:shadow-sm active:scale-[0.98] active:bg-emerald-100/50 min-h-[52px] cursor-pointer"
                 >
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
                     <action.icon className="size-4" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-gray-900">{action.label}</p>
                     <p className="text-xs text-gray-400">{action.desc}</p>
                   </div>
-                </button>
+                </Link>
               ))}
             </div>
           </div>
@@ -122,7 +127,7 @@ export default function DashboardPage() {
             <h3 className="text-base font-semibold text-gray-900">Status Website</h3>
             <div className="mt-4 space-y-3">
               {websiteStatus.map((item) => (
-                <div key={item.label} className="flex items-center gap-3">
+                <div key={item.label} className="flex items-center gap-3 min-h-[36px]">
                   <span className={`h-2 w-2 shrink-0 rounded-full ${item.active ? 'bg-emerald-400' : 'bg-red-400'}`} />
                   <span className="text-sm text-gray-600">{item.label}</span>
                 </div>
