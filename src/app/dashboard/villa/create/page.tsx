@@ -58,12 +58,82 @@ export default function CreateVillaPage() {
   const [thumbnailPath, setThumbnailPath] = useState('')
   const [heroPath, setHeroPath] = useState('')
   const [galleryPaths, setGalleryPaths] = useState<string[]>([])
+  const [name, setName] = useState('')
+  const [price, setPrice] = useState('')
+  const [location, setLocation] = useState('')
+  const [description, setDescription] = useState('')
+  const [isFeatured, setIsFeatured] = useState(false)
+  const [isActive, setIsActive] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   const next = () => {
     if (step < steps.length - 1) setStep(step + 1)
     else setSuccess(true)
   }
   const prev = () => setStep(step - 1)
+
+  const handleSave = async () => {
+    setSaving(true)
+    setSaveError(null)
+
+    try {
+      const supabase = createClient()
+
+      const { data: villa, error: villaError } = await supabase
+        .from('villas')
+        .insert({
+          name,
+          slug,
+          location: location || null,
+          price: Number(price) || 0,
+          capacity: Number(guests) || 0,
+          description: description || null,
+          status: isActive ? 'active' : 'draft',
+          facilities: selectedFacilities,
+        })
+        .select('id')
+        .single()
+
+      if (villaError) {
+        setSaveError(villaError.message)
+        setSaving(false)
+        return
+      }
+
+      const mediaInserts: {
+        villa_id: string
+        image_url: string
+        is_cover: boolean
+        sort_order: number
+      }[] = []
+
+      if (thumbnailPath) {
+        mediaInserts.push({ villa_id: villa.id, image_url: thumbnailPath, is_cover: true, sort_order: 0 })
+      }
+      if (heroPath) {
+        mediaInserts.push({ villa_id: villa.id, image_url: heroPath, is_cover: false, sort_order: 1 })
+      }
+      galleryPaths.forEach((path, i) => {
+        mediaInserts.push({ villa_id: villa.id, image_url: path, is_cover: false, sort_order: i + 2 })
+      })
+
+      if (mediaInserts.length > 0) {
+        const { error: mediaError } = await supabase.from('media').insert(mediaInserts)
+        if (mediaError) {
+          setSaveError(mediaError.message)
+          setSaving(false)
+          return
+        }
+      }
+
+      setSuccess(true)
+    } catch {
+      setSaveError('Gagal menyimpan villa. Silakan coba lagi.')
+    } finally {
+      setSaving(false)
+    }
+  }
 
   if (success) {
     return (
@@ -109,7 +179,17 @@ export default function CreateVillaPage() {
       <StepIndicator step={step} />
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
-        {step === 0 && <StepInformasiDasar slug={slug} setSlug={setSlug} />}
+        {step === 0 && (
+          <StepInformasiDasar
+            slug={slug} setSlug={setSlug}
+            name={name} setName={setName}
+            price={price} setPrice={setPrice}
+            location={location} setLocation={setLocation}
+            description={description} setDescription={setDescription}
+            isFeatured={isFeatured} setIsFeatured={setIsFeatured}
+            isActive={isActive} setIsActive={setIsActive}
+          />
+        )}
         {step === 1 && (
           <StepMedia
             slug={slug}
@@ -131,6 +211,16 @@ export default function CreateVillaPage() {
         {step === 4 && <StepSeo slug={slug} guests={guests} bedrooms={bedrooms} bathrooms={bathrooms} selectedFacilities={selectedFacilities} thumbnailPath={thumbnailPath} heroPath={heroPath} galleryPaths={galleryPaths} />}
       </div>
 
+      {saveError && (
+        <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <AlertCircle className="size-4 shrink-0" />
+          {saveError}
+          <button onClick={() => setSaveError(null)} className="ml-auto text-red-400 hover:text-red-600">
+            <X className="size-4" />
+          </button>
+        </div>
+      )}
+
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           {step > 0 && (
@@ -139,8 +229,16 @@ export default function CreateVillaPage() {
             </button>
           )}
         </div>
-        <button onClick={next} className="flex w-full items-center gap-1.5 rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 sm:w-auto">
-          {step < steps.length - 1 ? 'Lanjut' : 'Simpan Villa'} <ArrowRight className="size-4" />
+        <button
+          onClick={step < steps.length - 1 ? next : handleSave}
+          disabled={saving}
+          className="flex w-full items-center gap-1.5 rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+        >
+          {saving ? (
+            <><Loader2 className="size-4 animate-spin" /> Menyimpan...</>
+          ) : (
+            <>{step < steps.length - 1 ? 'Lanjut' : 'Simpan Villa'} <ArrowRight className="size-4" /></>
+          )}
         </button>
       </div>
     </div>
@@ -167,9 +265,23 @@ function slugify(text: string) {
     .trim()
 }
 
-function StepInformasiDasar({ slug, setSlug }: { slug: string; setSlug: (v: string) => void }) {
-  const [name, setName] = useState('')
-
+function StepInformasiDasar({
+  slug, setSlug,
+  name, setName,
+  price, setPrice,
+  location, setLocation,
+  description, setDescription,
+  isFeatured, setIsFeatured,
+  isActive, setIsActive,
+}: {
+  slug: string; setSlug: (v: string) => void
+  name: string; setName: (v: string) => void
+  price: string; setPrice: (v: string) => void
+  location: string; setLocation: (v: string) => void
+  description: string; setDescription: (v: string) => void
+  isFeatured: boolean; setIsFeatured: (v: boolean) => void
+  isActive: boolean; setIsActive: (v: boolean) => void
+}) {
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
     setName(val)
@@ -201,12 +313,24 @@ function StepInformasiDasar({ slug, setSlug }: { slug: string; setSlug: (v: stri
       </Field>
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Lokasi" required>
-          <input type="text" placeholder="Cisarua, Puncak Bogor" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Cisarua, Puncak Bogor"
+            className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+          />
         </Field>
         <Field label="Harga per Malam" required>
           <div className="relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-gray-400">Rp</span>
-            <input type="number" placeholder="2.500.000" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 pl-10 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder="2.500.000"
+              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 pl-10 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            />
           </div>
         </Field>
       </div>
@@ -221,17 +345,36 @@ function StepInformasiDasar({ slug, setSlug }: { slug: string; setSlug: (v: stri
       </Field>
       <div className="flex items-center gap-6">
         <label className="flex items-center gap-2">
-          <input type="checkbox" className="size-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
+          <input
+            type="checkbox"
+            checked={isFeatured}
+            onChange={(e) => setIsFeatured(e.target.checked)}
+            className="size-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+          />
           <span className="text-sm text-gray-700">Featured</span>
         </label>
         <label className="flex items-center gap-2">
-          <input type="checkbox" className="size-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
+          <input
+            type="checkbox"
+            checked={isActive}
+            onChange={(e) => setIsActive(e.target.checked)}
+            className="size-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+          />
           <span className="text-sm text-gray-700">Aktif</span>
         </label>
       </div>
       <Field label="Deskripsi Singkat">
-        <textarea rows={3} placeholder="Deskripsi villa untuk homepage..." className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+        <textarea
+          rows={3}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Deskripsi villa untuk homepage..."
+          className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+        />
       </Field>
+      <p className="text-xs text-gray-400">
+        * Fitur seperti kamar tidur, kamar mandi, kategori, booking, dan SEO akan disimpan di database pada pengembangan berikutnya.
+      </p>
     </div>
   )
 }
