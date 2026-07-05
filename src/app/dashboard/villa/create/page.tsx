@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, ArrowRight, Check, Building, Search, Plus, X, Image } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, Building, Search, Plus, X, Image, Loader2, AlertCircle, Trash2, Upload } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { createClient } from '@/lib/supabase/client'
+import { STORAGE_BUCKET, getVillaThumbnailPath, getVillaHeroPath, getVillaGalleryPath } from '@/lib/storage/media-paths'
 
 const steps = ['Informasi Dasar', 'Media', 'Fasilitas', 'Booking', 'SEO & Publish']
 
@@ -47,14 +49,15 @@ function StepIndicator({ step }: { step: number }) {
 export default function CreateVillaPage() {
   const [step, setStep] = useState(0)
   const [success, setSuccess] = useState(false)
+  const [slug, setSlug] = useState('')
   const [guests, setGuests] = useState('')
   const [bedrooms, setBedrooms] = useState('')
   const [bathrooms, setBathrooms] = useState('')
   const [selectedFacilities, setSelectedFacilities] = useState<string[]>([])
   const [customFacilities, setCustomFacilities] = useState<string[]>([])
-  const [thumbnailSelected, setThumbnailSelected] = useState(false)
-  const [heroSelected, setHeroSelected] = useState(false)
-  const [galleryCount, setGalleryCount] = useState(0)
+  const [thumbnailPath, setThumbnailPath] = useState('')
+  const [heroPath, setHeroPath] = useState('')
+  const [galleryPaths, setGalleryPaths] = useState<string[]>([])
 
   const next = () => {
     if (step < steps.length - 1) setStep(step + 1)
@@ -106,12 +109,13 @@ export default function CreateVillaPage() {
       <StepIndicator step={step} />
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
-        {step === 0 && <StepInformasiDasar />}
+        {step === 0 && <StepInformasiDasar slug={slug} setSlug={setSlug} />}
         {step === 1 && (
           <StepMedia
-            thumbnailSelected={thumbnailSelected} setThumbnailSelected={setThumbnailSelected}
-            heroSelected={heroSelected} setHeroSelected={setHeroSelected}
-            galleryCount={galleryCount} setGalleryCount={setGalleryCount}
+            slug={slug}
+            thumbnailPath={thumbnailPath} setThumbnailPath={setThumbnailPath}
+            heroPath={heroPath} setHeroPath={setHeroPath}
+            galleryPaths={galleryPaths} setGalleryPaths={setGalleryPaths}
           />
         )}
         {step === 2 && (
@@ -124,7 +128,7 @@ export default function CreateVillaPage() {
           />
         )}
         {step === 3 && <StepBooking />}
-        {step === 4 && <StepSeo guests={guests} bedrooms={bedrooms} bathrooms={bathrooms} selectedFacilities={selectedFacilities} thumbnailSelected={thumbnailSelected} heroSelected={heroSelected} galleryCount={galleryCount} />}
+        {step === 4 && <StepSeo slug={slug} guests={guests} bedrooms={bedrooms} bathrooms={bathrooms} selectedFacilities={selectedFacilities} thumbnailPath={thumbnailPath} heroPath={heroPath} galleryPaths={galleryPaths} />}
       </div>
 
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -154,14 +158,45 @@ function Field({ label, children, required }: { label: string; children: React.R
   )
 }
 
-function StepInformasiDasar() {
+function slugify(text: string) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim()
+}
+
+function StepInformasiDasar({ slug, setSlug }: { slug: string; setSlug: (v: string) => void }) {
+  const [name, setName] = useState('')
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    setName(val)
+    if (!slug || slug === slugify(name)) {
+      setSlug(slugify(val))
+    }
+  }
+
   return (
     <div className="space-y-5">
       <Field label="Nama Villa" required>
-        <input type="text" placeholder="contoh: Villa Bukit Respati" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+        <input
+          type="text"
+          value={name}
+          onChange={handleNameChange}
+          placeholder="contoh: Villa Bukit Respati"
+          className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+        />
       </Field>
       <Field label="Slug">
-        <input type="text" placeholder="villa-bukit-respati" className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-500" readOnly />
+        <input
+          type="text"
+          value={slug}
+          onChange={(e) => setSlug(e.target.value)}
+          placeholder="villa-bukit-respati"
+          className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+        />
         <p className="mt-1 text-xs text-gray-400">URL otomatis dibuat dari nama villa dan bisa disesuaikan.</p>
       </Field>
       <div className="grid gap-5 sm:grid-cols-2">
@@ -201,15 +236,13 @@ function StepInformasiDasar() {
   )
 }
 
-function MediaCard({
-  label, badge, helper, ratio, selected, galleryCount: _galleryCount,
-}: {
+function MediaCard({ label, badge, helper, ratio, counter, children }: {
   label: string
   badge?: string
   helper: string
   ratio?: string
-  selected?: boolean
-  galleryCount?: number
+  counter?: string
+  children: React.ReactNode
 }) {
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -223,65 +256,233 @@ function MediaCard({
           </div>
           <p className="mt-1 text-xs text-gray-400">{helper}</p>
         </div>
-        {typeof _galleryCount === 'number' && (
-          <span className="text-xs font-medium text-gray-400">{_galleryCount} / 20 foto</span>
-        )}
+        {counter && <span className="text-xs font-medium text-gray-400">{counter}</span>}
       </div>
       {ratio && <p className="mt-2 text-[11px] font-medium text-gray-400">Rasio: {ratio}</p>}
-      <div className="mt-3 flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 py-7 transition-colors hover:border-emerald-300 hover:bg-emerald-50/50">
-        <div className="text-center">
-          {selected ? (
-            <div className="flex items-center justify-center gap-1 text-emerald-600">
-              <Check className="size-5" />
-              <span className="text-sm font-medium">Sudah dipilih</span>
-            </div>
-          ) : (
-            <>
-              <Image className="mx-auto size-8 text-gray-300" />
-              <p className="mt-2 text-sm text-gray-500">Klik untuk upload atau drag foto ke sini</p>
-              <p className="mt-0.5 text-xs text-gray-300">JPG, PNG, WEBP</p>
-            </>
-          )}
-        </div>
-      </div>
+      <div className="mt-3">{children}</div>
     </div>
   )
 }
 
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+const MAX_FILE_SIZE = 5 * 1024 * 1024
+
+function validateFile(file: File): string | null {
+  if (!ALLOWED_TYPES.includes(file.type)) return 'Hanya file JPG, PNG, dan WEBP yang diterima.'
+  if (file.size > MAX_FILE_SIZE) return 'Ukuran file maksimal 5 MB.'
+  return null
+}
+
 function StepMedia({
-  thumbnailSelected, setThumbnailSelected,
-  heroSelected, setHeroSelected,
-  galleryCount, setGalleryCount,
+  slug,
+  thumbnailPath, setThumbnailPath,
+  heroPath, setHeroPath,
+  galleryPaths, setGalleryPaths,
 }: {
-  thumbnailSelected: boolean; setThumbnailSelected: (v: boolean) => void
-  heroSelected: boolean; setHeroSelected: (v: boolean) => void
-  galleryCount: number; setGalleryCount: (v: number) => void
+  slug: string
+  thumbnailPath: string; setThumbnailPath: (v: string) => void
+  heroPath: string; setHeroPath: (v: string) => void
+  galleryPaths: string[]; setGalleryPaths: (v: string[]) => void
 }) {
+  const [uploading, setUploading] = useState<'thumbnail' | 'hero' | 'gallery' | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const thumbnailRef = useRef<HTMLInputElement>(null)
+  const heroRef = useRef<HTMLInputElement>(null)
+  const galleryRef = useRef<HTMLInputElement>(null)
+
+  const supabase = createClient()
+
+  const getPublicUrl = (path: string) =>
+    supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path).data.publicUrl
+
+  const uploadSingle = async (file: File, getPath: (slug: string) => string, setPath: (v: string) => void) => {
+    const validationError = validateFile(file)
+    if (validationError) { setError(validationError); return }
+
+    if (!slug.trim()) { setError('Isi nama villa terlebih dahulu sebelum upload gambar.'); return }
+
+    const path = getPath(slug)
+    const { error: uploadError } = await supabase.storage.from(STORAGE_BUCKET).upload(path, file, { upsert: true })
+    if (uploadError) { setError(uploadError.message); return }
+
+    setPath(path)
+    setError(null)
+  }
+
+  const handleThumbnail = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading('thumbnail')
+    await uploadSingle(file, getVillaThumbnailPath, setThumbnailPath)
+    setUploading(null)
+    if (thumbnailRef.current) thumbnailRef.current.value = ''
+  }
+
+  const handleHero = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading('hero')
+    await uploadSingle(file, getVillaHeroPath, setHeroPath)
+    setUploading(null)
+    if (heroRef.current) heroRef.current.value = ''
+  }
+
+  const handleGallery = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
+
+    if (galleryPaths.length + files.length > 20) { setError('Maksimal 20 foto untuk galeri.'); return }
+
+    if (!slug.trim()) { setError('Isi nama villa terlebih dahulu sebelum upload gambar.'); return }
+
+    setUploading('gallery')
+    const newPaths = [...galleryPaths]
+    for (const file of files) {
+      const validationError = validateFile(file)
+      if (validationError) { setError(validationError); continue }
+
+      const index = newPaths.length + 1
+      const path = getVillaGalleryPath(slug, index)
+      const { error: uploadError } = await supabase.storage.from(STORAGE_BUCKET).upload(path, file, { upsert: true })
+      if (uploadError) { setError(uploadError.message); continue }
+
+      newPaths.push(path)
+    }
+    setGalleryPaths(newPaths)
+    setUploading(null)
+    setError(null)
+    if (galleryRef.current) galleryRef.current.value = ''
+  }
+
+  const removeThumbnail = () => {
+    // TODO: also delete from storage if needed
+    setThumbnailPath('')
+  }
+  const removeHero = () => {
+    // TODO: also delete from storage if needed
+    setHeroPath('')
+  }
+  const removeGallery = (index: number) => {
+    // TODO: also delete from storage if needed
+    setGalleryPaths(galleryPaths.filter((_, i) => i !== index))
+  }
+
+  if (!slug.trim()) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 py-12 text-center">
+          <Image className="mx-auto size-10 text-gray-300" />
+          <p className="mt-3 text-sm font-medium text-gray-500">Isi nama villa terlebih dahulu sebelum upload gambar.</p>
+          <p className="mt-1 text-xs text-gray-400">Lengkapi informasi dasar di Step 1 terlebih dahulu.</p>
+        </div>
+        <p className="text-center text-xs text-gray-400">Upload gambar akan dihubungkan ke Supabase Storage pada sprint berikutnya.</p>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
+      {error && (
+        <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <AlertCircle className="size-4 shrink-0" />
+          {error}
+          <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-600">
+            <X className="size-4" />
+          </button>
+        </div>
+      )}
+
       <div className="space-y-4">
-        <MediaCard
-          label="Thumbnail Villa"
-          badge="Wajib"
-          helper="Gambar utama yang tampil di card villa dan daftar rekomendasi."
-          ratio="4:3 atau 1:1"
-          selected={thumbnailSelected}
-        />
-        <MediaCard
-          label="Hero Detail Villa"
-          badge="Wajib"
-          helper="Gambar besar yang tampil di halaman detail villa."
-          ratio="16:9"
-          selected={heroSelected}
-        />
-        <MediaCard
-          label="Galeri Foto Villa"
-          helper="Tambahkan beberapa foto untuk memperlihatkan suasana villa, kamar, kolam, dapur, dan area sekitar."
-          ratio="Minimal 5 foto — Maksimal 20 foto"
-          galleryCount={galleryCount}
-        />
+        <MediaCard label="Thumbnail Villa" badge="Wajib" helper="Gambar utama yang tampil di card villa dan daftar rekomendasi." ratio="4:3 atau 1:1">
+          <input ref={thumbnailRef} type="file" accept=".jpg,.jpeg,.png,.webp" onChange={handleThumbnail} className="hidden" />
+          {uploading === 'thumbnail' ? (
+            <div className="flex items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 py-7">
+              <div className="text-center">
+                <Loader2 className="mx-auto size-6 animate-spin text-emerald-600" />
+                <p className="mt-2 text-sm text-gray-500">Mengupload...</p>
+              </div>
+            </div>
+          ) : thumbnailPath ? (
+            <div className="relative">
+              <img src={getPublicUrl(thumbnailPath)} alt="Thumbnail" className="h-40 w-full rounded-xl object-cover" />
+              <button onClick={removeThumbnail} className="absolute right-2 top-2 flex size-7 items-center justify-center rounded-full bg-red-500 text-white shadow transition-colors hover:bg-red-600">
+                <Trash2 className="size-3.5" />
+              </button>
+            </div>
+          ) : (
+            <div onClick={() => thumbnailRef.current?.click()} className="flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 py-7 transition-colors hover:border-emerald-300 hover:bg-emerald-50/50">
+              <div className="text-center">
+                <Upload className="mx-auto size-6 text-gray-300" />
+                <p className="mt-2 text-sm text-gray-500">Klik untuk upload atau drag foto ke sini</p>
+                <p className="mt-0.5 text-xs text-gray-300">JPG, PNG, WEBP</p>
+              </div>
+            </div>
+          )}
+        </MediaCard>
+
+        <MediaCard label="Hero Detail Villa" badge="Wajib" helper="Gambar besar yang tampil di halaman detail villa." ratio="16:9">
+          <input ref={heroRef} type="file" accept=".jpg,.jpeg,.png,.webp" onChange={handleHero} className="hidden" />
+          {uploading === 'hero' ? (
+            <div className="flex items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 py-7">
+              <div className="text-center">
+                <Loader2 className="mx-auto size-6 animate-spin text-emerald-600" />
+                <p className="mt-2 text-sm text-gray-500">Mengupload...</p>
+              </div>
+            </div>
+          ) : heroPath ? (
+            <div className="relative">
+              <img src={getPublicUrl(heroPath)} alt="Hero" className="h-48 w-full rounded-xl object-cover" />
+              <button onClick={removeHero} className="absolute right-2 top-2 flex size-7 items-center justify-center rounded-full bg-red-500 text-white shadow transition-colors hover:bg-red-600">
+                <Trash2 className="size-3.5" />
+              </button>
+            </div>
+          ) : (
+            <div onClick={() => heroRef.current?.click()} className="flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 py-7 transition-colors hover:border-emerald-300 hover:bg-emerald-50/50">
+              <div className="text-center">
+                <Upload className="mx-auto size-6 text-gray-300" />
+                <p className="mt-2 text-sm text-gray-500">Klik untuk upload atau drag foto ke sini</p>
+                <p className="mt-0.5 text-xs text-gray-300">JPG, PNG, WEBP</p>
+              </div>
+            </div>
+          )}
+        </MediaCard>
+
+        <MediaCard label="Galeri Foto Villa" helper="Tambahkan beberapa foto untuk memperlihatkan suasana villa, kamar, kolam, dapur, dan area sekitar." ratio="Minimal 5 foto — Maksimal 20 foto" counter={`${galleryPaths.length} / 20 foto`}>
+          <input ref={galleryRef} type="file" accept=".jpg,.jpeg,.png,.webp" multiple onChange={handleGallery} className="hidden" />
+          {uploading === 'gallery' ? (
+            <div className="flex items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 py-7">
+              <div className="text-center">
+                <Loader2 className="mx-auto size-6 animate-spin text-emerald-600" />
+                <p className="mt-2 text-sm text-gray-500">Mengupload...</p>
+              </div>
+            </div>
+          ) : galleryPaths.length > 0 ? (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+              {galleryPaths.map((path, i) => (
+                <div key={path} className="relative">
+                  <img src={getPublicUrl(path)} alt={`Gallery ${i + 1}`} className="h-24 w-full rounded-lg object-cover" />
+                  <button onClick={() => removeGallery(i)} className="absolute right-1.5 top-1.5 flex size-6 items-center justify-center rounded-full bg-red-500 text-white shadow transition-colors hover:bg-red-600">
+                    <X className="size-3" />
+                  </button>
+                </div>
+              ))}
+              {galleryPaths.length < 20 && (
+                <div onClick={() => galleryRef.current?.click()} className="flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50/50 transition-colors hover:border-emerald-300 hover:bg-emerald-50/50">
+                  <Plus className="size-6 text-gray-300" />
+                </div>
+              )}
+            </div>
+          ) : (
+            <div onClick={() => galleryRef.current?.click()} className="flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 py-7 transition-colors hover:border-emerald-300 hover:bg-emerald-50/50">
+              <div className="text-center">
+                <Upload className="mx-auto size-6 text-gray-300" />
+                <p className="mt-2 text-sm text-gray-500">Klik untuk upload atau drag foto ke sini</p>
+                <p className="mt-0.5 text-xs text-gray-300">JPG, PNG, WEBP</p>
+              </div>
+            </div>
+          )}
+        </MediaCard>
       </div>
-      <p className="text-center text-xs text-gray-400">Upload gambar akan dihubungkan ke Supabase Storage pada sprint berikutnya.</p>
     </div>
   )
 }
@@ -440,7 +641,7 @@ function StepBooking() {
   )
 }
 
-function StepSeo({ guests, bedrooms, bathrooms, selectedFacilities, thumbnailSelected, heroSelected, galleryCount }: { guests: string; bedrooms: string; bathrooms: string; selectedFacilities: string[]; thumbnailSelected: boolean; heroSelected: boolean; galleryCount: number }) {
+function StepSeo({ slug, guests, bedrooms, bathrooms, selectedFacilities, thumbnailPath, heroPath, galleryPaths }: { slug: string; guests: string; bedrooms: string; bathrooms: string; selectedFacilities: string[]; thumbnailPath: string; heroPath: string; galleryPaths: string[] }) {
   return (
     <div className="space-y-5">
       <Field label="SEO Title">
@@ -452,7 +653,7 @@ function StepSeo({ guests, bedrooms, bathrooms, selectedFacilities, thumbnailSel
       <Field label="Preview URL">
         <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-500">
           <Search className="size-4" />
-          staypuncak.com/villa/<span className="text-gray-400">villa-bukit-respati</span>
+          staypuncak.com/villa/<span className="text-gray-400">{slug || 'villa-bukit-respati'}</span>
         </div>
       </Field>
       <Field label="Publikasi">
@@ -480,9 +681,9 @@ function StepSeo({ guests, bedrooms, bathrooms, selectedFacilities, thumbnailSel
               <span>Kamar Tidur: {bedrooms || '-'}</span>
               <span>Kamar Mandi: {bathrooms || '-'}</span>
               <span>Fasilitas: {selectedFacilities.length} dipilih</span>
-              <span>Thumbnail: {thumbnailSelected ? 'Sudah dipilih' : 'Belum diupload'}</span>
-              <span>Hero: {heroSelected ? 'Sudah dipilih' : 'Belum diupload'}</span>
-              <span>Galeri: {galleryCount} foto</span>
+              <span>Thumbnail: {thumbnailPath ? 'Sudah diupload' : 'Belum diupload'}</span>
+              <span>Hero: {heroPath ? 'Sudah diupload' : 'Belum diupload'}</span>
+              <span>Galeri: {galleryPaths.length} foto</span>
             </div>
           </div>
           <div className="ml-auto flex flex-col items-end gap-1">
