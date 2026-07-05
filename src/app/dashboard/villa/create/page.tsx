@@ -64,6 +64,14 @@ export default function CreateVillaPage() {
   const [description, setDescription] = useState('')
   const [isFeatured, setIsFeatured] = useState(false)
   const [isActive, setIsActive] = useState(false)
+  const [category, setCategory] = useState('')
+  const [checkInTime, setCheckInTime] = useState('14:00')
+  const [checkOutTime, setCheckOutTime] = useState('12:00')
+  const [minStay, setMinStay] = useState('')
+  const [bookingNotes, setBookingNotes] = useState('')
+  const [featuredOrder, setFeaturedOrder] = useState('')
+  const [seoTitle, setSeoTitle] = useState('')
+  const [metaDescription, setMetaDescription] = useState('')
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
 
@@ -91,6 +99,18 @@ export default function CreateVillaPage() {
           description: description || null,
           status: isActive ? 'active' : 'draft',
           facilities: selectedFacilities,
+          bedrooms: Number(bedrooms) || null,
+          bathrooms: Number(bathrooms) || null,
+          category: category || null,
+          is_featured: isFeatured,
+          featured_order: Number(featuredOrder) || null,
+          check_in_time: checkInTime || null,
+          check_out_time: checkOutTime || null,
+          minimum_stay: Number(minStay) || null,
+          booking_notes: bookingNotes || null,
+          seo_title: seoTitle || null,
+          meta_description: metaDescription || null,
+          og_image_url: thumbnailPath || heroPath || null,
         })
         .select('id')
         .single()
@@ -188,6 +208,7 @@ export default function CreateVillaPage() {
             description={description} setDescription={setDescription}
             isFeatured={isFeatured} setIsFeatured={setIsFeatured}
             isActive={isActive} setIsActive={setIsActive}
+            category={category} setCategory={setCategory}
           />
         )}
         {step === 1 && (
@@ -207,8 +228,25 @@ export default function CreateVillaPage() {
             customFacilities={customFacilities} setCustomFacilities={setCustomFacilities}
           />
         )}
-        {step === 3 && <StepBooking />}
-        {step === 4 && <StepSeo slug={slug} guests={guests} bedrooms={bedrooms} bathrooms={bathrooms} selectedFacilities={selectedFacilities} thumbnailPath={thumbnailPath} heroPath={heroPath} galleryPaths={galleryPaths} />}
+        {step === 3 && (
+          <StepBooking
+            checkInTime={checkInTime} setCheckInTime={setCheckInTime}
+            checkOutTime={checkOutTime} setCheckOutTime={setCheckOutTime}
+            minStay={minStay} setMinStay={setMinStay}
+            bookingNotes={bookingNotes} setBookingNotes={setBookingNotes}
+            featuredOrder={featuredOrder} setFeaturedOrder={setFeaturedOrder}
+          />
+        )}
+        {step === 4 && (
+          <StepSeo
+            slug={slug}
+            guests={guests} bedrooms={bedrooms} bathrooms={bathrooms}
+            selectedFacilities={selectedFacilities}
+            thumbnailPath={thumbnailPath} heroPath={heroPath} galleryPaths={galleryPaths}
+            seoTitle={seoTitle} setSeoTitle={setSeoTitle}
+            metaDescription={metaDescription} setMetaDescription={setMetaDescription}
+          />
+        )}
       </div>
 
       {saveError && (
@@ -273,6 +311,7 @@ function StepInformasiDasar({
   description, setDescription,
   isFeatured, setIsFeatured,
   isActive, setIsActive,
+  category, setCategory,
 }: {
   slug: string; setSlug: (v: string) => void
   name: string; setName: (v: string) => void
@@ -281,6 +320,7 @@ function StepInformasiDasar({
   description: string; setDescription: (v: string) => void
   isFeatured: boolean; setIsFeatured: (v: boolean) => void
   isActive: boolean; setIsActive: (v: boolean) => void
+  category: string; setCategory: (v: string) => void
 }) {
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
@@ -337,7 +377,16 @@ function StepInformasiDasar({
       <Field label="Kategori">
         <div className="flex flex-wrap gap-2">
           {categoryOptions.map((cat) => (
-            <button key={cat} className="rounded-xl border border-gray-200 px-4 py-2 text-sm text-gray-600 transition-all hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700">
+            <button
+              key={cat}
+              onClick={() => setCategory(category === cat ? '' : cat)}
+              className={cn(
+                'rounded-xl border px-4 py-2 text-sm transition-all',
+                category === cat
+                  ? 'border-emerald-300 bg-emerald-50 font-medium text-emerald-700'
+                  : 'border-gray-200 text-gray-600 hover:border-emerald-200 hover:bg-emerald-50/50',
+              )}
+            >
               {cat}
             </button>
           ))}
@@ -372,9 +421,6 @@ function StepInformasiDasar({
           className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
         />
       </Field>
-      <p className="text-xs text-gray-400">
-        * Fitur seperti kamar tidur, kamar mandi, kategori, booking, dan SEO akan disimpan di database pada pengembangan berikutnya.
-      </p>
     </div>
   )
 }
@@ -757,7 +803,19 @@ function StepFasilitas({
   )
 }
 
-function StepBooking() {
+function StepBooking({
+  checkInTime, setCheckInTime,
+  checkOutTime, setCheckOutTime,
+  minStay, setMinStay,
+  bookingNotes, setBookingNotes,
+  featuredOrder, setFeaturedOrder,
+}: {
+  checkInTime: string; setCheckInTime: (v: string) => void
+  checkOutTime: string; setCheckOutTime: (v: string) => void
+  minStay: string; setMinStay: (v: string) => void
+  bookingNotes: string; setBookingNotes: (v: string) => void
+  featuredOrder: string; setFeaturedOrder: (v: string) => void
+}) {
   return (
     <div className="space-y-5">
       <Field label="Nomor WhatsApp Booking">
@@ -765,33 +823,33 @@ function StepBooking() {
       </Field>
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Check-in Time">
-          <input type="time" defaultValue="14:00" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+          <input type="time" value={checkInTime} onChange={(e) => setCheckInTime(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
         </Field>
         <Field label="Check-out Time">
-          <input type="time" defaultValue="12:00" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+          <input type="time" value={checkOutTime} onChange={(e) => setCheckOutTime(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
         </Field>
       </div>
       <Field label="Minimum Stay (malam)">
-        <input type="number" placeholder="1" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+        <input type="number" value={minStay} onChange={(e) => setMinStay(e.target.value)} placeholder="1" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
       </Field>
       <Field label="Catatan Booking">
-        <textarea rows={3} placeholder="Informasi tambahan untuk tamu..." className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+        <textarea rows={3} value={bookingNotes} onChange={(e) => setBookingNotes(e.target.value)} placeholder="Informasi tambahan untuk tamu..." className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
       </Field>
       <Field label="Featured Order / Homepage Priority">
-        <input type="number" placeholder="1" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+        <input type="number" value={featuredOrder} onChange={(e) => setFeaturedOrder(e.target.value)} placeholder="1" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
       </Field>
     </div>
   )
 }
 
-function StepSeo({ slug, guests, bedrooms, bathrooms, selectedFacilities, thumbnailPath, heroPath, galleryPaths }: { slug: string; guests: string; bedrooms: string; bathrooms: string; selectedFacilities: string[]; thumbnailPath: string; heroPath: string; galleryPaths: string[] }) {
+function StepSeo({ slug, guests, bedrooms, bathrooms, selectedFacilities, thumbnailPath, heroPath, galleryPaths, seoTitle, setSeoTitle, metaDescription, setMetaDescription }: { slug: string; guests: string; bedrooms: string; bathrooms: string; selectedFacilities: string[]; thumbnailPath: string; heroPath: string; galleryPaths: string[]; seoTitle: string; setSeoTitle: (v: string) => void; metaDescription: string; setMetaDescription: (v: string) => void }) {
   return (
     <div className="space-y-5">
       <Field label="SEO Title">
-        <input type="text" placeholder="Villa Bukit Respati — StayPuncak" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+        <input type="text" value={seoTitle} onChange={(e) => setSeoTitle(e.target.value)} placeholder="Villa Bukit Respati — StayPuncak" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
       </Field>
       <Field label="Meta Description">
-        <textarea rows={2} placeholder="Nikmati liburan keluarga di Villa Bukit Respati..." className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+        <textarea rows={2} value={metaDescription} onChange={(e) => setMetaDescription(e.target.value)} placeholder="Nikmati liburan keluarga di Villa Bukit Respati..." className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
       </Field>
       <Field label="Preview URL">
         <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-500">

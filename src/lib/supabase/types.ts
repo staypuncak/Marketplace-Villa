@@ -190,46 +190,82 @@ export type Database = {
       }
       villas: {
         Row: {
+          bathrooms: number | null
+          bedrooms: number | null
+          booking_notes: string | null
           capacity: number
+          category: string | null
+          check_in_time: string | null
+          check_out_time: string | null
           created_at: string
           description: string | null
           facilities: Json | null
+          featured_order: number | null
           google_maps: string | null
           id: string
+          is_featured: boolean
           location: string | null
+          meta_description: string | null
+          minimum_stay: number | null
           name: string
+          og_image_url: string | null
           owner_id: string | null
           price: number
+          seo_title: string | null
           slug: string
           status: Database["public"]["Enums"]["villa_status"]
           updated_at: string
         }
         Insert: {
+          bathrooms?: number | null
+          bedrooms?: number | null
+          booking_notes?: string | null
           capacity: number
+          category?: string | null
+          check_in_time?: string | null
+          check_out_time?: string | null
           created_at?: string
           description?: string | null
           facilities?: Json | null
+          featured_order?: number | null
           google_maps?: string | null
           id?: string
+          is_featured?: boolean
           location?: string | null
+          meta_description?: string | null
+          minimum_stay?: number | null
           name: string
+          og_image_url?: string | null
           owner_id?: string | null
           price: number
+          seo_title?: string | null
           slug: string
           status?: Database["public"]["Enums"]["villa_status"]
           updated_at?: string
         }
         Update: {
+          bathrooms?: number | null
+          bedrooms?: number | null
+          booking_notes?: string | null
           capacity?: number
+          category?: string | null
+          check_in_time?: string | null
+          check_out_time?: string | null
           created_at?: string
           description?: string | null
           facilities?: Json | null
+          featured_order?: number | null
           google_maps?: string | null
           id?: string
+          is_featured?: boolean
           location?: string | null
+          meta_description?: string | null
+          minimum_stay?: number | null
           name?: string
+          og_image_url?: string | null
           owner_id?: string | null
           price?: number
+          seo_title?: string | null
           slug?: string
           status?: Database["public"]["Enums"]["villa_status"]
           updated_at?: string
@@ -249,7 +285,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_admin_by_email: {
+        Args: { user_email: string }
+        Returns: {
+          admin_id: string
+          admin_name: string
+          admin_role: Database["public"]["Enums"]["admin_role"]
+        }[]
+      }
+      is_admin: { Args: never; Returns: boolean }
+      link_admin_auth: {
+        Args: { admin_id: string; auth_user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       admin_role: "superadmin" | "admin"
