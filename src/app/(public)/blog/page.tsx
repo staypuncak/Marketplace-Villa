@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Container } from '@/components/shared/container'
 import { BlogCard } from '@/components/public/blog-card'
-import { blogArticles } from '@/data/blog'
+import { getPublishedPosts } from '@/lib/supabase/queries'
 
 export const metadata: Metadata = {
   title: 'Panduan Liburan & Villa Puncak',
@@ -10,8 +10,9 @@ export const metadata: Metadata = {
     'Temukan tips memilih villa Puncak, rekomendasi liburan keluarga, dan panduan sewa villa di Puncak Bogor agar perjalanan Anda lebih nyaman dan berkesan.',
 }
 
-export default function BlogPage() {
-  const [featured, ...rest] = blogArticles
+export default async function BlogPage() {
+  const posts = await getPublishedPosts()
+  const [featured, ...rest] = posts
 
   return (
     <>
