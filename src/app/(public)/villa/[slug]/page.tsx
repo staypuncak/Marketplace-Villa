@@ -97,6 +97,17 @@ export default async function VillaDetailPage({ params }: Props) {
             </span>
           </div>
 
+          {villa.price_information && (
+            <div className="rounded-xl border border-brand/20 bg-brand/5 p-4">
+              <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-brand">
+                Harga Sewa
+              </h3>
+              <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+                {villa.price_information}
+              </p>
+            </div>
+          )}
+
           <div>
             <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               Fasilitas

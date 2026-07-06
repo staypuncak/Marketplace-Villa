@@ -42,6 +42,7 @@ export interface VillaFormData {
   featuredOrder: string
   seoTitle: string
   metaDescription: string
+  priceInformation: string
 }
 
 interface VillaFormProps {
@@ -115,6 +116,7 @@ export default function VillaForm({ mode, villaId, initialData }: VillaFormProps
   const [featuredOrder, setFeaturedOrder] = useState(initialData?.featuredOrder ?? '')
   const [seoTitle, setSeoTitle] = useState(initialData?.seoTitle ?? '')
   const [metaDescription, setMetaDescription] = useState(initialData?.metaDescription ?? '')
+  const [priceInformation, setPriceInformation] = useState(initialData?.priceInformation ?? '')
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
 
@@ -153,6 +155,7 @@ export default function VillaForm({ mode, villaId, initialData }: VillaFormProps
         seo_title: seoTitle || null,
         meta_description: metaDescription || null,
         og_image_url: thumbnailPath || heroPath || null,
+        price_information: priceInformation.trim() || null,
       }
 
       let villaIdToUse = villaId
@@ -320,6 +323,7 @@ export default function VillaForm({ mode, villaId, initialData }: VillaFormProps
             minStay={minStay} setMinStay={setMinStay}
             bookingNotes={bookingNotes} setBookingNotes={setBookingNotes}
             featuredOrder={featuredOrder} setFeaturedOrder={setFeaturedOrder}
+            priceInformation={priceInformation} setPriceInformation={setPriceInformation}
           />
         )}
         {step === 4 && (
@@ -881,15 +885,29 @@ function StepBooking({
   minStay, setMinStay,
   bookingNotes, setBookingNotes,
   featuredOrder, setFeaturedOrder,
+  priceInformation, setPriceInformation,
 }: {
   checkInTime: string; setCheckInTime: (v: string) => void
   checkOutTime: string; setCheckOutTime: (v: string) => void
   minStay: string; setMinStay: (v: string) => void
   bookingNotes: string; setBookingNotes: (v: string) => void
   featuredOrder: string; setFeaturedOrder: (v: string) => void
+  priceInformation: string; setPriceInformation: (v: string) => void
 }) {
   return (
     <div className="space-y-5">
+      <Field label="Informasi Harga">
+        <textarea
+          rows={4}
+          value={priceInformation}
+          onChange={(e) => setPriceInformation(e.target.value)}
+          placeholder={'Contoh:\nMinggu–Kamis : Rp3.000.000\nJumat : Rp4.000.000\nSabtu : Rp7.000.000\n\natau\nFlat Rate\nRp4.000.000'}
+          className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-mono focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+        />
+        <p className="mt-1 text-xs text-gray-400">
+          Informasi ini akan tampil di halaman detail villa. Kosongkan jika villa hanya menggunakan satu harga.
+        </p>
+      </Field>
       <Field label="Nomor WhatsApp Booking">
         <input type="text" placeholder="+62 812-3456-7890" className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" />
       </Field>

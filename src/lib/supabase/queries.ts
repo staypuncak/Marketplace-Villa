@@ -103,6 +103,7 @@ function mapVillaRow(row: VillaWithMedia): Villa {
       : FALLBACK_GALLERY,
     facilities: (row.facilities as string[]) ?? [],
     status: row.status,
+    price_information: (row as Record<string, unknown>).price_information as string | null ?? null,
   }
 }
 

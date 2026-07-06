@@ -59,6 +59,7 @@ export default function EditVillaPage() {
           featuredOrder: String((row.featured_order as number) || 0),
           seoTitle: (row.seo_title as string) ?? '',
           metaDescription: (row.meta_description as string) ?? '',
+          priceInformation: (row.price_information as string) ?? '',
           thumbnailPath: cover?.image_url ?? '',
           heroPath: hero?.image_url ?? '',
           galleryPaths: gallery.map((m) => m.image_url),

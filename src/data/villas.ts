@@ -61,6 +61,7 @@ export const villas: Villa[] = [
     galleryImages: villaPuncakIndahGallery,
     facilities: ['Kolam Renang', 'Taman', 'Parkir Luas', 'Dapur', 'WiFi'],
     status: 'active',
+    price_information: null,
   },
   {
     id: '2',
@@ -76,6 +77,7 @@ export const villas: Villa[] = [
     galleryImages: villaBukitRespatiGallery,
     facilities: ['Kolam Renang', 'Aula', 'Parkir Luas', 'Dapur', 'WiFi', 'Karaoke'],
     status: 'active',
+    price_information: 'Weekday : Rp3.500.000\nWeekend : Rp5.000.000\n\nLibur Nasional : Rp6.500.000',
   },
   {
     id: '3',
@@ -91,6 +93,7 @@ export const villas: Villa[] = [
     galleryImages: villaCloudNineGallery,
     facilities: ['Fireplace', 'Spa', 'Taman', 'Dapur', 'WiFi', 'AC'],
     status: 'active',
+    price_information: null,
   },
   {
     id: '4',
@@ -106,6 +109,7 @@ export const villas: Villa[] = [
     galleryImages: villaAlamAsriGallery,
     facilities: ['Taman', 'Dapur', 'Parkir', 'WiFi'],
     status: 'active',
+    price_information: null,
   },
   {
     id: '5',
@@ -121,6 +125,7 @@ export const villas: Villa[] = [
     galleryImages: villaMountainViewGallery,
     facilities: ['Kolam Renang', 'Aula Besar', 'Taman', 'Dapur', 'Parkir Luas', 'WiFi', 'AC', 'Karaoke'],
     status: 'active',
+    price_information: null,
   },
 ]
 

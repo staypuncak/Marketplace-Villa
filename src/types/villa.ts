@@ -11,4 +11,5 @@ export type Villa = {
   galleryImages: string[]
   facilities: string[]
   status: 'active' | 'inactive' | 'draft' | 'archived'
+  price_information: string | null
 }
