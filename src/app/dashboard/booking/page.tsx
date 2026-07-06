@@ -271,10 +271,13 @@ export default function BookingPage() {
             Kelola seluruh permintaan booking villa.
           </p>
         </div>
-        <button className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700">
+        <Link
+          href="/dashboard/booking/create"
+          className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700"
+        >
           <Plus className="size-4" />
-          Booking Baru
-        </button>
+          Catat Booking Manual
+        </Link>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
