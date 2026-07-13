@@ -7,6 +7,23 @@ import { ArrowLeft, ArrowRight, Check, Building, Search, Plus, X, Image, Loader2
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { STORAGE_BUCKET, getVillaThumbnailPath, getVillaHeroPath, getVillaGalleryPath } from '@/lib/storage/media-paths'
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragOverlay,
+  type DragStartEvent,
+  type DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  useSortable,
+  rectSortingStrategy,
+  arrayMove,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 const steps = ['Informasi Dasar', 'Media', 'Fasilitas', 'Booking', 'SEO & Publish']
 
@@ -633,6 +650,27 @@ function StepMedia({
     setGalleryPaths(galleryPaths.filter((_, i) => i !== index))
   }
 
+  const [activeId, setActiveId] = useState<string | null>(null)
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+  )
+
+  function handleDragStart(event: DragStartEvent) {
+    setActiveId(event.active.id as string)
+  }
+
+  function handleDragEnd(event: DragEndEvent) {
+    setActiveId(null)
+    const { active, over } = event
+    if (over && active.id !== over.id) {
+      const oldIndex = galleryPaths.indexOf(active.id as string)
+      const newIndex = galleryPaths.indexOf(over.id as string)
+      if (oldIndex !== -1 && newIndex !== -1) {
+        setGalleryPaths(arrayMove(galleryPaths, oldIndex, newIndex))
+      }
+    }
+  }
+
   if (!slug.trim()) {
     return (
       <div className="space-y-6">
@@ -722,21 +760,27 @@ function StepMedia({
               </div>
             </div>
           ) : galleryPaths.length > 0 ? (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-              {galleryPaths.map((path, i) => (
-                <div key={path} className="relative">
-                  <img src={getPublicUrl(path)} alt={`Gallery ${i + 1}`} className="h-24 w-full rounded-lg object-cover" />
-                  <button onClick={() => removeGallery(i)} className="absolute right-1.5 top-1.5 flex size-6 items-center justify-center rounded-full bg-red-500 text-white shadow transition-colors hover:bg-red-600">
-                    <X className="size-3" />
-                  </button>
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+              <SortableContext items={galleryPaths} strategy={rectSortingStrategy}>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                  {galleryPaths.map((path) => (
+                    <SortableGalleryImage key={path} path={path} index={galleryPaths.indexOf(path)} onRemove={removeGallery} getPublicUrl={getPublicUrl} />
+                  ))}
+                  {galleryPaths.length < 20 && (
+                    <div onClick={() => galleryRef.current?.click()} className="flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50/50 transition-colors hover:border-emerald-300 hover:bg-emerald-50/50">
+                      <Plus className="size-6 text-gray-300" />
+                    </div>
+                  )}
                 </div>
-              ))}
-              {galleryPaths.length < 20 && (
-                <div onClick={() => galleryRef.current?.click()} className="flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50/50 transition-colors hover:border-emerald-300 hover:bg-emerald-50/50">
-                  <Plus className="size-6 text-gray-300" />
-                </div>
-              )}
-            </div>
+              </SortableContext>
+              <DragOverlay>
+                {activeId ? (
+                  <div className="h-24 w-48 rounded-lg object-cover opacity-80 shadow-xl" style={{ transform: 'scale(1.05)', transformOrigin: 'center center' }}>
+                    <img src={getPublicUrl(activeId)} alt="" className="h-full w-full rounded-lg object-cover" />
+                  </div>
+                ) : null}
+              </DragOverlay>
+            </DndContext>
           ) : (
             <div onClick={() => galleryRef.current?.click()} className="flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 py-7 transition-colors hover:border-emerald-300 hover:bg-emerald-50/50">
               <div className="text-center">
@@ -747,6 +791,33 @@ function StepMedia({
             </div>
           )}
         </MediaCard>
+      </div>
+    </div>
+  )
+}
+
+function SortableGalleryImage({ path, index, onRemove, getPublicUrl }: { path: string; index: number; onRemove: (i: number) => void; getPublicUrl: (p: string) => string }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: path })
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+    position: 'relative',
+    zIndex: isDragging ? 10 : undefined,
+  }
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="touch-none">
+      <div className="relative">
+        <img src={getPublicUrl(path)} alt={`Gallery ${index + 1}`} className="h-24 w-full cursor-grab rounded-lg object-cover active:cursor-grabbing" />
+        <button
+          onClick={() => onRemove(index)}
+          onPointerDown={(e) => e.stopPropagation()}
+          className="absolute right-1.5 top-1.5 flex size-6 items-center justify-center rounded-full bg-red-500 text-white shadow transition-colors hover:bg-red-600"
+        >
+          <X className="size-3" />
+        </button>
       </div>
     </div>
   )
