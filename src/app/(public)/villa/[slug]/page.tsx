@@ -63,7 +63,7 @@ export default async function VillaDetailPage({ params }: Props) {
         />
 
         <div className="flex flex-col gap-6 lg:col-span-2">
-          <VillaOverview capacity={villa.capacity} location={villa.location} />
+          <VillaOverview capacity={villa.capacity} bedrooms={villa.bedrooms} bathrooms={villa.bathrooms} location={villa.location} />
 
           <div>
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
@@ -88,13 +88,6 @@ export default async function VillaDetailPage({ params }: Props) {
               {formatPrice(villa.price)}
             </span>
             <span className="text-muted-foreground">/malam</span>
-          </div>
-
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>Kapasitas:</span>
-            <span className="font-medium text-foreground">
-              {villa.capacity} tamu
-            </span>
           </div>
 
           {villa.price_information && (

@@ -95,6 +95,8 @@ function mapVillaRow(row: VillaWithMedia): Villa {
     description: row.description ?? '',
     price: Number(row.price),
     capacity: row.capacity,
+    bedrooms: row.bedrooms ?? null,
+    bathrooms: row.bathrooms ?? null,
     location: row.location ?? '',
     thumbnailImage: cover ? storagePathToPublicUrl(cover.image_url) : FALLBACK_GALLERY[0],
     heroImage: hero ? storagePathToPublicUrl(hero.image_url) : (cover ? storagePathToPublicUrl(cover.image_url) : FALLBACK_GALLERY[0]),

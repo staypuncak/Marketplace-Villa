@@ -2,6 +2,8 @@ import { Users, Bed, Bath, MapPin } from 'lucide-react'
 
 type VillaOverviewProps = {
   capacity: number
+  bedrooms: number | null
+  bathrooms: number | null
   location: string
 }
 
@@ -19,16 +21,16 @@ function formatLocation(location: string) {
   return location
 }
 
-export function VillaOverview({ capacity, location }: VillaOverviewProps) {
+export function VillaOverview({ capacity, bedrooms, bathrooms, location }: VillaOverviewProps) {
   const items = [
     { icon: Users, label: 'Kapasitas Maksimal', value: `${capacity} Tamu` },
-    { icon: Bed, label: 'Kamar Tidur', value: '3 Kamar' },
-    { icon: Bath, label: 'Kamar Mandi', value: '2 Kamar Mandi' },
+    { icon: Bed, label: 'Kamar Tidur', value: bedrooms ? `${bedrooms} Kamar` : '-' },
+    { icon: Bath, label: 'Kamar Mandi', value: bathrooms ? `${bathrooms} Kamar Mandi` : '-' },
     { icon: MapPin, label: 'Lokasi', value: formatLocation(location) },
   ]
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+    <div className="grid grid-cols-2 gap-3 lg:gap-4">
       {items.map((item) => {
         const Icon = item.icon
         return (

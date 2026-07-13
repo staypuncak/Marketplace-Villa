@@ -5,6 +5,8 @@ export type Villa = {
   description: string
   price: number
   capacity: number
+  bedrooms: number | null
+  bathrooms: number | null
   location: string
   thumbnailImage: string
   heroImage: string
