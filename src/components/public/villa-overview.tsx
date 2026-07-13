@@ -30,19 +30,19 @@ export function VillaOverview({ capacity, bedrooms, bathrooms, location }: Villa
   ]
 
   return (
-    <div className="grid grid-cols-2 gap-3 lg:gap-4">
+    <div className="grid grid-cols-4 gap-2 lg:grid-cols-2 lg:gap-4">
       {items.map((item) => {
         const Icon = item.icon
         return (
           <div
             key={item.label}
-            className="group flex flex-col items-center gap-2 rounded-2xl border border-emerald-100/50 bg-white/95 p-5 shadow-sm transition-all duration-250 hover:-translate-y-0.5 hover:shadow-md"
+            className="group flex flex-col items-center gap-1 rounded-xl border border-emerald-100/50 bg-white/95 p-2 shadow-sm transition-all duration-250 hover:-translate-y-0.5 hover:shadow-md lg:gap-2 lg:rounded-2xl lg:p-5"
           >
-            <Icon className="size-6 text-amber-400" />
-            <p className="text-lg font-bold tracking-tight text-foreground">
+            <Icon className="size-4 text-amber-400 lg:size-6" />
+            <p className="text-[10px] font-bold tracking-tight text-foreground leading-tight text-center lg:text-lg">
               {item.value}
             </p>
-            <p className="text-xs text-muted-foreground">{item.label}</p>
+            <p className="text-[9px] text-muted-foreground text-center leading-tight lg:text-xs">{item.label}</p>
           </div>
         )
       })}
